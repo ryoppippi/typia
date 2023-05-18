@@ -1,12 +1,15 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { RandomProgrammer } from "../../../programmers/RandomProgrammer";
+
+import { TsNodeUtil } from "../../../utils/TsNodeUtil";
+import { TsTypeUtil } from "../../../utils/TsTypeUtil";
 
 import { IProject } from "../../IProject";
 
 export namespace RandomTransformer {
     export const transform =
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (expression: ts.CallExpression): ts.Expression => {
             // CHECK GENERIC ARGUMENT EXISTENCE
@@ -14,20 +17,21 @@ export namespace RandomTransformer {
 
             // GET TYPE INFO
             const node: ts.TypeNode = expression.typeArguments[0];
-            const type: ts.Type = project.checker.getTypeFromTypeNode(node);
+            const type: ts.Type = p.checker.getTypeFromTypeNode(node);
 
-            if (type.isTypeParameter()) throw new Error(NO_GENERIC_ARGUMENT);
+            if (TsTypeUtil.isTypeParameter(p.tsc)(type))
+                throw new Error(NO_GENERIC_ARGUMENT);
 
             // DO TRANSFORM
-            return ts.factory.createCallExpression(
+            return p.tsc.factory.createCallExpression(
                 RandomProgrammer.write({
-                    ...project,
+                    ...p,
                     options: {
-                        ...project.options,
+                        ...p.options,
                         functional: false,
                         numeric: false,
                     },
-                })(modulo)()(type, node.getFullText().trim()),
+                })(modulo)()(type, TsNodeUtil.getFullText(p.tsc)(node).trim()),
                 undefined,
                 expression.arguments.length
                     ? [expression.arguments[0]!]

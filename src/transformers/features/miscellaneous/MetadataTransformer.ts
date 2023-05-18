@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { LiteralFactory } from "../../../factories/LiteralFactory";
 import { MetadataCollection } from "../../../factories/MetadataCollection";
@@ -7,32 +7,36 @@ import { MetadataFactory } from "../../../factories/MetadataFactory";
 import { IMetadataApplication } from "../../../metadata/IMetadataApplication";
 import { Metadata } from "../../../metadata/Metadata";
 
+import { TsTypeUtil } from "../../../utils/TsTypeUtil";
+
 import { IProject } from "../../IProject";
 
 export namespace MetadataTransformer {
     export const transform =
-        ({ checker }: IProject) =>
+        (p: IProject) =>
         (expression: ts.CallExpression): ts.Expression => {
             if (!expression.typeArguments?.length)
                 throw new Error(NO_GENERIC_ARGUMENT);
 
             // VALIDATE TUPLE ARGUMENTS
             const top: ts.Node = expression.typeArguments[0]!;
-            if (!ts.isTupleTypeNode(top)) return expression;
-            else if (top.elements.some((child) => !ts.isTypeNode(child)))
+            if (!p.tsc.isTupleTypeNode(top)) return expression;
+            else if (top.elements.some((child) => !p.tsc.isTypeNode(child)))
                 return expression;
 
             // GET TYPES
-            const types: ts.Type[] = top.elements.map((child) =>
-                checker.getTypeFromTypeNode(child as ts.TypeNode),
+            const typeList: ts.Type[] = top.elements.map((child) =>
+                p.checker.getTypeFromTypeNode(child as ts.TypeNode),
             );
-            if (types.some((t) => t.isTypeParameter()))
+            if (
+                typeList.some((type) => TsTypeUtil.isTypeParameter(p.tsc)(type))
+            )
                 throw new Error(GENERIC_ARGUMENT);
 
             // METADATA
             const collection: MetadataCollection = new MetadataCollection();
-            const metadatas: Array<Metadata> = types.map((type) =>
-                MetadataFactory.analyze(checker)({
+            const metadatas: Array<Metadata> = typeList.map((type) =>
+                MetadataFactory.analyze(p)({
                     resolve: false,
                     constant: true,
                 })(collection)(type),
@@ -43,7 +47,7 @@ export namespace MetadataTransformer {
                 metadatas: metadatas.map((metadata) => metadata.toJSON()),
                 collection: collection.objects().map((obj) => obj.toJSON()),
             };
-            return LiteralFactory.generate(app);
+            return LiteralFactory.generate(p.tsc)(app);
         };
 }
 

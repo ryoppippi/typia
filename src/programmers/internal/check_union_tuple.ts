@@ -1,4 +1,5 @@
-import ts from "typescript";
+import { JSDocTagInfo } from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IMetadataTag } from "../../metadata/IMetadataTag";
 import { Metadata } from "../../metadata/Metadata";
@@ -21,7 +22,7 @@ export const check_union_tuple =
         elements: Metadata[],
         explore: CheckerProgrammer.IExplore,
         tags: IMetadataTag[],
-        jsDocTags: ts.JSDocTagInfo[],
+        jsDocTags: JSDocTagInfo[],
         array: ts.Expression,
     ) =>
         CheckerProgrammer.decode_tuple(project)(config)(importer)(true)(

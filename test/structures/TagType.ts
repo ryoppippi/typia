@@ -4,14 +4,17 @@ export type TagType = TagType.Type[];
 export namespace TagType {
     export interface Type {
         /**
-         * Integer value.
+         * Integer type.
+         *
+         * This is to explain {@link int} value in {@link TagType.Type}.
          *
          * @type int
+         * @example https://example.com
          */
         int: number;
 
         /**
-         * Unsigned integer value.
+         * Unsigned integer type.
          *
          * @type uint
          */

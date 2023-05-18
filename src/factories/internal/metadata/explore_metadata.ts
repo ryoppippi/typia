@@ -1,7 +1,9 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
 import { MetadataObject } from "../../../metadata/MetadataObject";
+
+import { IProject } from "../../../transformers/IProject";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
@@ -10,18 +12,17 @@ import { MetadataFactory } from "../../MetadataFactory";
 import { iterate_metadata } from "./iterate_metadata";
 
 export const explore_metadata =
-    (checker: ts.TypeChecker) =>
+    (project: IProject.IModule) =>
     (options: MetadataFactory.IOptions) =>
     (collection: MetadataCollection) =>
-    (type: ts.Type | null, parentResolved: boolean): Metadata => {
+    (parentResolved: boolean) =>
+    (type: ts.Type | null): Metadata => {
         // CONSTRUCT METADATA
         const meta: Metadata = Metadata.initialize(parentResolved);
         if (type !== null)
-            iterate_metadata(checker)(options)(collection)(
+            iterate_metadata(project)(options)(collection)(parentResolved)(
                 meta,
-                type,
-                parentResolved,
-            );
+            )(type);
 
         // SORT OBJECTS
         if (meta.objects.length > 1) {

@@ -1,5 +1,7 @@
 import path from "path";
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
+
+import { TsNodeUtil } from "../utils/TsNodeUtil";
 
 import { IProject } from "./IProject";
 import { ApplicationTransformer } from "./features/miscellaneous/ApplicationTransformer";
@@ -58,8 +60,9 @@ export namespace CallExpressionTransformer {
 
             // FILE PATH
             const file: string = path.resolve(
-                declaration.getSourceFile().fileName,
+                TsNodeUtil.getSourceFile(project.tsc)(declaration).fileName,
             );
+
             if (
                 file.indexOf(LIB_PATH) === -1 &&
                 file !== SRC_PATH &&
@@ -71,11 +74,12 @@ export namespace CallExpressionTransformer {
             // TRANSFORMATION
             //----
             // FUNCTION NAME
-            const { name } =
+            const { escapedName } =
                 project.checker.getTypeAtLocation(declaration).symbol;
 
             // FIND TRANSFORMER
-            const functor: (() => Task) | undefined = FUNCTORS[name];
+            const functor: (() => Task) | undefined =
+                FUNCTORS[escapedName.toString()];
             if (functor === undefined) return expression;
 
             // RETURNS WITH TRANSFORMATION
@@ -90,7 +94,9 @@ type Task = (
 ) => (expression: ts.CallExpression) => ts.Expression;
 
 const LIB_PATH = path.join("node_modules", "typia", "lib", "module.d.ts");
-const SRC_PATH = path.resolve(path.join(__dirname, "..", "module.ts"));
+const SRC_PATH = path.resolve(
+    path.join(__dirname, "..", "..", "src", "module.ts"),
+);
 const CLI_PATH = path.resolve(
     path.join(__dirname, "..", "..", "..", "src", "module.ts"),
 );

@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { ExpressionFactory } from "../../factories/ExpressionFactory";
 import { LiteralFactory } from "../../factories/LiteralFactory";
@@ -11,19 +11,20 @@ import { Customizable } from "../../typings/Customizable";
  * @internal
  */
 export const random_custom =
+    (tsc: typeof ts) =>
     (accessor: (name: string) => ts.Expression) =>
     (type: keyof Customizable) =>
     (comments: ICommentTag[]) =>
     (expression: ts.Expression) =>
-        ExpressionFactory.coalesce(
-            ts.factory.createCallChain(
-                ts.factory.createPropertyAccessChain(
+        ExpressionFactory.coalesce(tsc)(
+            tsc.factory.createCallChain(
+                tsc.factory.createPropertyAccessChain(
                     accessor("customs"),
-                    ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
-                    ts.factory.createIdentifier(type),
+                    tsc.factory.createToken(tsc.SyntaxKind.QuestionDotToken),
+                    tsc.factory.createIdentifier(type),
                 ),
-                ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+                tsc.factory.createToken(tsc.SyntaxKind.QuestionDotToken),
                 undefined,
-                [LiteralFactory.generate(comments)],
+                [LiteralFactory.generate(tsc)(comments)],
             ),
         )(expression);

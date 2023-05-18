@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { ExpressionFactory } from "../../factories/ExpressionFactory";
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
@@ -15,16 +15,17 @@ import { check_custom } from "./check_custom";
  * @internal
  */
 export const check_array =
+    (tsc: typeof ts) =>
     (importer: FunctionImporter) =>
     (metaTags: IMetadataTag[]) =>
     (jsDocTags: IJsDocTagInfo[]) =>
     (input: ts.Expression): ICheckEntry => ({
-        expression: ExpressionFactory.isArray(input),
+        expression: ExpressionFactory.isArray(tsc)(input),
         tags: [
-            ...check_array_length(metaTags)(
-                IdentifierFactory.access(input)("length"),
+            ...check_array_length(tsc)(metaTags)(
+                IdentifierFactory.access(tsc)(input)("length"),
             ),
-            ...check_custom("array", "Array")(importer)(jsDocTags)(input),
+            ...check_custom(tsc)("array", "Array")(importer)(jsDocTags)(input),
             // check custom array for legacy (3.7.0)
         ],
     });

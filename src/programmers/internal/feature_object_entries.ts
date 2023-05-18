@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 
@@ -13,6 +13,7 @@ import { FunctionImporter } from "../helpers/FunctionImporeter";
  * @internal
  */
 export const feature_object_entries =
+    (tsc: typeof ts) =>
     <Output extends ts.ConciseBody>(
         config: Pick<
             FeatureProgrammer.IConfig<Output>,
@@ -26,15 +27,15 @@ export const feature_object_entries =
             const sole: string | null = prop.key.getSoleLiteral();
             const propInput =
                 sole === null
-                    ? ts.factory.createIdentifier("value")
+                    ? tsc.factory.createIdentifier("value")
                     : Escaper.variable(sole)
-                    ? ts.factory.createPropertyAccessExpression(
+                    ? tsc.factory.createPropertyAccessExpression(
                           input,
-                          ts.factory.createIdentifier(sole),
+                          tsc.factory.createIdentifier(sole),
                       )
-                    : ts.factory.createElementAccessExpression(
+                    : tsc.factory.createElementAccessExpression(
                           input,
-                          ts.factory.createStringLiteral(sole),
+                          tsc.factory.createStringLiteral(sole),
                       );
 
             return {

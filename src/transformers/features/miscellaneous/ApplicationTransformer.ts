@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { LiteralFactory } from "../../../factories/LiteralFactory";
 import { MetadataCollection } from "../../../factories/MetadataCollection";
@@ -9,11 +9,13 @@ import { IJsonApplication } from "../../../schemas/IJsonApplication";
 
 import { ApplicationProgrammer } from "../../../programmers/ApplicationProgrammer";
 
+import { TsTypeUtil } from "../../../utils/TsTypeUtil";
+
 import { IProject } from "../../IProject";
 
 export namespace ApplicationTransformer {
     export const transform =
-        ({ checker }: IProject) =>
+        (p: IProject) =>
         (expression: ts.CallExpression): ts.Expression => {
             if (!expression.typeArguments?.length)
                 throw new Error(NO_GENERIC_ARGUMENT);
@@ -23,20 +25,22 @@ export namespace ApplicationTransformer {
             //----
             // VALIDATE TUPLE ARGUMENTS
             const top: ts.Node = expression.typeArguments[0]!;
-            if (!ts.isTupleTypeNode(top)) return expression;
-            else if (top.elements.some((child) => !ts.isTypeNode(child)))
+            if (!p.tsc.isTupleTypeNode(top)) return expression;
+            else if (top.elements.some((child) => !p.tsc.isTypeNode(child)))
                 return expression;
 
             // GET TYPES
-            const types: ts.Type[] = top.elements.map((child) =>
-                checker.getTypeFromTypeNode(child as ts.TypeNode),
+            const typeList: ts.Type[] = top.elements.map((child) =>
+                p.checker.getTypeFromTypeNode(child as ts.TypeNode),
             );
-            if (types.some((t) => t.isTypeParameter()))
+            if (
+                typeList.some((type) => TsTypeUtil.isTypeParameter(p.tsc)(type))
+            )
                 throw new Error(GENERIC_ARGUMENT);
 
             // ADDITIONAL PARAMETERS
             const purpose: "swagger" | "ajv" = get_parameter(
-                checker,
+                p,
                 "Purpose",
                 expression.typeArguments[1],
                 (str) => str === "swagger" || str === "ajv",
@@ -50,8 +54,8 @@ export namespace ApplicationTransformer {
             const collection: MetadataCollection = new MetadataCollection({
                 replace: MetadataCollection.replace,
             });
-            const metadatas: Array<Metadata> = types.map((type) =>
-                MetadataFactory.analyze(checker)({
+            const metadatas: Array<Metadata> = typeList.map((type) =>
+                MetadataFactory.analyze(p)({
                     resolve: true,
                     constant: true,
                     validate: (meta) => {
@@ -67,11 +71,11 @@ export namespace ApplicationTransformer {
             })(metadatas);
 
             // RETURNS WITH LITERAL EXPRESSION
-            return LiteralFactory.generate(app);
+            return LiteralFactory.generate(p.tsc)(app);
         };
 
     const get_parameter = <T extends string>(
-        checker: ts.TypeChecker,
+        p: IProject.IModule,
         name: string,
         node: ts.TypeNode | undefined,
         predicator: (value: string) => boolean,
@@ -80,8 +84,8 @@ export namespace ApplicationTransformer {
         if (!node) return defaulter();
 
         // CHECK LITERAL TYPE
-        const type: ts.Type = checker.getTypeFromTypeNode(node);
-        if (!type.isLiteral())
+        const type: ts.Type = p.checker.getTypeFromTypeNode(node);
+        if (!TsTypeUtil.isLiteral(p.tsc)(type))
             throw new Error(
                 `Error on typia.application(): generic argument "${name}" must be constant.`,
             );

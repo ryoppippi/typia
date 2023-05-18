@@ -1,6 +1,8 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
+
+import { IProject } from "../../../transformers/IProject";
 
 import { Writable } from "../../../typings/Writable";
 
@@ -10,16 +12,17 @@ import { TypeFactory } from "../../TypeFactory";
 import { explore_metadata } from "./explore_metadata";
 
 export const iterate_metadata_resolve =
-    (checker: ts.TypeChecker) =>
+    (p: IProject.IModule) =>
     (options: MetadataFactory.IOptions) =>
     (collection: MetadataCollection) =>
-    (meta: Metadata, type: ts.Type, parentResolved: boolean): boolean => {
+    (parentResolved: boolean) =>
+    (meta: Metadata) =>
+    (type: ts.Type): boolean => {
         if (options.resolve === true && parentResolved === false) {
-            const resolved: ts.Type | null = TypeFactory.resolve(checker)(type);
+            const resolved: ts.Type | null = TypeFactory.resolve(p)(type);
             if (resolved !== null) {
-                Writable(meta).resolved = explore_metadata(checker)(options)(
-                    collection,
-                )(resolved, true);
+                Writable(meta).resolved =
+                    explore_metadata(p)(options)(collection)(true)(resolved);
                 return true;
             }
         }

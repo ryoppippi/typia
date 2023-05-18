@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IJsDocTagInfo } from "../../metadata/IJsDocTagInfo";
 import { IMetadataTag } from "../../metadata/IMetadataTag";
@@ -14,6 +14,7 @@ import { template_to_pattern } from "./template_to_pattern";
  * @internal
  */
 export const check_template =
+    (tsc: typeof ts) =>
     (importer: FunctionImporter) =>
     (metaTags: IMetadataTag[]) =>
     (jsDocTags: IJsDocTagInfo[]) =>
@@ -21,16 +22,16 @@ export const check_template =
     (input: ts.Expression): ICheckEntry => {
         // TYPEOF STRING & TAGS
         const conditions: ts.Expression[] = [
-            ts.factory.createStrictEquality(
-                ts.factory.createStringLiteral("string"),
-                ts.factory.createTypeOfExpression(input),
+            tsc.factory.createStrictEquality(
+                tsc.factory.createStringLiteral("string"),
+                tsc.factory.createTypeOfExpression(input),
             ),
         ];
 
         // TEMPLATES
         const internal: ts.Expression[] = templates.map((tpl) =>
-            ts.factory.createCallExpression(
-                ts.factory.createIdentifier(
+            tsc.factory.createCallExpression(
+                tsc.factory.createIdentifier(
                     `RegExp(/${template_to_pattern(true)(tpl)}/).test`,
                 ),
                 undefined,
@@ -40,17 +41,17 @@ export const check_template =
         conditions.push(
             internal.length === 1
                 ? internal[0]!
-                : internal.reduce((x, y) => ts.factory.createLogicalOr(x, y)),
+                : internal.reduce((x, y) => tsc.factory.createLogicalOr(x, y)),
         );
 
         // COMBINATION
         return {
             expression: conditions.reduce((x, y) =>
-                ts.factory.createLogicalAnd(x, y),
+                tsc.factory.createLogicalAnd(x, y),
             ),
             tags: [
-                ...check_string_tags(importer)(metaTags)(input),
-                ...check_custom("string")(importer)(jsDocTags)(input),
+                ...check_string_tags(tsc)(importer)(metaTags)(input),
+                ...check_custom(tsc)("string")(importer)(jsDocTags)(input),
             ],
         };
     };

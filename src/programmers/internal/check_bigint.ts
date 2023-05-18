@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IJsDocTagInfo } from "../../metadata/IJsDocTagInfo";
 import { IMetadataTag } from "../../metadata/IMetadataTag";
@@ -11,6 +11,7 @@ import { check_custom } from "./check_custom";
  * @internal
  */
 export const check_bigint =
+    (tsc: typeof ts) =>
     (importer: FunctionImporter) =>
     (metaTags: IMetadataTag[]) =>
     (jsDocTag: IJsDocTagInfo[]) =>
@@ -20,13 +21,16 @@ export const check_bigint =
             if (tag.kind === "multipleOf")
                 entries.push([
                     tag,
-                    ts.factory.createStrictEquality(
-                        cast(0),
-                        ts.factory.createModulo(input, cast(tag.value)),
+                    tsc.factory.createStrictEquality(
+                        cast(tsc)(0),
+                        tsc.factory.createModulo(input, cast(tsc)(tag.value)),
                     ),
                 ]);
             else if (tag.kind === "step") {
-                const modulo = ts.factory.createModulo(input, cast(tag.value));
+                const modulo = tsc.factory.createModulo(
+                    input,
+                    cast(tsc)(tag.value),
+                );
                 const minimum =
                     (metaTags.find(
                         (tag) =>
@@ -35,48 +39,57 @@ export const check_bigint =
                     )?.value as number | undefined) ?? undefined;
                 entries.push([
                     tag,
-                    ts.factory.createStrictEquality(
-                        cast(0),
+                    tsc.factory.createStrictEquality(
+                        cast(tsc)(0),
                         minimum !== undefined
-                            ? ts.factory.createSubtract(modulo, cast(minimum))
+                            ? tsc.factory.createSubtract(
+                                  modulo,
+                                  cast(tsc)(minimum),
+                              )
                             : modulo,
                     ),
                 ]);
             } else if (tag.kind === "minimum")
                 entries.push([
                     tag,
-                    ts.factory.createLessThanEquals(cast(tag.value), input),
+                    tsc.factory.createLessThanEquals(
+                        cast(tsc)(tag.value),
+                        input,
+                    ),
                 ]);
             else if (tag.kind === "maximum")
                 entries.push([
                     tag,
-                    ts.factory.createGreaterThanEquals(cast(tag.value), input),
+                    tsc.factory.createGreaterThanEquals(
+                        cast(tsc)(tag.value),
+                        input,
+                    ),
                 ]);
             else if (tag.kind === "exclusiveMinimum")
                 entries.push([
                     tag,
-                    ts.factory.createLessThan(cast(tag.value), input),
+                    tsc.factory.createLessThan(cast(tsc)(tag.value), input),
                 ]);
             else if (tag.kind === "exclusiveMaximum")
                 entries.push([
                     tag,
-                    ts.factory.createGreaterThan(cast(tag.value), input),
+                    tsc.factory.createGreaterThan(cast(tsc)(tag.value), input),
                 ]);
         }
         return {
-            expression: ts.factory.createStrictEquality(
-                ts.factory.createStringLiteral("bigint"),
-                ts.factory.createTypeOfExpression(input),
+            expression: tsc.factory.createStrictEquality(
+                tsc.factory.createStringLiteral("bigint"),
+                tsc.factory.createTypeOfExpression(input),
             ),
             tags: [
                 ...entries.map(([tag, expression]) => ({
                     expected: `bigint (@${tag.kind} ${tag.value})`,
                     expression,
                 })),
-                ...check_custom("bigint")(importer)(jsDocTag)(input),
+                ...check_custom(tsc)("bigint")(importer)(jsDocTag)(input),
             ],
         };
     };
 
-const cast = (value: number) =>
-    ts.factory.createIdentifier(`${Math.floor(value)}n`);
+const cast = (tsc: typeof ts) => (value: number) =>
+    tsc.factory.createIdentifier(`${Math.floor(value)}n`);

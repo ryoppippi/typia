@@ -105,12 +105,12 @@
     "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
     "plugins": [
       { 
-        "transform": "../src/transform.ts", 
-        "functional": true, 
+        "type": "transformer",
+        "path": "./lib/transform", 
+        "functional": true, // custom options
         "numeric": true, 
         "finite": true,
-      },
-      { "transform": "typescript-transform-paths" },
+      }
     ]
   },
   "include": [".", "../src"]

@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../factories/IdentifierFactory";
 import { StatementFactory } from "../factories/StatementFactory";
@@ -13,45 +13,33 @@ import { OptionPredicator } from "./helpers/OptionPredicator";
 import { check_object } from "./internal/check_object";
 
 export namespace AssertProgrammer {
-    /**
-     * @deprecated Use `write()` function instead
-     */
-    export const generate =
-        (
-            project: IProject,
-            modulo: ts.LeftHandSideExpression,
-            equals: boolean = false,
-        ) =>
-        (type: ts.Type, name?: string) =>
-            write(project)(modulo)(equals)(type, name);
-
     export const write =
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (equals: boolean) =>
         (type: ts.Type, name?: string) => {
-            const importer: FunctionImporter = new FunctionImporter();
-            const program: ts.ArrowFunction = CheckerProgrammer.write(project)({
+            const importer: FunctionImporter = new FunctionImporter(p.tsc);
+            const program: ts.ArrowFunction = CheckerProgrammer.write(p)({
                 functors: "$ao",
                 unioners: "$au",
                 path: true,
                 trace: true,
-                numeric: OptionPredicator.numeric(project.options),
+                numeric: OptionPredicator.numeric(p.options),
                 equals,
                 atomist: (explore) => (tuple) => (input) =>
                     [
                         tuple.expression,
                         ...tuple.tags.map((tag) =>
-                            ts.factory.createLogicalOr(
+                            p.tsc.factory.createLogicalOr(
                                 tag.expression,
-                                create_guard_call(importer)(
+                                create_guard_call(p.tsc)(importer)(
                                     explore.from === "top"
-                                        ? ts.factory.createTrue()
-                                        : ts.factory.createIdentifier(
+                                        ? p.tsc.factory.createTrue()
+                                        : p.tsc.factory.createIdentifier(
                                               "_exceptionable",
                                           ),
                                 )(
-                                    ts.factory.createIdentifier(
+                                    p.tsc.factory.createIdentifier(
                                         explore.postfix
                                             ? `_path + ${explore.postfix}`
                                             : "_path",
@@ -61,64 +49,61 @@ export namespace AssertProgrammer {
                                 ),
                             ),
                         ),
-                    ].reduce((x, y) => ts.factory.createLogicalAnd(x, y)),
-                combiner: combiner(equals)(importer),
-                joiner: joiner(equals)(importer),
-                success: ts.factory.createTrue(),
+                    ].reduce((x, y) => p.tsc.factory.createLogicalAnd(x, y)),
+                combiner: combiner(p.tsc)(equals)(importer),
+                joiner: joiner(p.tsc)(equals)(importer),
+                success: p.tsc.factory.createTrue(),
             })(importer)(type, name);
 
-            return ts.factory.createArrowFunction(
+            return p.tsc.factory.createArrowFunction(
                 undefined,
                 undefined,
                 [
-                    IdentifierFactory.parameter(
+                    IdentifierFactory.parameter(p.tsc)(
                         "input",
-                        TypeFactory.keyword("any"),
+                        TypeFactory.keyword(p.tsc)("any"),
                     ),
                 ],
-                ts.factory.createTypeReferenceNode(
-                    name ?? TypeFactory.getFullName(project.checker)(type),
+                p.tsc.factory.createTypeReferenceNode(
+                    name ?? TypeFactory.getFullName(p)(type),
                 ),
                 undefined,
-                ts.factory.createBlock(
+                p.tsc.factory.createBlock(
                     [
                         ...importer.declare(modulo),
-                        StatementFactory.constant(
+                        StatementFactory.constant(p.tsc)(
                             "__is",
-                            IsProgrammer.write(project)(modulo, true)(equals)(
+                            IsProgrammer.write(p)(modulo, true)(equals)(
                                 type,
-                                name ??
-                                    TypeFactory.getFullName(project.checker)(
-                                        type,
-                                    ),
+                                name ?? TypeFactory.getFullName(p)(type),
                             ),
                         ),
-                        ts.factory.createIfStatement(
-                            ts.factory.createStrictEquality(
-                                ts.factory.createFalse(),
-                                ts.factory.createCallExpression(
-                                    ts.factory.createIdentifier("__is"),
+                        p.tsc.factory.createIfStatement(
+                            p.tsc.factory.createStrictEquality(
+                                p.tsc.factory.createFalse(),
+                                p.tsc.factory.createCallExpression(
+                                    p.tsc.factory.createIdentifier("__is"),
                                     undefined,
-                                    [ts.factory.createIdentifier("input")],
+                                    [p.tsc.factory.createIdentifier("input")],
                                 ),
                             ),
-                            ts.factory.createExpressionStatement(
-                                ts.factory.createCallExpression(
+                            p.tsc.factory.createExpressionStatement(
+                                p.tsc.factory.createCallExpression(
                                     program,
                                     undefined,
                                     [
-                                        ts.factory.createIdentifier("input"),
-                                        ts.factory.createStringLiteral(
+                                        p.tsc.factory.createIdentifier("input"),
+                                        p.tsc.factory.createStringLiteral(
                                             "$input",
                                         ),
-                                        ts.factory.createTrue(),
+                                        p.tsc.factory.createTrue(),
                                     ],
                                 ),
                             ),
                             undefined,
                         ),
-                        ts.factory.createReturnStatement(
-                            ts.factory.createIdentifier(`input`),
+                        p.tsc.factory.createReturnStatement(
+                            p.tsc.factory.createIdentifier(`input`),
                         ),
                     ],
                     true,
@@ -127,12 +112,13 @@ export namespace AssertProgrammer {
         };
 
     const combiner =
+        (tsc: typeof ts) =>
         (equals: boolean) =>
         (importer: FunctionImporter): CheckerProgrammer.IConfig.Combiner =>
         (explore: CheckerProgrammer.IExplore) => {
             if (explore.tracable === false)
-                return IsProgrammer.configure({
-                    object: assert_object(equals)(importer),
+                return IsProgrammer.configure(tsc)({
+                    object: assert_object(tsc)(equals)(importer),
                     numeric: true,
                 })(importer).combiner(explore);
 
@@ -145,22 +131,22 @@ export namespace AssertProgrammer {
                           .map((binary) =>
                               binary.combined
                                   ? binary.expression
-                                  : ts.factory.createLogicalOr(
+                                  : tsc.factory.createLogicalOr(
                                         binary.expression,
-                                        create_guard_call(importer)(
+                                        create_guard_call(tsc)(importer)(
                                             explore.source === "top"
-                                                ? ts.factory.createTrue()
-                                                : ts.factory.createIdentifier(
+                                                ? tsc.factory.createTrue()
+                                                : tsc.factory.createIdentifier(
                                                       "_exceptionable",
                                                   ),
                                         )(
-                                            ts.factory.createIdentifier(path),
+                                            tsc.factory.createIdentifier(path),
                                             expected,
                                             input,
                                         ),
                                     ),
                           )
-                          .reduce(ts.factory.createLogicalAnd)
+                          .reduce(tsc.factory.createLogicalAnd)
                     : (() => {
                           const addicted = binaries.slice();
                           if (
@@ -168,14 +154,14 @@ export namespace AssertProgrammer {
                           ) {
                               addicted.push({
                                   combined: true,
-                                  expression: create_guard_call(importer)(
+                                  expression: create_guard_call(tsc)(importer)(
                                       explore.source === "top"
-                                          ? ts.factory.createTrue()
-                                          : ts.factory.createIdentifier(
+                                          ? tsc.factory.createTrue()
+                                          : tsc.factory.createIdentifier(
                                                 "_exceptionable",
                                             ),
                                   )(
-                                      ts.factory.createIdentifier(path),
+                                      tsc.factory.createIdentifier(path),
                                       expected,
                                       input,
                                   ),
@@ -183,57 +169,59 @@ export namespace AssertProgrammer {
                           }
                           return addicted
                               .map((b) => b.expression)
-                              .reduce(ts.factory.createLogicalOr);
+                              .reduce(tsc.factory.createLogicalOr);
                       })();
         };
 
-    const assert_object = (equals: boolean) => (importer: FunctionImporter) =>
-        check_object({
-            equals,
-            assert: true,
-            undefined: true,
-            reduce: ts.factory.createLogicalAnd,
-            positive: ts.factory.createTrue(),
-            superfluous: (value) =>
-                create_guard_call(importer)()(
-                    ts.factory.createAdd(
-                        ts.factory.createIdentifier("_path"),
-                        ts.factory.createCallExpression(
-                            importer.use("join"),
-                            undefined,
-                            [ts.factory.createIdentifier("key")],
+    const assert_object =
+        (tsc: typeof ts) => (equals: boolean) => (importer: FunctionImporter) =>
+            check_object(tsc)({
+                equals,
+                assert: true,
+                undefined: true,
+                reduce: tsc.factory.createLogicalAnd,
+                positive: tsc.factory.createTrue(),
+                superfluous: (value) =>
+                    create_guard_call(tsc)(importer)()(
+                        tsc.factory.createAdd(
+                            tsc.factory.createIdentifier("_path"),
+                            tsc.factory.createCallExpression(
+                                importer.use("join"),
+                                undefined,
+                                [tsc.factory.createIdentifier("key")],
+                            ),
                         ),
+                        "undefined",
+                        value,
                     ),
-                    "undefined",
-                    value,
-                ),
-            halt: (expr) =>
-                ts.factory.createLogicalOr(
-                    ts.factory.createStrictEquality(
-                        ts.factory.createFalse(),
-                        ts.factory.createIdentifier("_exceptionable"),
+                halt: (expr) =>
+                    tsc.factory.createLogicalOr(
+                        tsc.factory.createStrictEquality(
+                            tsc.factory.createFalse(),
+                            tsc.factory.createIdentifier("_exceptionable"),
+                        ),
+                        expr,
                     ),
-                    expr,
-                ),
-        })(importer);
+            })(importer);
 
     const joiner =
+        (tsc: typeof ts) =>
         (equals: boolean) =>
         (importer: FunctionImporter): CheckerProgrammer.IConfig.IJoiner => ({
-            object: assert_object(equals)(importer),
+            object: assert_object(tsc)(equals)(importer),
             array: (input, arrow) =>
-                ts.factory.createCallExpression(
-                    IdentifierFactory.access(input)("every"),
+                tsc.factory.createCallExpression(
+                    IdentifierFactory.access(tsc)(input)("every"),
                     undefined,
                     [arrow],
                 ),
             failure: (value, expected, explore) =>
-                create_guard_call(importer)(
+                create_guard_call(tsc)(importer)(
                     explore?.from === "top"
-                        ? ts.factory.createTrue()
-                        : ts.factory.createIdentifier("_exceptionable"),
+                        ? tsc.factory.createTrue()
+                        : tsc.factory.createIdentifier("_exceptionable"),
                 )(
-                    ts.factory.createIdentifier(
+                    tsc.factory.createIdentifier(
                         explore?.postfix
                             ? `_path + ${explore.postfix}`
                             : "_path",
@@ -244,16 +232,16 @@ export namespace AssertProgrammer {
             full: equals
                 ? undefined
                 : (condition) => (input, expected, explore) =>
-                      ts.factory.createLogicalOr(
+                      tsc.factory.createLogicalOr(
                           condition,
-                          create_guard_call(importer)(
+                          create_guard_call(tsc)(importer)(
                               explore.from === "top"
-                                  ? ts.factory.createTrue()
-                                  : ts.factory.createIdentifier(
+                                  ? tsc.factory.createTrue()
+                                  : tsc.factory.createIdentifier(
                                         "_exceptionable",
                                     ),
                           )(
-                              ts.factory.createIdentifier("_path"),
+                              tsc.factory.createIdentifier("_path"),
                               expected,
                               input,
                           ),
@@ -261,6 +249,7 @@ export namespace AssertProgrammer {
         });
 
     const create_guard_call =
+        (tsc: typeof ts) =>
         (importer: FunctionImporter) =>
         (exceptionable?: ts.Expression) =>
         (
@@ -268,16 +257,16 @@ export namespace AssertProgrammer {
             expected: string,
             value: ts.Expression,
         ): ts.Expression =>
-            ts.factory.createCallExpression(importer.use("guard"), undefined, [
-                exceptionable ?? ts.factory.createIdentifier("_exceptionable"),
-                ts.factory.createObjectLiteralExpression(
+            tsc.factory.createCallExpression(importer.use("guard"), undefined, [
+                exceptionable ?? tsc.factory.createIdentifier("_exceptionable"),
+                tsc.factory.createObjectLiteralExpression(
                     [
-                        ts.factory.createPropertyAssignment("path", path),
-                        ts.factory.createPropertyAssignment(
+                        tsc.factory.createPropertyAssignment("path", path),
+                        tsc.factory.createPropertyAssignment(
                             "expected",
-                            ts.factory.createStringLiteral(expected),
+                            tsc.factory.createStringLiteral(expected),
                         ),
-                        ts.factory.createPropertyAssignment("value", value),
+                        tsc.factory.createPropertyAssignment("value", value),
                     ],
                     true,
                 ),

@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { MetadataObject } from "../../metadata/MetadataObject";
 
@@ -8,6 +8,7 @@ import { FeatureProgrammer } from "../FeatureProgrammer";
  * @internal
  */
 export const decode_union_object =
+    (tsc: typeof ts) =>
     (
         checker: (
             input: ts.Expression,
@@ -29,14 +30,14 @@ export const decode_union_object =
         targets: MetadataObject[],
         explore: FeatureProgrammer.IExplore,
     ): ts.CallExpression =>
-        ts.factory.createCallExpression(
-            ts.factory.createArrowFunction(
+        tsc.factory.createCallExpression(
+            tsc.factory.createArrowFunction(
                 undefined,
                 undefined,
                 [],
                 undefined,
                 undefined,
-                iterate(escaper)(
+                iterate(tsc)(escaper)(
                     input,
                     targets.map((obj) => ({
                         type: "object",
@@ -51,14 +52,15 @@ export const decode_union_object =
         );
 
 const iterate =
+    (tsc: typeof ts) =>
     (escaper: (value: ts.Expression, expected: string) => ts.Statement) =>
     (input: ts.Expression, unions: IUnion[], expected: string) =>
-        ts.factory.createBlock(
+        tsc.factory.createBlock(
             [
                 ...unions.map((u) =>
-                    ts.factory.createIfStatement(
+                    tsc.factory.createIfStatement(
                         u.is(),
-                        ts.factory.createReturnStatement(u.value()),
+                        tsc.factory.createReturnStatement(u.value()),
                     ),
                 ),
                 escaper(input, expected),

@@ -1,9 +1,12 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
 import { MetadataObject } from "../../../metadata/MetadataObject";
 
+import { IProject } from "../../../transformers/IProject";
+
 import { ArrayUtil } from "../../../utils/ArrayUtil";
+import { TsTypeUtil } from "../../../utils/TsTypeUtil";
 
 import { MetadataCollection } from "../../MetadataCollection";
 import { MetadataFactory } from "../../MetadataFactory";
@@ -11,27 +14,27 @@ import { emplace_metadata_object } from "./emplace_metadata_object";
 import { iterate_metadata } from "./iterate_metadata";
 
 export const iterate_metadata_object =
-    (checker: ts.TypeChecker) =>
+    ({ tsc, checker }: IProject.IModule) =>
     (options: MetadataFactory.IOptions) =>
     (collection: MetadataCollection) =>
-    (meta: Metadata, type: ts.Type, parentResolved: boolean): boolean => {
-        const filter = (flag: ts.TypeFlags) => (type.getFlags() & flag) !== 0;
+    (parentResolved: boolean) =>
+    (meta: Metadata) =>
+    (type: ts.Type): boolean => {
+        const filter = (flag: ts.TypeFlags) => (type.flags & flag) !== 0;
         if (
-            !filter(ts.TypeFlags.Object) &&
-            !type.isIntersection() &&
+            !filter(tsc.TypeFlags.Object) &&
+            !TsTypeUtil.isIntersection(tsc)(type) &&
             (type as any).intrinsicName !== "object"
         )
             return false;
-        else if (type.isIntersection()) {
+        else if (TsTypeUtil.isIntersection(tsc)(type)) {
             const fakeCollection = new MetadataCollection();
             const fakeSchema: Metadata = Metadata.initialize();
 
             type.types.forEach((t) =>
-                iterate_metadata(checker)(options)(fakeCollection)(
-                    fakeSchema,
-                    t,
+                iterate_metadata({ tsc, checker })(options)(fakeCollection)(
                     parentResolved,
-                ),
+                )(fakeSchema)(t),
             );
             if (
                 fakeSchema.objects.length === 0 ||
@@ -40,9 +43,9 @@ export const iterate_metadata_object =
                 return true;
         }
 
-        const obj: MetadataObject = emplace_metadata_object(checker)(options)(
-            collection,
-        )(type, meta.nullable);
+        const obj: MetadataObject = emplace_metadata_object({ tsc, checker })(
+            options,
+        )(collection)(type, meta.nullable);
         ArrayUtil.add(meta.objects, obj, (elem) => elem.name === obj.name);
         return true;
     };

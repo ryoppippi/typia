@@ -1,15 +1,19 @@
 import path from "path";
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
+
+import { TsNodeUtil } from "../utils/TsNodeUtil";
 
 export namespace ImportTransformer {
     export const transform =
+        (tsc: typeof ts) =>
         (from: string) =>
         (to: string) =>
         (context: ts.TransformationContext) =>
         (file: ts.SourceFile) =>
-            transform_file(from)(to)(context)(file);
+            transform_file(tsc)(from)(to)(context)(file);
 
     const transform_file =
+        (tsc: typeof ts) =>
         (top: string) =>
         (to: string) =>
         (context: ts.TransformationContext) =>
@@ -17,22 +21,26 @@ export namespace ImportTransformer {
             if (file.isDeclarationFile) return file;
 
             const from: string = get_directory_path(
-                path.resolve(file.getSourceFile().fileName),
+                path.resolve(TsNodeUtil.getSourceFile(tsc)(file).fileName),
             );
             to = from.replace(top, to);
 
-            return ts.visitEachChild(
+            return tsc.visitEachChild(
                 file,
-                (node) => transform_node(top)(from)(to)(node),
+                (node) => transform_node(tsc)(top)(from)(to)(node),
                 context,
             );
         };
 
     const transform_node =
-        (top: string) => (from: string) => (to: string) => (node: ts.Node) => {
+        (tsc: typeof ts) =>
+        (top: string) =>
+        (from: string) =>
+        (to: string) =>
+        (node: ts.Node) => {
             if (
-                !ts.isImportDeclaration(node) ||
-                !ts.isStringLiteral(node.moduleSpecifier)
+                !tsc.isImportDeclaration(node) ||
+                !tsc.isStringLiteral(node.moduleSpecifier)
             )
                 return node;
 
@@ -50,10 +58,10 @@ export namespace ImportTransformer {
                 return simple[0] === "." ? simple : `./${simple}`;
             })();
 
-            return ts.factory.createImportDeclaration(
+            return tsc.factory.createImportDeclaration(
                 undefined,
                 node.importClause,
-                ts.factory.createStringLiteral(replaced),
+                tsc.factory.createStringLiteral(replaced),
                 node.assertClause,
             );
         };

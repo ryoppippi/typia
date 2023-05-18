@@ -2,10 +2,11 @@ import fs from "fs";
 import path from "path";
 import ts from "typescript";
 
+import { FileTransformer } from "../transformers/FileTransformer";
+import { IProject } from "../transformers/IProject";
 import { ImportTransformer } from "../transformers/ImportTransformer";
 
-import transform from "../transform";
-
+/// @todo
 export namespace TypiaProgrammer {
     export interface IProps {
         input: string;
@@ -55,7 +56,20 @@ export namespace TypiaProgrammer {
             compilerOptions,
         );
 
-        // DO TRANSFORM
+        // DO TRANSFORM - @todo: BUG OF TYPESCRIPT
+        const p: IProject = {
+            tsc: ts as any,
+            program: program as any,
+            compilerOptions,
+            checker: program.getTypeChecker() as any,
+            printer: ts.createPrinter() as any,
+            options:
+                ((compilerOptions.plugins as any[]) ?? []).find(
+                    (p: any) =>
+                        p.transform === "typia/lib/transform" ||
+                        p.transform === "../src/transform.ts",
+                ) ?? {},
+        };
         const result: ts.TransformationResult<ts.SourceFile> = ts.transform(
             program
                 .getSourceFiles()
@@ -65,15 +79,11 @@ export namespace TypiaProgrammer {
                         path.resolve(file.fileName).indexOf(props.input) !== -1,
                 ),
             [
-                ImportTransformer.transform(props.input)(props.output),
-                transform(
-                    program,
-                    ((compilerOptions.plugins as any[]) ?? []).find(
-                        (p: any) =>
-                            p.transform === "typia/lib/transform" ||
-                            p.transform === "../src/transform.ts",
-                    ) ?? {},
-                ),
+                ImportTransformer.transform(p.tsc)(props.input)(
+                    props.output,
+                ) as any,
+                (context) => (file) =>
+                    FileTransformer.transform(p)(context as any)(file),
             ],
             program.getCompilerOptions(),
         );

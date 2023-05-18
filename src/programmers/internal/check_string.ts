@@ -1,4 +1,5 @@
-import ts from "typescript";
+import { JSDocTagInfo } from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IMetadataTag } from "../../metadata/IMetadataTag";
 
@@ -10,16 +11,17 @@ import { check_string_tags } from "./check_string_tags";
  * @internal
  */
 export const check_string =
+    (tsc: typeof ts) =>
     (importer: FunctionImporter) =>
     (metaTags: IMetadataTag[]) =>
-    (jsDocTags: ts.JSDocTagInfo[]) =>
+    (jsDocTags: JSDocTagInfo[]) =>
     (input: ts.Expression) => ({
-        expression: ts.factory.createStrictEquality(
-            ts.factory.createStringLiteral("string"),
-            ts.factory.createTypeOfExpression(input),
+        expression: tsc.factory.createStrictEquality(
+            tsc.factory.createStringLiteral("string"),
+            tsc.factory.createTypeOfExpression(input),
         ),
         tags: [
-            ...check_string_tags(importer)(metaTags)(input),
-            ...check_custom("string")(importer)(jsDocTags)(input),
+            ...check_string_tags(tsc)(importer)(metaTags)(input),
+            ...check_custom(tsc)("string")(importer)(jsDocTags)(input),
         ],
     });

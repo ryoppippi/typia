@@ -1,46 +1,52 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 export namespace TemplateFactory {
-    export const generate = (expressions: ts.Expression[]): ts.Expression => {
-        if (expressions.every((exp) => ts.isStringLiteral(exp)))
-            return ts.factory.createStringLiteral(
-                (expressions as ts.StringLiteral[])
-                    .map((str) => str.text)
-                    .join(""),
-            );
+    export const generate =
+        (tsc: typeof ts) =>
+        (expressions: ts.Expression[]): ts.Expression => {
+            if (expressions.every((exp) => tsc.isStringLiteral(exp)))
+                return tsc.factory.createStringLiteral(
+                    (expressions as ts.StringLiteral[])
+                        .map((str) => str.text)
+                        .join(""),
+                );
 
-        const it: IIterator = {
-            value: "",
-            index: 0,
+            const it: IIterator = {
+                value: "",
+                index: 0,
+            };
+            gather(tsc)(expressions)(it);
+
+            const head: ts.TemplateHead = tsc.factory.createTemplateHead(
+                it.value,
+            );
+            const spans: ts.TemplateSpan[] = [];
+
+            while (true) {
+                const elem: ts.Expression = expressions[it.index++]!;
+                gather(tsc)(expressions)(it);
+
+                const broken: boolean = it.index === expressions.length;
+                spans.push(
+                    tsc.factory.createTemplateSpan(
+                        elem,
+                        broken
+                            ? tsc.factory.createTemplateTail(it.value)
+                            : tsc.factory.createTemplateMiddle(it.value),
+                    ),
+                );
+                if (broken === true) break;
+            }
+            return tsc.factory.createTemplateExpression(head, spans);
         };
-        gather(expressions)(it);
-
-        const head: ts.TemplateHead = ts.factory.createTemplateHead(it.value);
-        const spans: ts.TemplateSpan[] = [];
-
-        while (true) {
-            const elem: ts.Expression = expressions[it.index++]!;
-            gather(expressions)(it);
-
-            const broken: boolean = it.index === expressions.length;
-            spans.push(
-                ts.factory.createTemplateSpan(
-                    elem,
-                    broken
-                        ? ts.factory.createTemplateTail(it.value)
-                        : ts.factory.createTemplateMiddle(it.value),
-                ),
-            );
-            if (broken === true) break;
-        }
-        return ts.factory.createTemplateExpression(head, spans);
-    };
 
     const gather =
+        (tsc: typeof ts) =>
         (expressions: ts.Expression[]) =>
         (it: IIterator): void => {
             const found: number = expressions.findIndex(
-                (elem, index) => index >= it.index && !ts.isStringLiteral(elem),
+                (elem, index) =>
+                    index >= it.index && !tsc.isStringLiteral(elem),
             );
 
             const last: number = found !== -1 ? found : expressions.length;

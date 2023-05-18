@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 
@@ -11,6 +11,7 @@ import { ICheckEntry } from "../helpers/ICheckEntry";
  * @internal
  */
 export const check_string_tags =
+    (tsc: typeof ts) =>
     (importer: FunctionImporter) =>
     (tagList: IMetadataTag[]) =>
     (input: ts.Expression): ICheckEntry.ITag[] => {
@@ -19,7 +20,7 @@ export const check_string_tags =
             if (tag.kind === "format")
                 conditions.push([
                     tag,
-                    ts.factory.createCallExpression(
+                    tsc.factory.createCallExpression(
                         importer.use(`is_${tag.value}`),
                         undefined,
                         [input],
@@ -28,8 +29,8 @@ export const check_string_tags =
             else if (tag.kind === "pattern")
                 conditions.push([
                     tag,
-                    ts.factory.createCallExpression(
-                        ts.factory.createIdentifier(
+                    tsc.factory.createCallExpression(
+                        tsc.factory.createIdentifier(
                             `RegExp(/${tag.value}/).test`,
                         ),
                         undefined,
@@ -39,25 +40,25 @@ export const check_string_tags =
             else if (tag.kind === "length")
                 conditions.push([
                     tag,
-                    ts.factory.createStrictEquality(
-                        ts.factory.createNumericLiteral(tag.value),
-                        IdentifierFactory.access(input)("length"),
+                    tsc.factory.createStrictEquality(
+                        tsc.factory.createNumericLiteral(tag.value),
+                        IdentifierFactory.access(tsc)(input)("length"),
                     ),
                 ]);
             else if (tag.kind === "minLength")
                 conditions.push([
                     tag,
-                    ts.factory.createLessThanEquals(
-                        ts.factory.createNumericLiteral(tag.value),
-                        IdentifierFactory.access(input)("length"),
+                    tsc.factory.createLessThanEquals(
+                        tsc.factory.createNumericLiteral(tag.value),
+                        IdentifierFactory.access(tsc)(input)("length"),
                     ),
                 ]);
             else if (tag.kind === "maxLength")
                 conditions.push([
                     tag,
-                    ts.factory.createGreaterThanEquals(
-                        ts.factory.createNumericLiteral(tag.value),
-                        IdentifierFactory.access(input)("length"),
+                    tsc.factory.createGreaterThanEquals(
+                        tsc.factory.createNumericLiteral(tag.value),
+                        IdentifierFactory.access(tsc)(input)("length"),
                     ),
                 ]);
         return conditions.map(([tag, expression]) => ({

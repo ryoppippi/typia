@@ -1,7 +1,7 @@
-import ts from "typescript";
+import { SymbolDisplayPart } from "typescript";
 
 export namespace CommentFactory {
-    export const string = (comments: ts.SymbolDisplayPart[]): string =>
+    export const string = (comments: SymbolDisplayPart[]): string =>
         comments
             .map((part) => part.text)
             .map((str) => str.split("\r\n").join("\n"))

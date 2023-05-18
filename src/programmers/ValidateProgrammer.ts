@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../factories/IdentifierFactory";
 import { StatementFactory } from "../factories/StatementFactory";
@@ -27,32 +27,32 @@ export namespace ValidateProgrammer {
             write(project)(modulo)(equals)(type, name);
 
     export const write =
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (equals: boolean) =>
         (type: ts.Type, name?: string) => {
-            const importer: FunctionImporter = new FunctionImporter();
-            const program: ts.ArrowFunction = CheckerProgrammer.write(project)({
+            const importer: FunctionImporter = new FunctionImporter(p.tsc);
+            const program: ts.ArrowFunction = CheckerProgrammer.write(p)({
                 functors: "$vo",
                 unioners: "$vu",
                 path: true,
                 trace: true,
-                numeric: OptionPredicator.numeric(project.options),
+                numeric: OptionPredicator.numeric(p.options),
                 equals,
                 atomist: (explore) => (tuple) => (input) =>
                     [
                         tuple.expression,
                         ...tuple.tags.map((tag) =>
-                            ts.factory.createLogicalOr(
+                            p.tsc.factory.createLogicalOr(
                                 tag.expression,
-                                create_report_call(
+                                create_report_call(p.tsc)(
                                     explore.from === "top"
-                                        ? ts.factory.createTrue()
-                                        : ts.factory.createIdentifier(
+                                        ? p.tsc.factory.createTrue()
+                                        : p.tsc.factory.createIdentifier(
                                               "_exceptionable",
                                           ),
                                 )(
-                                    ts.factory.createIdentifier(
+                                    p.tsc.factory.createIdentifier(
                                         explore.postfix
                                             ? `_path + ${explore.postfix}`
                                             : "_path",
@@ -62,98 +62,95 @@ export namespace ValidateProgrammer {
                                 ),
                             ),
                         ),
-                    ].reduce((x, y) => ts.factory.createLogicalAnd(x, y)),
-                combiner: combine(equals)(importer),
-                joiner: joiner(equals)(importer),
-                success: ts.factory.createTrue(),
+                    ].reduce((x, y) => p.tsc.factory.createLogicalAnd(x, y)),
+                combiner: combine(p.tsc)(equals)(importer),
+                joiner: joiner(p.tsc)(equals)(importer),
+                success: p.tsc.factory.createTrue(),
             })(importer)(type, name);
 
-            return ts.factory.createArrowFunction(
+            return p.tsc.factory.createArrowFunction(
                 undefined,
                 undefined,
                 [
-                    IdentifierFactory.parameter(
+                    IdentifierFactory.parameter(p.tsc)(
                         "input",
-                        TypeFactory.keyword("any"),
+                        TypeFactory.keyword(p.tsc)("any"),
                     ),
                 ],
-                ts.factory.createTypeReferenceNode(
+                p.tsc.factory.createTypeReferenceNode(
                     `typia.IValidation<${
-                        name ?? TypeFactory.getFullName(project.checker)(type)
+                        name ?? TypeFactory.getFullName(p)(type)
                     }>`,
                 ),
                 undefined,
-                ts.factory.createBlock(
+                p.tsc.factory.createBlock(
                     [
-                        StatementFactory.constant(
+                        StatementFactory.constant(p.tsc)(
                             "__is",
-                            IsProgrammer.write(project)(modulo, true)(equals)(
+                            IsProgrammer.write(p)(modulo, true)(equals)(
                                 type,
-                                name ??
-                                    TypeFactory.getFullName(project.checker)(
-                                        type,
-                                    ),
+                                name ?? TypeFactory.getFullName(p)(type),
                             ),
                         ),
-                        StatementFactory.constant(
+                        StatementFactory.constant(p.tsc)(
                             "errors",
-                            ts.factory.createAsExpression(
-                                ts.factory.createArrayLiteralExpression([]),
-                                ts.factory.createArrayTypeNode(
-                                    TypeFactory.keyword("any"),
+                            p.tsc.factory.createAsExpression(
+                                p.tsc.factory.createArrayLiteralExpression([]),
+                                p.tsc.factory.createArrayTypeNode(
+                                    TypeFactory.keyword(p.tsc)("any"),
                                 ),
                             ),
                         ),
-                        StatementFactory.constant(
+                        StatementFactory.constant(p.tsc)(
                             "$report",
-                            ts.factory.createCallExpression(
-                                IdentifierFactory.access(
-                                    ts.factory.createParenthesizedExpression(
-                                        ts.factory.createAsExpression(
+                            p.tsc.factory.createCallExpression(
+                                IdentifierFactory.access(p.tsc)(
+                                    p.tsc.factory.createParenthesizedExpression(
+                                        p.tsc.factory.createAsExpression(
                                             modulo,
-                                            TypeFactory.keyword("any"),
+                                            TypeFactory.keyword(p.tsc)("any"),
                                         ),
                                     ),
                                 )("report"),
                                 [],
-                                [ts.factory.createIdentifier("errors")],
+                                [p.tsc.factory.createIdentifier("errors")],
                             ),
                         ),
                         ...importer.declare(modulo),
-                        ts.factory.createIfStatement(
-                            ts.factory.createStrictEquality(
-                                ts.factory.createFalse(),
-                                ts.factory.createCallExpression(
-                                    ts.factory.createIdentifier("__is"),
+                        p.tsc.factory.createIfStatement(
+                            p.tsc.factory.createStrictEquality(
+                                p.tsc.factory.createFalse(),
+                                p.tsc.factory.createCallExpression(
+                                    p.tsc.factory.createIdentifier("__is"),
                                     undefined,
-                                    [ts.factory.createIdentifier("input")],
+                                    [p.tsc.factory.createIdentifier("input")],
                                 ),
                             ),
-                            ts.factory.createExpressionStatement(
-                                ts.factory.createCallExpression(
+                            p.tsc.factory.createExpressionStatement(
+                                p.tsc.factory.createCallExpression(
                                     program,
                                     undefined,
                                     [
-                                        ts.factory.createIdentifier("input"),
-                                        ts.factory.createStringLiteral(
+                                        p.tsc.factory.createIdentifier("input"),
+                                        p.tsc.factory.createStringLiteral(
                                             "$input",
                                         ),
-                                        ts.factory.createTrue(),
+                                        p.tsc.factory.createTrue(),
                                     ],
                                 ),
                             ),
                         ),
-                        StatementFactory.constant(
+                        StatementFactory.constant(p.tsc)(
                             "success",
-                            ts.factory.createStrictEquality(
-                                ts.factory.createNumericLiteral(0),
-                                ts.factory.createIdentifier("errors.length"),
+                            p.tsc.factory.createStrictEquality(
+                                p.tsc.factory.createNumericLiteral(0),
+                                p.tsc.factory.createIdentifier("errors.length"),
                             ),
                         ),
-                        ts.factory.createReturnStatement(
-                            ts.factory.createAsExpression(
-                                create_output(),
-                                TypeFactory.keyword("any"),
+                        p.tsc.factory.createReturnStatement(
+                            p.tsc.factory.createAsExpression(
+                                create_output(p.tsc),
+                                TypeFactory.keyword(p.tsc)("any"),
                             ),
                         ),
                     ],
@@ -164,12 +161,13 @@ export namespace ValidateProgrammer {
 }
 
 const combine =
+    (tsc: typeof ts) =>
     (equals: boolean) =>
     (importer: FunctionImporter): CheckerProgrammer.IConfig.Combiner =>
     (explore: CheckerProgrammer.IExplore) => {
         if (explore.tracable === false)
-            return IsProgrammer.configure({
-                object: validate_object(equals)(importer),
+            return IsProgrammer.configure(tsc)({
+                object: validate_object(tsc)(equals)(importer),
                 numeric: true,
             })(importer).combiner(explore);
 
@@ -182,107 +180,109 @@ const combine =
                       .map((binary) =>
                           binary.combined
                               ? binary.expression
-                              : ts.factory.createLogicalOr(
+                              : tsc.factory.createLogicalOr(
                                     binary.expression,
-                                    create_report_call(
+                                    create_report_call(tsc)(
                                         explore.source === "top"
-                                            ? ts.factory.createTrue()
-                                            : ts.factory.createIdentifier(
+                                            ? tsc.factory.createTrue()
+                                            : tsc.factory.createIdentifier(
                                                   "_exceptionable",
                                               ),
                                     )(
-                                        ts.factory.createIdentifier(path),
+                                        tsc.factory.createIdentifier(path),
                                         expected,
                                         input,
                                     ),
                                 ),
                       )
-                      .reduce(ts.factory.createLogicalAnd)
-                : ts.factory.createLogicalOr(
+                      .reduce(tsc.factory.createLogicalAnd)
+                : tsc.factory.createLogicalOr(
                       binaries
                           .map((binary) => binary.expression)
-                          .reduce(ts.factory.createLogicalOr),
-                      create_report_call(
+                          .reduce(tsc.factory.createLogicalOr),
+                      create_report_call(tsc)(
                           explore.source === "top"
-                              ? ts.factory.createTrue()
-                              : ts.factory.createIdentifier("_exceptionable"),
-                      )(ts.factory.createIdentifier(path), expected, input),
+                              ? tsc.factory.createTrue()
+                              : tsc.factory.createIdentifier("_exceptionable"),
+                      )(tsc.factory.createIdentifier(path), expected, input),
                   );
     };
 
-const validate_object = (equals: boolean) => (importer: FunctionImporter) =>
-    check_object({
-        equals,
-        undefined: true,
-        assert: false,
-        reduce: ts.factory.createLogicalAnd,
-        positive: ts.factory.createTrue(),
-        superfluous: (value) =>
-            create_report_call()(
-                ts.factory.createAdd(
-                    ts.factory.createIdentifier("_path"),
-                    ts.factory.createCallExpression(
-                        importer.use("join"),
-                        undefined,
-                        [ts.factory.createIdentifier("key")],
+const validate_object =
+    (tsc: typeof ts) => (equals: boolean) => (importer: FunctionImporter) =>
+        check_object(tsc)({
+            equals,
+            undefined: true,
+            assert: false,
+            reduce: tsc.factory.createLogicalAnd,
+            positive: tsc.factory.createTrue(),
+            superfluous: (value) =>
+                create_report_call(tsc)()(
+                    tsc.factory.createAdd(
+                        tsc.factory.createIdentifier("_path"),
+                        tsc.factory.createCallExpression(
+                            importer.use("join"),
+                            undefined,
+                            [tsc.factory.createIdentifier("key")],
+                        ),
                     ),
+                    "undefined",
+                    value,
                 ),
-                "undefined",
-                value,
-            ),
-        halt: (expr) =>
-            ts.factory.createLogicalOr(
-                ts.factory.createStrictEquality(
-                    ts.factory.createFalse(),
-                    ts.factory.createIdentifier("_exceptionable"),
+            halt: (expr) =>
+                tsc.factory.createLogicalOr(
+                    tsc.factory.createStrictEquality(
+                        tsc.factory.createFalse(),
+                        tsc.factory.createIdentifier("_exceptionable"),
+                    ),
+                    expr,
                 ),
-                expr,
-            ),
-    })(importer);
+        })(importer);
 
 const joiner =
+    (tsc: typeof ts) =>
     (equals: boolean) =>
     (importer: FunctionImporter): CheckerProgrammer.IConfig.IJoiner => ({
-        object: validate_object(equals)(importer),
+        object: validate_object(tsc)(equals)(importer),
         array: (input, arrow) =>
-            check_everything(
-                ts.factory.createCallExpression(
-                    IdentifierFactory.access(input)("map"),
+            check_everything(tsc)(
+                tsc.factory.createCallExpression(
+                    IdentifierFactory.access(tsc)(input)("map"),
                     undefined,
                     [arrow],
                 ),
             ),
         failure: (value, expected, explore) =>
-            create_report_call(
+            create_report_call(tsc)(
                 explore?.from === "top"
-                    ? ts.factory.createTrue()
-                    : ts.factory.createIdentifier("_exceptionable"),
+                    ? tsc.factory.createTrue()
+                    : tsc.factory.createIdentifier("_exceptionable"),
             )(
-                ts.factory.createIdentifier(
+                tsc.factory.createIdentifier(
                     explore?.postfix ? `_path + ${explore.postfix}` : "_path",
                 ),
                 expected,
                 value,
             ),
         tuple: (binaries) =>
-            check_everything(
-                ts.factory.createArrayLiteralExpression(binaries, true),
+            check_everything(tsc)(
+                tsc.factory.createArrayLiteralExpression(binaries, true),
             ),
     });
 
-const create_output = () =>
-    ts.factory.createObjectLiteralExpression(
+const create_output = (tsc: typeof ts) =>
+    tsc.factory.createObjectLiteralExpression(
         [
-            ts.factory.createShorthandPropertyAssignment("success"),
-            ts.factory.createShorthandPropertyAssignment("errors"),
-            ts.factory.createPropertyAssignment(
+            tsc.factory.createShorthandPropertyAssignment("success"),
+            tsc.factory.createShorthandPropertyAssignment("errors"),
+            tsc.factory.createPropertyAssignment(
                 "data",
-                ts.factory.createConditionalExpression(
-                    ts.factory.createIdentifier("success"),
+                tsc.factory.createConditionalExpression(
+                    tsc.factory.createIdentifier("success"),
                     undefined,
-                    ts.factory.createIdentifier("input"),
+                    tsc.factory.createIdentifier("input"),
                     undefined,
-                    ts.factory.createIdentifier("undefined"),
+                    tsc.factory.createIdentifier("undefined"),
                 ),
             ),
         ],
@@ -290,25 +290,26 @@ const create_output = () =>
     );
 
 const create_report_call =
+    (tsc: typeof ts) =>
     (exceptionable?: ts.Expression) =>
     (
         path: ts.Expression,
         expected: string,
         value: ts.Expression,
     ): ts.Expression =>
-        ts.factory.createCallExpression(
-            ts.factory.createIdentifier("$report"),
+        tsc.factory.createCallExpression(
+            tsc.factory.createIdentifier("$report"),
             undefined,
             [
-                exceptionable ?? ts.factory.createIdentifier("_exceptionable"),
-                ts.factory.createObjectLiteralExpression(
+                exceptionable ?? tsc.factory.createIdentifier("_exceptionable"),
+                tsc.factory.createObjectLiteralExpression(
                     [
-                        ts.factory.createPropertyAssignment("path", path),
-                        ts.factory.createPropertyAssignment(
+                        tsc.factory.createPropertyAssignment("path", path),
+                        tsc.factory.createPropertyAssignment(
                             "expected",
-                            ts.factory.createStringLiteral(expected),
+                            tsc.factory.createStringLiteral(expected),
                         ),
-                        ts.factory.createPropertyAssignment("value", value),
+                        tsc.factory.createPropertyAssignment("value", value),
                     ],
                     true,
                 ),

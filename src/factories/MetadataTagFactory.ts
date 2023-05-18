@@ -1,4 +1,4 @@
-import ts from "typescript";
+import { JSDocTagInfo } from "typescript";
 
 import { IMetadataTag } from "../metadata/IMetadataTag";
 import { Metadata } from "../metadata/Metadata";
@@ -6,7 +6,7 @@ import { Metadata } from "../metadata/Metadata";
 export namespace MetadataTagFactory {
     export const generate =
         (metadata: Metadata) =>
-        (tagList: ts.JSDocTagInfo[]) =>
+        (tagList: JSDocTagInfo[]) =>
         (identifier: () => string): IMetadataTag[] => {
             const output: IMetadataTag[] = [];
             for (const tag of tagList) {
@@ -24,13 +24,13 @@ export namespace MetadataTagFactory {
     const parse = (
         identifier: () => string,
         metadata: Metadata,
-        tag: ts.JSDocTagInfo,
+        tag: JSDocTagInfo,
         output: IMetadataTag[],
     ): IMetadataTag | null => {
         const closure = _PARSER[tag.name];
         if (closure === undefined) return null;
 
-        const text = (tag.text || [])[0]?.text;
+        const text: string | undefined = tag.text?.[0]?.text;
         if (text === undefined)
             throw new Error(`${LABEL}: no tag value on ${identifier()}`);
 

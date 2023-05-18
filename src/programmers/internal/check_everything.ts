@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
@@ -6,23 +6,23 @@ import { TypeFactory } from "../../factories/TypeFactory";
 /**
  * @internal
  */
-export const check_everything = (array: ts.Expression) =>
-    ts.factory.createCallExpression(
-        IdentifierFactory.access(array)("every"),
+export const check_everything = (tsc: typeof ts) => (array: ts.Expression) =>
+    tsc.factory.createCallExpression(
+        IdentifierFactory.access(tsc)(array)("every"),
         undefined,
         [
-            ts.factory.createArrowFunction(
+            tsc.factory.createArrowFunction(
                 undefined,
                 undefined,
                 [
-                    IdentifierFactory.parameter(
+                    IdentifierFactory.parameter(tsc)(
                         "flag",
-                        TypeFactory.keyword("boolean"),
+                        TypeFactory.keyword(tsc)("boolean"),
                     ),
                 ],
                 undefined,
                 undefined,
-                ts.factory.createIdentifier("flag"),
+                tsc.factory.createIdentifier("flag"),
             ),
         ],
     );

@@ -1,63 +1,62 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Escaper } from "../utils/Escaper";
 
 export namespace IdentifierFactory {
-    export const identifier = (name: string) =>
+    export const identifier = (tsc: typeof ts) => (name: string) =>
         Escaper.variable(name)
-            ? ts.factory.createIdentifier(name)
-            : ts.factory.createStringLiteral(name);
+            ? tsc.factory.createIdentifier(name)
+            : tsc.factory.createStringLiteral(name);
 
-    /**
-     * @deprecated Use `access()` function instead.
-     */
-    export const join = (prefix: ts.Expression, name: string) =>
-        access(prefix)(name);
-
-    export const access = (target: ts.Expression) => (property: string) => {
-        const postfix = identifier(property);
-        return ts.isStringLiteral(postfix)
-            ? ts.factory.createElementAccessExpression(target, postfix)
-            : ts.factory.createPropertyAccessExpression(target, postfix);
-    };
+    export const access =
+        (tsc: typeof ts) => (target: ts.Expression) => (property: string) => {
+            const postfix = identifier(tsc)(property);
+            return tsc.isStringLiteral(postfix)
+                ? tsc.factory.createElementAccessExpression(target, postfix)
+                : tsc.factory.createPropertyAccessExpression(target, postfix);
+        };
 
     export const postfix = (str: string): string =>
         Escaper.variable(str)
             ? `".${str}"`
             : `"[${JSON.stringify(str).split('"').join('\\"')}]"`;
 
-    export const parameter = (
-        name: string | ts.BindingName,
-        type?: ts.TypeNode,
-        init?: ts.Expression | ts.PunctuationToken<ts.SyntaxKind.QuestionToken>,
-    ) => {
-        // instead of ts.version >= "4.8"
-        if (ts.getDecorators !== undefined)
-            return ts.factory.createParameterDeclaration(
+    export const parameter =
+        (tsc: typeof ts) =>
+        (
+            name: string | ts.BindingName,
+            type?: ts.TypeNode,
+            init?:
+                | ts.Expression
+                | ts.PunctuationToken<ts.SyntaxKind.QuestionToken>,
+        ) => {
+            // instead of ts.version >= "4.8"
+            if (tsc.getDecorators !== undefined)
+                return tsc.factory.createParameterDeclaration(
+                    undefined,
+                    undefined,
+                    name,
+                    init?.kind === tsc.SyntaxKind.QuestionToken
+                        ? tsc.factory.createToken(tsc.SyntaxKind.QuestionToken)
+                        : undefined,
+                    type,
+                    init && init.kind !== tsc.SyntaxKind.QuestionToken
+                        ? init
+                        : undefined,
+                );
+            // eslint-disable-next-line
+            return (tsc.factory.createParameterDeclaration as any)(
+                undefined,
                 undefined,
                 undefined,
                 name,
-                init?.kind === ts.SyntaxKind.QuestionToken
-                    ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
+                init?.kind === tsc.SyntaxKind.QuestionToken
+                    ? tsc.factory.createToken(tsc.SyntaxKind.QuestionToken)
                     : undefined,
                 type,
-                init && init.kind !== ts.SyntaxKind.QuestionToken
+                init && init.kind !== tsc.SyntaxKind.QuestionToken
                     ? init
                     : undefined,
             );
-        // eslint-disable-next-line
-        return (ts.factory.createParameterDeclaration as any)(
-            undefined,
-            undefined,
-            undefined,
-            name,
-            init?.kind === ts.SyntaxKind.QuestionToken
-                ? ts.factory.createToken(ts.SyntaxKind.QuestionToken)
-                : undefined,
-            type,
-            init && init.kind !== ts.SyntaxKind.QuestionToken
-                ? init
-                : undefined,
-        );
-    };
+        };
 }

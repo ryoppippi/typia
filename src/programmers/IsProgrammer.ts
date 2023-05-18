@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { ExpressionFactory } from "../factories/ExpressionFactory";
 import { IdentifierFactory } from "../factories/IdentifierFactory";
@@ -18,6 +18,7 @@ import { feature_object_entries } from "./internal/feature_object_entries";
 
 export namespace IsProgrammer {
     export const configure =
+        (tsc: typeof ts) =>
         (options?: Partial<CONFIG.IOptions>) =>
         (importer: FunctionImporter): CheckerProgrammer.IConfig => ({
             functors: "$io",
@@ -32,16 +33,16 @@ export namespace IsProgrammer {
                 [
                     entry.expression,
                     ...entry.tags.map((tag) => tag.expression),
-                ].reduce((x, y) => ts.factory.createLogicalAnd(x, y)),
+                ].reduce((x, y) => tsc.factory.createLogicalAnd(x, y)),
             combiner: () => (type: "and" | "or") => {
                 const initial: ts.TrueLiteral | ts.FalseLiteral =
                     type === "and"
-                        ? ts.factory.createTrue()
-                        : ts.factory.createFalse();
+                        ? tsc.factory.createTrue()
+                        : tsc.factory.createFalse();
                 const binder =
                     type === "and"
-                        ? ts.factory.createLogicalAnd
-                        : ts.factory.createLogicalOr;
+                        ? tsc.factory.createLogicalAnd
+                        : tsc.factory.createLogicalOr;
                 return (
                     _input: ts.Expression,
                     binaries: CheckerProgrammer.IBinary[],
@@ -55,25 +56,25 @@ export namespace IsProgrammer {
             joiner: {
                 object:
                     options?.object ||
-                    check_object({
+                    check_object(tsc)({
                         equals: !!options?.object,
                         undefined: OptionPredicator.undefined({
                             undefined: options?.undefined,
                         }),
                         assert: true,
-                        reduce: ts.factory.createLogicalAnd,
-                        positive: ts.factory.createTrue(),
-                        superfluous: () => ts.factory.createFalse(),
+                        reduce: tsc.factory.createLogicalAnd,
+                        positive: tsc.factory.createTrue(),
+                        superfluous: () => tsc.factory.createFalse(),
                     })(importer),
                 array: (input, arrow) =>
-                    ts.factory.createCallExpression(
-                        IdentifierFactory.access(input)("every"),
+                    tsc.factory.createCallExpression(
+                        IdentifierFactory.access(tsc)(input)("every"),
                         undefined,
                         [arrow],
                     ),
-                failure: () => ts.factory.createFalse(),
+                failure: () => tsc.factory.createFalse(),
             },
-            success: ts.factory.createTrue(),
+            success: tsc.factory.createTrue(),
         });
 
     export namespace CONFIG {
@@ -103,26 +104,28 @@ export namespace IsProgrammer {
             write(project)(modulo)(equals)(type, name);
 
     export const write =
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression, disable?: boolean) =>
         (equals: boolean) => {
             const importer: FunctionImporter =
                 disable === true
-                    ? disable_function_importer_declare(new FunctionImporter())
-                    : new FunctionImporter();
+                    ? disable_function_importer_declare(
+                          new FunctionImporter(p.tsc),
+                      )
+                    : new FunctionImporter(p.tsc);
 
             // CONFIGURATION
             const config: CheckerProgrammer.IConfig = {
-                ...configure({
-                    object: check_object({
+                ...configure(p.tsc)({
+                    object: check_object(p.tsc)({
                         equals,
-                        undefined: OptionPredicator.undefined(project.options),
+                        undefined: OptionPredicator.undefined(p.options),
                         assert: true,
-                        reduce: ts.factory.createLogicalAnd,
-                        positive: ts.factory.createTrue(),
-                        superfluous: () => ts.factory.createFalse(),
+                        reduce: p.tsc.factory.createLogicalAnd,
+                        positive: p.tsc.factory.createTrue(),
+                        superfluous: () => p.tsc.factory.createFalse(),
                     })(importer),
-                    numeric: OptionPredicator.numeric(project.options),
+                    numeric: OptionPredicator.numeric(p.options),
                 })(importer),
                 trace: equals,
                 addition: () => importer.declare(modulo),
@@ -140,23 +143,22 @@ export namespace IsProgrammer {
                     if (
                         obj._Is_simple() &&
                         (equals === false ||
-                            OptionPredicator.undefined(project.options) ===
-                                false)
+                            OptionPredicator.undefined(p.options) === false)
                     )
-                        return ts.factory.createLogicalAnd(
-                            ExpressionFactory.isObject({
+                        return p.tsc.factory.createLogicalAnd(
+                            ExpressionFactory.isObject(p.tsc)({
                                 checkNull: true,
                                 checkArray: false,
                             })(input),
                             config.joiner.object(
                                 input,
-                                feature_object_entries(config as any)(importer)(
-                                    obj,
-                                )(input),
+                                feature_object_entries(p.tsc)(config as any)(
+                                    importer,
+                                )(obj)(input),
                             ),
                         );
                 }
-                return CheckerProgrammer.decode(project)(config)(importer)(
+                return CheckerProgrammer.decode(p)(config)(importer)(
                     input,
                     target,
                     explore,
@@ -166,51 +168,56 @@ export namespace IsProgrammer {
             };
 
             // GENERATE CHECKER
-            return CheckerProgrammer.write(project)(config)(importer);
+            return CheckerProgrammer.write(p)(config)(importer);
         };
 
     export const write_functors =
-        (project: IProject) => (importer: FunctionImporter) =>
-            CheckerProgrammer.write_functors(project)(configure()(importer))(
+        (p: IProject) => (importer: FunctionImporter) =>
+            CheckerProgrammer.write_functors(p)(configure(p.tsc)()(importer))(
                 importer,
             );
 
     export const write_unioners =
-        (project: IProject) => (importer: FunctionImporter) =>
+        (p: IProject) => (importer: FunctionImporter) =>
             CheckerProgrammer.write_unioners(
-                project,
-                configure()(importer),
+                p,
+                configure(p.tsc)()(importer),
                 importer,
             );
 
     /* -----------------------------------------------------------
         DECODERS
     ----------------------------------------------------------- */
-    export const decode = (project: IProject, importer: FunctionImporter) =>
-        CheckerProgrammer.decode(project)(configure()(importer))(importer);
+    export const decode = (p: IProject) => (importer: FunctionImporter) =>
+        CheckerProgrammer.decode(p)(configure(p.tsc)()(importer))(importer);
 
-    export const decode_object = (importer: FunctionImporter) =>
-        CheckerProgrammer.decode_object(configure()(importer))(importer);
+    export const decode_object =
+        (tsc: typeof ts) => (importer: FunctionImporter) =>
+            CheckerProgrammer.decode_object(tsc)(configure(tsc)()(importer))(
+                importer,
+            );
 
     export const decode_to_json =
+        (tsc: typeof ts) =>
         (checkNull: boolean) =>
         (input: ts.Expression): ts.Expression =>
-            ts.factory.createLogicalAnd(
-                ExpressionFactory.isObject({
+            tsc.factory.createLogicalAnd(
+                ExpressionFactory.isObject(tsc)({
                     checkArray: false,
                     checkNull,
                 })(input),
-                ts.factory.createStrictEquality(
-                    ts.factory.createStringLiteral("function"),
-                    ValueFactory.TYPEOF(
-                        IdentifierFactory.access(input)("toJSON"),
+                tsc.factory.createStrictEquality(
+                    tsc.factory.createStringLiteral("function"),
+                    ValueFactory.TYPEOF(tsc)(
+                        IdentifierFactory.access(tsc)(input)("toJSON"),
                     ),
                 ),
             );
 
-    export const decode_functional = (input: ts.Expression) =>
-        ts.factory.createStrictEquality(
-            ts.factory.createStringLiteral("function"),
-            ValueFactory.TYPEOF(input),
-        );
+    export const decode_functional =
+        (tsc: typeof ts) => (input: ts.Expression) =>
+            tsc.factory.createStrictEquality(
+                tsc.factory.createStringLiteral("function"),
+                ValueFactory.TYPEOF(tsc)(input),
+            );
 }

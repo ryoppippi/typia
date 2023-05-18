@@ -1,14 +1,18 @@
-import ts from "typescript";
+import { JSDocTagInfo } from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
 import { MetadataObject } from "../../../metadata/MetadataObject";
 import { MetadataProperty } from "../../../metadata/MetadataProperty";
 
+import { IProject } from "../../../transformers/IProject";
+
 import { Writable } from "../../../typings/Writable";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
+import { TsSymbolUtil } from "../../../utils/TsSymbolUtil";
+import { TsTypeUtil } from "../../../utils/TsTypeUtil";
 
-import { CommentFactory } from "../../CommentFactory";
 import { MetadataCollection } from "../../MetadataCollection";
 import { MetadataFactory } from "../../MetadataFactory";
 import { MetadataTagFactory } from "../../MetadataTagFactory";
@@ -16,29 +20,30 @@ import { MetadataHelper } from "./MetadataHelper";
 import { explore_metadata } from "./explore_metadata";
 
 export const emplace_metadata_object =
-    (checker: ts.TypeChecker) =>
+    ({ tsc, checker }: IProject.IModule) =>
     (options: MetadataFactory.IOptions) =>
     (collection: MetadataCollection) =>
     (parent: ts.Type, nullable: boolean): MetadataObject => {
         // EMPLACE OBJECT
-        const [obj, newbie] = collection.emplace(checker, parent);
+        const [obj, newbie] = collection.emplace({ tsc, checker }, parent);
         ArrayUtil.add(obj.nullables, nullable, (elem) => elem === nullable);
         if (newbie === false) return obj;
 
         // PREPARE ASSETS
-        const isClass: boolean = parent.isClass();
-        const pred: (node: ts.Declaration) => boolean = isClass
-            ? (node) => {
-                  const kind: ts.SyntaxKind | undefined = node
-                      .getChildren()[0]
-                      ?.getChildren()[0]?.kind;
-                  return (
-                      kind !== ts.SyntaxKind.PrivateKeyword &&
-                      kind !== ts.SyntaxKind.ProtectedKeyword &&
-                      (ts.isParameter(node) || isProperty(node))
-                  );
-              }
-            : (node) => isProperty(node);
+        const pred: (node: ts.Declaration) => boolean = TsTypeUtil.isClass(tsc)(
+            parent,
+        )
+            ? (node) =>
+                  tsc.isPropertyDeclaration(node) &&
+                  node.modifiers !== undefined &&
+                  node.modifiers.every(
+                      (mod) =>
+                          mod.kind !== tsc.SyntaxKind.PrivateKeyword &&
+                          mod.kind !== tsc.SyntaxKind.ProtectedKeyword &&
+                          mod.kind !== tsc.SyntaxKind.StaticKeyword &&
+                          (tsc.isParameter(node) || isProperty(tsc)(node)),
+                  )
+            : (node) => isProperty(tsc)(node);
 
         const insert =
             (key: Metadata) =>
@@ -46,15 +51,16 @@ export const emplace_metadata_object =
             (identifier: () => string) =>
             (
                 symbol: ts.Symbol | undefined,
-                filter?: (doc: ts.JSDocTagInfo) => boolean,
+                filter?: (doc: JSDocTagInfo) => boolean,
             ): MetadataProperty => {
                 // COMMENTS AND TAGS
-                const description: string | undefined =
-                    CommentFactory.string(
-                        symbol?.getDocumentationComment(checker) ?? [],
-                    ) ?? undefined;
-                const jsDocTags: ts.JSDocTagInfo[] = (
-                    symbol?.getJsDocTags() ?? []
+                const description: string | undefined = symbol
+                    ? TsSymbolUtil.comments(tsc)(symbol)
+                    : undefined;
+                const jsDocTags: JSDocTagInfo[] = (
+                    (symbol
+                        ? TsSymbolUtil.getCommentTags(tsc)(symbol)
+                        : undefined) ?? []
                 ).filter(filter ?? (() => true));
 
                 // THE PROPERTY
@@ -74,18 +80,10 @@ export const emplace_metadata_object =
         //----
         // REGULAR PROPERTIES
         //----
-        for (const prop of parent.getApparentProperties()) {
-            // CHECK INTERNAL TAG
-            if (
-                (prop.getJsDocTags(checker) ?? []).find(
-                    (tag) => tag.name === "internal",
-                ) !== undefined
-            )
-                continue;
-
+        for (const prop of checker.getAugmentedPropertiesOfType(parent)) {
             // CHECK NODE IS A FORMAL PROPERTY
             const [node, type] = (() => {
-                const node = (prop.getDeclarations() ?? [])[0] as
+                const node = (prop.declarations ?? [])[0] as
                     | ts.PropertyDeclaration
                     | undefined;
                 const type: ts.Type | undefined = node
@@ -93,25 +91,34 @@ export const emplace_metadata_object =
                     : "getTypeOfPropertyOfType" in checker
                     ? (checker as any).getTypeOfPropertyOfType(
                           parent,
-                          prop.name,
+                          prop.escapedName.toString(),
                       )
                     : undefined;
                 return [node, type];
             })();
             if ((node && pred(node) === false) || type === undefined) continue;
 
+            // CHECK INTERNAL TAG
+            const tagList = node ? tsc.getJSDocTags(node) : [];
+            if (tagList.find((tag) => tag.tagName.escapedText === "internal"))
+                continue;
+
             // GET EXACT TYPE
-            const key: Metadata = MetadataHelper.literal_to_metadata(prop.name);
-            const value: Metadata = explore_metadata(checker)(options)(
+            const key: Metadata = MetadataHelper.literal_to_metadata(
+                prop.escapedName.toString(),
+            );
+            const value: Metadata = explore_metadata({ tsc, checker })(options)(
                 collection,
-            )(type, false);
+            )(false)(type);
 
             // INSERT WITH REQUIRED CONFIGURATION
             if (node?.questionToken) {
                 Writable(value).required = false;
                 Writable(value).optional = true;
             }
-            insert(key)(value)(() => `${obj.name}.${prop.name}`)(prop);
+            insert(key)(value)(
+                () => `${obj.name}.${prop.escapedName.toString()}`,
+            )(prop);
         }
 
         //----
@@ -120,7 +127,9 @@ export const emplace_metadata_object =
         for (const index of checker.getIndexInfosOfType(parent)) {
             // GET EXACT TYPE
             const analyzer = (type: ts.Type) =>
-                explore_metadata(checker)(options)(collection)(type, false);
+                explore_metadata({ tsc, checker })(options)(collection)(false)(
+                    type,
+                );
             const key: Metadata = analyzer(index.keyType);
             const value: Metadata = analyzer(index.type);
 
@@ -136,8 +145,8 @@ export const emplace_metadata_object =
         return obj;
     };
 
-const isProperty = (node: ts.Declaration) =>
-    ts.isPropertyDeclaration(node) ||
-    ts.isPropertyAssignment(node) ||
-    ts.isPropertySignature(node) ||
-    ts.isTypeLiteralNode(node);
+const isProperty = (tsc: typeof ts) => (node: ts.Declaration) =>
+    tsc.isPropertyDeclaration(node) ||
+    tsc.isPropertyAssignment(node) ||
+    tsc.isPropertySignature(node) ||
+    tsc.isTypeLiteralNode(node);

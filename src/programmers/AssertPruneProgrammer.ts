@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../factories/IdentifierFactory";
 import { StatementFactory } from "../factories/StatementFactory";
@@ -19,57 +19,54 @@ export namespace AssertPruneProgrammer {
             write(project)(modulo)(type, name);
 
     export const write =
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (type: ts.Type, name?: string) =>
-            ts.factory.createArrowFunction(
+            p.tsc.factory.createArrowFunction(
                 undefined,
                 undefined,
                 [
-                    IdentifierFactory.parameter(
+                    IdentifierFactory.parameter(p.tsc)(
                         "input",
-                        TypeFactory.keyword("any"),
+                        TypeFactory.keyword(p.tsc)("any"),
                     ),
                 ],
-                ts.factory.createTypeReferenceNode(
-                    name ?? TypeFactory.getFullName(project.checker)(type),
+                p.tsc.factory.createTypeReferenceNode(
+                    name ?? TypeFactory.getFullName(p)(type),
                 ),
                 undefined,
-                ts.factory.createBlock([
-                    StatementFactory.constant(
+                p.tsc.factory.createBlock([
+                    StatementFactory.constant(p.tsc)(
                         "assert",
-                        AssertProgrammer.write(project)(modulo)(false)(
-                            type,
-                            name,
-                        ),
+                        AssertProgrammer.write(p)(modulo)(false)(type, name),
                     ),
-                    StatementFactory.constant(
+                    StatementFactory.constant(p.tsc)(
                         "prune",
                         PruneProgrammer.write({
-                            ...project,
+                            ...p,
                             options: {
-                                ...project.options,
+                                ...p.options,
                                 functional: false,
                                 numeric: false,
                             },
                         })(modulo)(type, name),
                     ),
-                    ts.factory.createExpressionStatement(
-                        ts.factory.createCallExpression(
-                            ts.factory.createIdentifier("assert"),
+                    p.tsc.factory.createExpressionStatement(
+                        p.tsc.factory.createCallExpression(
+                            p.tsc.factory.createIdentifier("assert"),
                             undefined,
-                            [ts.factory.createIdentifier("input")],
+                            [p.tsc.factory.createIdentifier("input")],
                         ),
                     ),
-                    ts.factory.createExpressionStatement(
-                        ts.factory.createCallExpression(
-                            ts.factory.createIdentifier("prune"),
+                    p.tsc.factory.createExpressionStatement(
+                        p.tsc.factory.createCallExpression(
+                            p.tsc.factory.createIdentifier("prune"),
                             undefined,
-                            [ts.factory.createIdentifier("input")],
+                            [p.tsc.factory.createIdentifier("input")],
                         ),
                     ),
-                    ts.factory.createReturnStatement(
-                        ts.factory.createIdentifier("input"),
+                    p.tsc.factory.createReturnStatement(
+                        p.tsc.factory.createIdentifier("input"),
                     ),
                 ]),
             );

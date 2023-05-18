@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../factories/IdentifierFactory";
 import { StatementFactory } from "../factories/StatementFactory";
@@ -19,73 +19,74 @@ export namespace ValidateStringifyProgrammer {
             write(project)(modulo)(type, name);
 
     export const write =
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (type: ts.Type, name?: string) =>
-            ts.factory.createArrowFunction(
+            p.tsc.factory.createArrowFunction(
                 undefined,
                 undefined,
                 [
-                    IdentifierFactory.parameter(
+                    IdentifierFactory.parameter(p.tsc)(
                         "input",
-                        ts.factory.createTypeReferenceNode(
-                            name ??
-                                TypeFactory.getFullName(project.checker)(type),
+                        p.tsc.factory.createTypeReferenceNode(
+                            name ?? TypeFactory.getFullName(p)(type),
                         ),
                     ),
                 ],
-                ts.factory.createTypeReferenceNode("typia.IValidation<string>"),
+                p.tsc.factory.createTypeReferenceNode(
+                    "typia.IValidation<string>",
+                ),
                 undefined,
-                ts.factory.createBlock([
-                    StatementFactory.constant(
+                p.tsc.factory.createBlock([
+                    StatementFactory.constant(p.tsc)(
                         "validate",
                         ValidateProgrammer.write({
-                            ...project,
+                            ...p,
                             options: {
-                                ...project.options,
+                                ...p.options,
                                 functional: false,
                                 numeric: true,
                             },
                         })(modulo)(false)(type, name),
                     ),
-                    StatementFactory.constant(
+                    StatementFactory.constant(p.tsc)(
                         "stringify",
                         StringifyProgrammer.write({
-                            ...project,
+                            ...p,
                             options: {
-                                ...project.options,
+                                ...p.options,
                                 functional: false,
                                 numeric: false,
                             },
                         })(modulo)(type, name),
                     ),
-                    StatementFactory.constant(
+                    StatementFactory.constant(p.tsc)(
                         "output",
-                        ts.factory.createAsExpression(
-                            ts.factory.createCallExpression(
-                                ts.factory.createIdentifier("validate"),
+                        p.tsc.factory.createAsExpression(
+                            p.tsc.factory.createCallExpression(
+                                p.tsc.factory.createIdentifier("validate"),
                                 undefined,
-                                [ts.factory.createIdentifier("input")],
+                                [p.tsc.factory.createIdentifier("input")],
                             ),
-                            TypeFactory.keyword("any"),
+                            TypeFactory.keyword(p.tsc)("any"),
                         ),
                     ),
-                    ts.factory.createIfStatement(
-                        ts.factory.createIdentifier("output.success"),
-                        ts.factory.createExpressionStatement(
-                            ts.factory.createBinaryExpression(
-                                ts.factory.createIdentifier("output.data"),
-                                ts.SyntaxKind.EqualsToken,
-                                ts.factory.createCallExpression(
-                                    ts.factory.createIdentifier("stringify"),
+                    p.tsc.factory.createIfStatement(
+                        p.tsc.factory.createIdentifier("output.success"),
+                        p.tsc.factory.createExpressionStatement(
+                            p.tsc.factory.createBinaryExpression(
+                                p.tsc.factory.createIdentifier("output.data"),
+                                p.tsc.SyntaxKind.EqualsToken,
+                                p.tsc.factory.createCallExpression(
+                                    p.tsc.factory.createIdentifier("stringify"),
                                     undefined,
-                                    [ts.factory.createIdentifier("input")],
+                                    [p.tsc.factory.createIdentifier("input")],
                                 ),
                             ),
                         ),
                     ),
-                    ts.factory.createReturnStatement(
-                        ts.factory.createIdentifier("output"),
+                    p.tsc.factory.createReturnStatement(
+                        p.tsc.factory.createIdentifier("output"),
                     ),
                 ]),
             );

@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IMetadataTag } from "../../metadata/IMetadataTag";
 
@@ -10,6 +10,7 @@ export namespace RandomRanger {
     }
 
     export const length =
+        (tsc: typeof ts) =>
         (coalesce: (method: string) => ts.Expression) =>
         (defs: IDefaults) =>
         (acc: length.IAccessors) =>
@@ -20,7 +21,7 @@ export namespace RandomRanger {
                 maximum: getter(tags)(acc.maximum),
             };
             if (props.fixed !== undefined)
-                return ts.factory.createNumericLiteral(props.fixed);
+                return tsc.factory.createNumericLiteral(props.fixed);
             else if (props.minimum === undefined && props.maximum === undefined)
                 return undefined;
 
@@ -29,12 +30,12 @@ export namespace RandomRanger {
             if (props.maximum <= props.minimum)
                 (props.maximum as number) += defs.gap;
 
-            return ts.factory.createCallExpression(
+            return tsc.factory.createCallExpression(
                 coalesce("integer"),
                 undefined,
                 [
-                    ts.factory.createNumericLiteral(props.minimum),
-                    ts.factory.createNumericLiteral(props.maximum),
+                    tsc.factory.createNumericLiteral(props.minimum),
+                    tsc.factory.createNumericLiteral(props.maximum),
                 ],
             );
         };
@@ -47,6 +48,7 @@ export namespace RandomRanger {
     }
 
     export const number =
+        (tsc: typeof ts) =>
         (config: number.IConfig) =>
         (defs: IDefaults) =>
         (tags: IMetadataTag[]): ts.Expression => {
@@ -77,9 +79,9 @@ export namespace RandomRanger {
                 const { intercept, minimum, maximum } = stepper(defs.gap)(
                     range,
                 )(range.step);
-                return ts.factory.createAdd(
+                return tsc.factory.createAdd(
                     config.transform(intercept),
-                    ts.factory.createMultiply(
+                    tsc.factory.createMultiply(
                         config.transform(range.step),
                         config.setter([minimum, maximum]),
                     ),
@@ -90,7 +92,7 @@ export namespace RandomRanger {
                 const { minimum, maximum } = multiplier(defs.gap)(range)(
                     range.multiply,
                 );
-                return ts.factory.createMultiply(
+                return tsc.factory.createMultiply(
                     config.transform(range.multiply),
                     config.setter([minimum, maximum]),
                 );

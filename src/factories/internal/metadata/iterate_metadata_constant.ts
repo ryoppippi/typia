@@ -1,20 +1,24 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
 import { MetadataConstant } from "../../../metadata/MetadataConstant";
 
+import { IProject } from "../../../transformers/IProject";
+
 import { ArrayUtil } from "../../../utils/ArrayUtil";
+import { TsTypeUtil } from "../../../utils/TsTypeUtil";
 
 import { MetadataFactory } from "../../MetadataFactory";
 
 export const iterate_metadata_constant =
-    (checker: ts.TypeChecker) =>
+    ({ tsc, checker }: IProject.IModule) =>
     (options: MetadataFactory.IOptions) =>
-    (meta: Metadata, type: ts.Type): boolean => {
+    (meta: Metadata) =>
+    (type: ts.Type): boolean => {
         if (!options.constant) return false;
 
-        const filter = (flag: ts.TypeFlags) => (type.getFlags() & flag) !== 0;
-        if (type.isLiteral()) {
+        const filter = (flag: ts.TypeFlags) => (type.flags & flag) !== 0;
+        if (TsTypeUtil.isLiteral(tsc)(type)) {
             const value: string | number | bigint =
                 typeof type.value === "object"
                     ? BigInt(
@@ -37,7 +41,7 @@ export const iterate_metadata_constant =
                 (a, b) => a === b,
             );
             return true;
-        } else if (filter(ts.TypeFlags.BooleanLiteral)) {
+        } else if (filter(tsc.TypeFlags.BooleanLiteral)) {
             const value: boolean = checker.typeToString(type) === "true";
             const constant: MetadataConstant = ArrayUtil.take(
                 meta.constants,

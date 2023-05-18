@@ -1,11 +1,13 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../metadata/Metadata";
 import { MetadataObject } from "../metadata/MetadataObject";
 
-import { MapUtil } from "../utils/MapUtil";
+import { IProject } from "../transformers/IProject";
 
-import { CommentFactory } from "./CommentFactory";
+import { MapUtil } from "../utils/MapUtil";
+import { TsSymbolUtil } from "../utils/TsSymbolUtil";
+
 import { TypeFactory } from "./TypeFactory";
 
 export class MetadataCollection {
@@ -31,23 +33,23 @@ export class MetadataCollection {
     }
 
     public emplace(
-        checker: ts.TypeChecker,
+        p: IProject.IModule,
         type: ts.Type,
     ): [MetadataObject, boolean] {
         const oldbie = this.dict_.get(type);
         if (oldbie !== undefined) return [oldbie, false];
 
-        const $id: string = this.get_name(checker, type);
+        const $id: string = this.get_name(p, type);
         const obj: MetadataObject = MetadataObject.create({
             name: $id,
             properties: [],
-            description:
-                (type.symbol &&
-                    CommentFactory.string(
-                        type.symbol.getDocumentationComment(checker),
-                    )) ||
-                undefined,
-            jsDocTags: type.symbol?.getJsDocTags() || [],
+            description: type.symbol
+                ? TsSymbolUtil.comments(p.tsc)(type.symbol)
+                : undefined,
+            jsDocTags:
+                (type.symbol
+                    ? TsSymbolUtil.getCommentTags(p.tsc)(type.symbol)
+                    : undefined) ?? [],
             validated: false,
             index: this.index_++,
             recursive: false,
@@ -66,9 +68,9 @@ export class MetadataCollection {
         return [...this.unions_.keys()].indexOf(key);
     }
 
-    private get_name(checker: ts.TypeChecker, type: ts.Type): string {
+    private get_name(p: IProject.IModule, type: ts.Type): string {
         const name: string = (() => {
-            const str: string = TypeFactory.getFullName(checker)(type);
+            const str: string = TypeFactory.getFullName(p)(type);
             return this.options?.replace ? this.options.replace(str) : str;
         })();
 

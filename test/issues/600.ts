@@ -1,4 +1,4 @@
-import typia from "typia";
+import typia from "../../src";
 
 console.log(
     typia.random<readonly [1, 2, 3, 4, 5, 6]>(),

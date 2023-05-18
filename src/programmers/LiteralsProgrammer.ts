@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { MetadataCollection } from "../factories/MetadataCollection";
 import { MetadataFactory } from "../factories/MetadataFactory";
@@ -18,8 +18,8 @@ export namespace LiteralsProgrammer {
     export const generate = (project: IProject) => (type: ts.Type) =>
         write(project)(type);
 
-    export const write = (project: IProject) => (type: ts.Type) => {
-        const meta: Metadata = MetadataFactory.analyze(project.checker)({
+    export const write = (p: IProject) => (type: ts.Type) => {
+        const meta: Metadata = MetadataFactory.analyze(p)({
             resolve: true,
             constant: true,
             validate: (meta) => {
@@ -39,22 +39,22 @@ export namespace LiteralsProgrammer {
                 ? [true, false]
                 : []),
         ]);
-        return ts.factory.createAsExpression(
-            ts.factory.createArrayLiteralExpression(
+        return p.tsc.factory.createAsExpression(
+            p.tsc.factory.createArrayLiteralExpression(
                 [...values].map((v) =>
                     typeof v === "boolean"
                         ? v
-                            ? ts.factory.createTrue()
-                            : ts.factory.createFalse()
+                            ? p.tsc.factory.createTrue()
+                            : p.tsc.factory.createFalse()
                         : typeof v === "number"
-                        ? ts.factory.createNumericLiteral(v)
+                        ? p.tsc.factory.createNumericLiteral(v)
                         : typeof v === "bigint"
-                        ? ts.factory.createBigIntLiteral(v.toString())
-                        : ts.factory.createStringLiteral(v),
+                        ? p.tsc.factory.createBigIntLiteral(v.toString())
+                        : p.tsc.factory.createStringLiteral(v),
                 ),
                 true,
             ),
-            ts.factory.createTypeReferenceNode("const"),
+            p.tsc.factory.createTypeReferenceNode("const"),
         );
     };
 }

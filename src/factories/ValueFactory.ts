@@ -1,12 +1,15 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 export namespace ValueFactory {
-    export const NULL = () => ts.factory.createNull();
-    export const UNDEFINED = () => ts.factory.createIdentifier("undefined");
-    export const BOOLEAN = (value: boolean) =>
-        value ? ts.factory.createTrue() : ts.factory.createFalse();
-    export const INPUT = (str: string = "input") =>
-        ts.factory.createIdentifier(str);
-    export const TYPEOF = (input: ts.Expression) =>
-        ts.factory.createTypeOfExpression(input);
+    export const NULL = (tsc: typeof ts) => tsc.factory.createNull();
+    export const UNDEFINED = (tsc: typeof ts) =>
+        tsc.factory.createIdentifier("undefined");
+    export const BOOLEAN = (tsc: typeof ts) => (value: boolean) =>
+        value ? tsc.factory.createTrue() : tsc.factory.createFalse();
+    export const INPUT =
+        (tsc: typeof ts) =>
+        (str: string = "input") =>
+            tsc.factory.createIdentifier(str);
+    export const TYPEOF = (tsc: typeof ts) => (input: ts.Expression) =>
+        tsc.factory.createTypeOfExpression(input);
 }

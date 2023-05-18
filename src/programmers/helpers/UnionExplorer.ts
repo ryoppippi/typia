@@ -1,4 +1,5 @@
-import ts from "typescript";
+import { JSDocTagInfo } from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { ExpressionFactory } from "../../factories/ExpressionFactory";
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
@@ -18,7 +19,7 @@ export namespace UnionExplorer {
             target: T,
             explore: FeatureProgrammer.IExplore,
             tags: IMetadataTag[],
-            jsDocTags: ts.JSDocTagInfo[],
+            jsDocTags: JSDocTagInfo[],
         ): ts.Expression;
     }
     export type ObjectCombiner = Decoder<MetadataObject[]>;
@@ -27,13 +28,14 @@ export namespace UnionExplorer {
         OBJECT
     ----------------------------------------------------------- */
     export const object =
+        (tsc: typeof ts) =>
         (config: FeatureProgrammer.IConfig, level: number = 0) =>
         (
             input: ts.Expression,
             targets: MetadataObject[],
             explore: FeatureProgrammer.IExplore,
             tags: IMetadataTag[],
-            jsDocTags: ts.JSDocTagInfo[],
+            jsDocTags: JSDocTagInfo[],
         ): ts.Expression => {
             // BREAKER
             if (targets.length === 1)
@@ -76,7 +78,7 @@ export namespace UnionExplorer {
                 .map((spec) => {
                     const key: string = spec.property.key.getSoleLiteral()!;
                     const accessor: ts.Expression =
-                        IdentifierFactory.access(input)(key);
+                        IdentifierFactory.access(tsc)(input)(key);
                     const pred: ts.Expression = spec.neighbour
                         ? config.objector.checker(
                               accessor,
@@ -90,11 +92,11 @@ export namespace UnionExplorer {
                               jsDocTags,
                           )
                         : (config.objector.required || ((exp) => exp))(
-                              ExpressionFactory.isRequired(accessor),
+                              ExpressionFactory.isRequired(tsc)(accessor),
                           );
-                    return ts.factory.createIfStatement(
+                    return tsc.factory.createIfStatement(
                         (config.objector.is || ((exp) => exp))(pred),
-                        ts.factory.createReturnStatement(
+                        tsc.factory.createReturnStatement(
                             config.objector.decoder(
                                 input,
                                 spec.object,
@@ -107,19 +109,19 @@ export namespace UnionExplorer {
                 });
 
             // RETURNS WITH CONDITIONS
-            return ts.factory.createCallExpression(
-                ts.factory.createArrowFunction(
+            return tsc.factory.createCallExpression(
+                tsc.factory.createArrowFunction(
                     undefined,
                     undefined,
                     [],
                     undefined,
                     undefined,
-                    ts.factory.createBlock(
+                    tsc.factory.createBlock(
                         [
                             ...conditions,
                             remained.length
-                                ? ts.factory.createReturnStatement(
-                                      object(config, level + 1)(
+                                ? tsc.factory.createReturnStatement(
+                                      object(tsc)(config, level + 1)(
                                           input,
                                           remained,
                                           explore,
@@ -144,24 +146,27 @@ export namespace UnionExplorer {
     /* -----------------------------------------------------------
         ARRAY LIKE
     ----------------------------------------------------------- */
-    export const tuple = (props: check_union_array_like.IProps<Metadata[]>) =>
-        check_union_array_like<Metadata[]>({
-            size: null,
-            front: (input) => input,
-            array: (input) => input,
-            name: (elems) => `[${elems.map((e) => e.getName()).join(", ")}]`,
-        })(props);
+    export const tuple =
+        (tsc: typeof ts) =>
+        (props: check_union_array_like.IProps<Metadata[]>) =>
+            check_union_array_like(tsc)<Metadata[]>({
+                size: null,
+                front: (input) => input,
+                array: (input) => input,
+                name: (elems) =>
+                    `[${elems.map((e) => e.getName()).join(", ")}]`,
+            })(props);
     export namespace tuple {
         export type IProps = check_union_array_like.IProps<
             Metadata | Metadata[]
         >;
     }
 
-    export const array = (props: array.IProps) =>
-        check_union_array_like<Metadata>({
-            size: (input) => IdentifierFactory.access(input)("length"),
+    export const array = (tsc: typeof ts) => (props: array.IProps) =>
+        check_union_array_like(tsc)<Metadata>({
+            size: (input) => IdentifierFactory.access(tsc)(input)("length"),
             front: (input) =>
-                ts.factory.createElementAccessExpression(input, 0),
+                tsc.factory.createElementAccessExpression(input, 0),
             array: (input) => input,
             name: (t) => `Array<${t.getName()}>`,
         })(props);
@@ -169,32 +174,33 @@ export namespace UnionExplorer {
         export type IProps = check_union_array_like.IProps<Metadata>;
     }
 
-    export const array_or_tuple = (props: array_or_tuple.IProps) =>
-        check_union_array_like<Metadata | Metadata[]>({
-            size: (input) => IdentifierFactory.access(input)("length"),
-            front: (input) =>
-                ts.factory.createElementAccessExpression(input, 0),
-            array: (input) => input,
-            name: (t) =>
-                Array.isArray(t)
-                    ? `[${t.map((e) => e.getName()).join(", ")}]`
-                    : `Array<${t.getName()}>`,
-        })(props);
+    export const array_or_tuple =
+        (tsc: typeof ts) => (props: array_or_tuple.IProps) =>
+            check_union_array_like(tsc)<Metadata | Metadata[]>({
+                size: (input) => IdentifierFactory.access(tsc)(input)("length"),
+                front: (input) =>
+                    tsc.factory.createElementAccessExpression(input, 0),
+                array: (input) => input,
+                name: (t) =>
+                    Array.isArray(t)
+                        ? `[${t.map((e) => e.getName()).join(", ")}]`
+                        : `Array<${t.getName()}>`,
+            })(props);
     export namespace array_or_tuple {
         export type IProps = check_union_array_like.IProps<
             Metadata | Metadata[]
         >;
     }
 
-    export const set = (props: set.IProps) =>
-        check_union_array_like<Metadata>({
-            size: (input) => IdentifierFactory.access(input)("size"),
+    export const set = (tsc: typeof ts) => (props: set.IProps) =>
+        check_union_array_like(tsc)<Metadata>({
+            size: (input) => IdentifierFactory.access(tsc)(input)("size"),
             front: (input) =>
-                IdentifierFactory.access(
-                    ts.factory.createCallExpression(
-                        IdentifierFactory.access(
-                            ts.factory.createCallExpression(
-                                IdentifierFactory.access(input)("values"),
+                IdentifierFactory.access(tsc)(
+                    tsc.factory.createCallExpression(
+                        IdentifierFactory.access(tsc)(
+                            tsc.factory.createCallExpression(
+                                IdentifierFactory.access(tsc)(input)("values"),
                                 undefined,
                                 undefined,
                             ),
@@ -204,8 +210,8 @@ export namespace UnionExplorer {
                     ),
                 )("value"),
             array: (input) =>
-                ts.factory.createArrayLiteralExpression(
-                    [ts.factory.createSpreadElement(input)],
+                tsc.factory.createArrayLiteralExpression(
+                    [tsc.factory.createSpreadElement(input)],
                     false,
                 ),
             name: (t) => `Set<${t.getName()}>`,
@@ -214,15 +220,15 @@ export namespace UnionExplorer {
         export type IProps = check_union_array_like.IProps<Metadata>;
     }
 
-    export const map = (props: map.IProps) =>
-        check_union_array_like<[Metadata, Metadata]>({
-            size: (input) => IdentifierFactory.access(input)("size"),
+    export const map = (tsc: typeof ts) => (props: map.IProps) =>
+        check_union_array_like(tsc)<[Metadata, Metadata]>({
+            size: (input) => IdentifierFactory.access(tsc)(input)("size"),
             front: (input) =>
-                IdentifierFactory.access(
-                    ts.factory.createCallExpression(
-                        IdentifierFactory.access(
-                            ts.factory.createCallExpression(
-                                IdentifierFactory.access(input)("entries"),
+                IdentifierFactory.access(tsc)(
+                    tsc.factory.createCallExpression(
+                        IdentifierFactory.access(tsc)(
+                            tsc.factory.createCallExpression(
+                                IdentifierFactory.access(tsc)(input)("entries"),
                                 undefined,
                                 undefined,
                             ),
@@ -232,8 +238,8 @@ export namespace UnionExplorer {
                     ),
                 )("value"),
             array: (input) =>
-                ts.factory.createArrayLiteralExpression(
-                    [ts.factory.createSpreadElement(input)],
+                tsc.factory.createArrayLiteralExpression(
+                    [tsc.factory.createSpreadElement(input)],
                     false,
                 ),
             name: ([k, v]) => `Map<${k.getName()}, ${v.getName()}>`,

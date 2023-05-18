@@ -1,6 +1,8 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
+
+import { IProject } from "../../../transformers/IProject";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
@@ -10,23 +12,24 @@ import { TypeFactory } from "../../TypeFactory";
 import { explore_metadata } from "./explore_metadata";
 
 export const iterate_metadata_set =
-    (checker: ts.TypeChecker) =>
+    (p: IProject.IModule) =>
     (options: MetadataFactory.IOptions) =>
     (collection: MetadataCollection) =>
-    (meta: Metadata, type: ts.Type): boolean => {
-        type = checker.getApparentType(type);
+    (meta: Metadata) =>
+    (type: ts.Type): boolean => {
+        type = p.checker.getApparentType(type);
 
-        const name = TypeFactory.getFullName(checker)(type, type.getSymbol());
+        const name = TypeFactory.getFullName(p)(type, type.symbol);
         const generic = type.aliasSymbol
             ? type.aliasTypeArguments
-            : checker.getTypeArguments(type as ts.TypeReference);
+            : p.checker.getTypeArguments(type as ts.TypeReference);
         if (name.substring(0, 4) !== "Set<" || generic?.length !== 1)
             return false;
 
         const key: ts.Type = generic[0]!;
         ArrayUtil.set(
             meta.sets,
-            explore_metadata(checker)(options)(collection)(key, false),
+            explore_metadata(p)(options)(collection)(false)(key),
             (elem) => elem.getName(),
         );
         return true;

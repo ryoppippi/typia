@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { ExpressionFactory } from "../factories/ExpressionFactory";
 import { IdentifierFactory } from "../factories/IdentifierFactory";
@@ -20,68 +20,55 @@ import { RandomRanger } from "./helpers/RandomRanger";
 import { random_custom } from "./internal/random_custom";
 
 export namespace RandomProgrammer {
-    /**
-     * @deprecated Use `write()` function instead
-     */
-    export const generate =
-        (
-            project: IProject,
-            modulo: ts.LeftHandSideExpression,
-            init?: ts.Expression,
-        ) =>
-        (type: ts.Type, name?: string) =>
-            write(project)(modulo)(init)(type, name);
-
     export const write =
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (init?: ts.Expression) => {
-            const importer: FunctionImporter = new FunctionImporter();
+            const tsc: typeof ts = p.tsc;
+            const importer: FunctionImporter = new FunctionImporter(tsc);
+
             return (type: ts.Type, name?: string) => {
                 // INITIALIZE METADATA
                 const collection: MetadataCollection = new MetadataCollection();
-                const meta: Metadata = MetadataFactory.analyze(project.checker)(
-                    {
-                        resolve: true,
-                        constant: true,
-                    },
-                )(collection)(type);
+                const meta: Metadata = MetadataFactory.analyze(p)({
+                    resolve: true,
+                    constant: true,
+                })(collection)(type);
 
                 // GENERATE FUNCTION
                 const functors: ts.VariableStatement[] =
-                    generate_functors(importer)(collection);
-                const output: ts.Expression = decode(importer)({
+                    generate_functors(tsc)(importer)(collection);
+                const output: ts.Expression = decode(tsc)(importer)({
                     object: false,
                     recursive: false,
                 })(meta, [], []);
 
-                return ts.factory.createArrowFunction(
+                return tsc.factory.createArrowFunction(
                     undefined,
                     undefined,
                     [
-                        IdentifierFactory.parameter(
+                        IdentifierFactory.parameter(tsc)(
                             "generator",
-                            ts.factory.createTypeReferenceNode(
+                            tsc.factory.createTypeReferenceNode(
                                 "Partial<typia.IRandomGenerator>",
                             ),
                             init ??
-                                ts.factory.createToken(
-                                    ts.SyntaxKind.QuestionToken,
+                                tsc.factory.createToken(
+                                    tsc.SyntaxKind.QuestionToken,
                                 ),
                         ),
                     ],
-                    ts.factory.createTypeReferenceNode(
+                    tsc.factory.createTypeReferenceNode(
                         `typia.Primitive<${
-                            name ??
-                            TypeFactory.getFullName(project.checker)(type)
+                            name ?? TypeFactory.getFullName(p)(type)
                         }>`,
                     ),
                     undefined,
-                    ts.factory.createBlock(
+                    tsc.factory.createBlock(
                         [
                             ...importer.declare(modulo),
                             ...functors,
-                            ts.factory.createReturnStatement(output),
+                            tsc.factory.createReturnStatement(output),
                         ],
                         true,
                     ),
@@ -90,31 +77,33 @@ export namespace RandomProgrammer {
         };
 
     const generate_functors =
-        (importer: FunctionImporter) => (collection: MetadataCollection) =>
+        (tsc: typeof ts) =>
+        (importer: FunctionImporter) =>
+        (collection: MetadataCollection) =>
             collection.objects().map((obj, i) =>
-                StatementFactory.constant(
+                StatementFactory.constant(tsc)(
                     FUNCTOR(i),
-                    ts.factory.createArrowFunction(
+                    tsc.factory.createArrowFunction(
                         undefined,
                         undefined,
                         [
-                            IdentifierFactory.parameter(
+                            IdentifierFactory.parameter(tsc)(
                                 "_recursive",
-                                TypeFactory.keyword("boolean"),
-                                ts.factory.createIdentifier(
+                                TypeFactory.keyword(tsc)("boolean"),
+                                tsc.factory.createIdentifier(
                                     String(obj.recursive),
                                 ),
                             ),
-                            IdentifierFactory.parameter(
+                            IdentifierFactory.parameter(tsc)(
                                 "_depth",
-                                TypeFactory.keyword("number"),
-                                ts.factory.createNumericLiteral(0),
+                                TypeFactory.keyword(tsc)("number"),
+                                tsc.factory.createNumericLiteral(0),
                             ),
                         ],
-                        TypeFactory.keyword("any"),
+                        TypeFactory.keyword(tsc)("any"),
                         undefined,
-                        RandomJoiner.object(COALESCE(importer))(
-                            decode(importer)({
+                        RandomJoiner.object(tsc)(COALESCE(tsc)(importer))(
+                            decode(tsc)(importer)({
                                 recursive: obj.recursive,
                                 object: true,
                             }),
@@ -127,6 +116,7 @@ export namespace RandomProgrammer {
         DECODERS
     ----------------------------------------------------------- */
     const decode =
+        (tsc: typeof ts) =>
         (importer: FunctionImporter) =>
         (explore: IExplore) =>
         (
@@ -137,64 +127,76 @@ export namespace RandomProgrammer {
             const expressions: ts.Expression[] = [];
             if (meta.any)
                 expressions.push(
-                    ts.factory.createStringLiteral(
+                    tsc.factory.createStringLiteral(
                         "fucking any type exists...",
                     ),
                 );
 
             // NULL COALESCING
             if (meta.required === false)
-                expressions.push(ts.factory.createIdentifier("undefined"));
+                expressions.push(tsc.factory.createIdentifier("undefined"));
             if (meta.nullable === true)
-                expressions.push(ts.factory.createNull());
+                expressions.push(tsc.factory.createNull());
 
             // CONSTANT TYPES
             for (const constant of meta.constants)
                 for (const value of constant.values)
-                    expressions.push(decode_atomic(value));
+                    expressions.push(decode_atomic(tsc)(value));
 
             // ATOMIC VARIABLES
             for (const template of meta.templates)
-                expressions.push(decode_template(importer)(explore)(template));
+                expressions.push(
+                    decode_template(tsc)(importer)(explore)(template),
+                );
             for (const atomic of meta.atomics)
                 if (atomic === "boolean")
-                    expressions.push(decode_boolean(importer));
+                    expressions.push(decode_boolean(tsc)(importer));
                 else if (atomic === "number")
-                    expressions.push(decode_number(importer)(tags)(comments));
+                    expressions.push(
+                        decode_number(tsc)(importer)(tags)(comments),
+                    );
                 else if (atomic === "string")
-                    expressions.push(decode_string(importer)(tags)(comments));
+                    expressions.push(
+                        decode_string(tsc)(importer)(tags)(comments),
+                    );
                 else if (atomic === "bigint")
-                    expressions.push(decode_bigint(importer)(tags)(comments));
+                    expressions.push(
+                        decode_bigint(tsc)(importer)(tags)(comments),
+                    );
 
             // INSTANCE TYPES
             if (meta.resolved)
                 expressions.push(
-                    decode(importer)(explore)(meta.resolved, tags, comments),
+                    decode(tsc)(importer)(explore)(
+                        meta.resolved,
+                        tags,
+                        comments,
+                    ),
                 );
             for (const t of meta.tuples)
                 expressions.push(
-                    RandomJoiner.tuple(decode(importer)(explore))(
+                    RandomJoiner.tuple(tsc)(decode(tsc)(importer)(explore))(
                         t,
                         tags,
                         comments,
                     ),
                 );
             for (const a of meta.arrays) {
-                const array = RandomJoiner.array(COALESCE(importer))(
-                    decode(importer)(explore),
+                const array = RandomJoiner.array(tsc)(COALESCE(tsc)(importer))(
+                    decode(tsc)(importer)(explore),
                 )(a, tags, comments);
                 expressions.push(
                     explore.recursive && a.objects.length
-                        ? ts.factory.createConditionalExpression(
-                              ts.factory.createLogicalAnd(
-                                  ts.factory.createIdentifier("_recursive"),
-                                  ts.factory.createLessThan(
-                                      ts.factory.createNumericLiteral(5),
-                                      ts.factory.createIdentifier("_depth"),
+                        ? tsc.factory.createConditionalExpression(
+                              tsc.factory.createLogicalAnd(
+                                  tsc.factory.createIdentifier("_recursive"),
+                                  tsc.factory.createLessThan(
+                                      tsc.factory.createNumericLiteral(5),
+                                      tsc.factory.createIdentifier("_depth"),
                                   ),
                               ),
                               undefined,
-                              ts.factory.createIdentifier("[]"),
+                              tsc.factory.createIdentifier("[]"),
                               undefined,
                               array,
                           )
@@ -203,25 +205,29 @@ export namespace RandomProgrammer {
             }
             for (const o of meta.objects)
                 expressions.push(
-                    ts.factory.createCallExpression(
-                        ts.factory.createIdentifier(FUNCTOR(o.index)),
+                    tsc.factory.createCallExpression(
+                        tsc.factory.createIdentifier(FUNCTOR(o.index)),
                         undefined,
                         explore.object
                             ? [
                                   explore.recursive
-                                      ? ts.factory.createTrue()
-                                      : ts.factory.createIdentifier(
+                                      ? tsc.factory.createTrue()
+                                      : tsc.factory.createIdentifier(
                                             "_recursive",
                                         ),
-                                  ts.factory.createConditionalExpression(
-                                      ts.factory.createIdentifier("_recursive"),
-                                      undefined,
-                                      ts.factory.createAdd(
-                                          ts.factory.createNumericLiteral(1),
-                                          ts.factory.createIdentifier("_depth"),
+                                  tsc.factory.createConditionalExpression(
+                                      tsc.factory.createIdentifier(
+                                          "_recursive",
                                       ),
                                       undefined,
-                                      ts.factory.createIdentifier("_depth"),
+                                      tsc.factory.createAdd(
+                                          tsc.factory.createNumericLiteral(1),
+                                          tsc.factory.createIdentifier(
+                                              "_depth",
+                                          ),
+                                      ),
+                                      undefined,
+                                      tsc.factory.createIdentifier("_depth"),
                                   ),
                               ]
                             : undefined,
@@ -229,25 +235,29 @@ export namespace RandomProgrammer {
                 );
             for (const native of meta.natives)
                 if (native === "Boolean")
-                    expressions.push(decode_boolean(importer));
+                    expressions.push(decode_boolean(tsc)(importer));
                 else if (native === "Number")
-                    expressions.push(decode_number(importer)(tags)(comments));
+                    expressions.push(
+                        decode_number(tsc)(importer)(tags)(comments),
+                    );
                 else if (native === "String")
-                    expressions.push(decode_string(importer)(tags)(comments));
-                else expressions.push(ts.factory.createIdentifier("{}"));
+                    expressions.push(
+                        decode_string(tsc)(importer)(tags)(comments),
+                    );
+                else expressions.push(tsc.factory.createIdentifier("{}"));
             if (meta.sets.length || meta.maps.length)
-                expressions.push(ts.factory.createIdentifier("{}"));
+                expressions.push(tsc.factory.createIdentifier("{}"));
 
             // PRIMITIVE TYPES
             if (expressions.length === 1) return expressions[0]!;
-            return ts.factory.createCallExpression(
-                ts.factory.createCallExpression(
+            return tsc.factory.createCallExpression(
+                tsc.factory.createCallExpression(
                     importer.use("pick"),
                     undefined,
                     [
-                        ts.factory.createArrayLiteralExpression(
+                        tsc.factory.createArrayLiteralExpression(
                             expressions.map((expr) =>
-                                ts.factory.createArrowFunction(
+                                tsc.factory.createArrowFunction(
                                     undefined,
                                     undefined,
                                     [],
@@ -265,31 +275,35 @@ export namespace RandomProgrammer {
             );
         };
 
-    const decode_boolean = (importer: FunctionImporter) =>
-        ts.factory.createCallExpression(
-            COALESCE(importer)("boolean"),
+    const decode_boolean = (tsc: typeof ts) => (importer: FunctionImporter) =>
+        tsc.factory.createCallExpression(
+            COALESCE(tsc)(importer)("boolean"),
             undefined,
             undefined,
         );
 
-    const decode_atomic = (value: Atomic) =>
+    const decode_atomic = (tsc: typeof ts) => (value: Atomic) =>
         typeof value === "boolean"
-            ? ts.factory.createIdentifier(value.toString())
+            ? tsc.factory.createIdentifier(value.toString())
             : typeof value === "number"
-            ? ts.factory.createNumericLiteral(value)
+            ? tsc.factory.createNumericLiteral(value)
             : typeof value === "string"
-            ? ts.factory.createStringLiteral(value)
-            : ts.factory.createBigIntLiteral(value.toString());
+            ? tsc.factory.createStringLiteral(value)
+            : tsc.factory.createBigIntLiteral(value.toString());
 
     const decode_template =
+        (tsc: typeof ts) =>
         (importer: FunctionImporter) =>
         (explore: IExplore) =>
         (template: Metadata[]) =>
-            TemplateFactory.generate(
-                template.map((meta) => decode(importer)(explore)(meta, [], [])),
+            TemplateFactory.generate(tsc)(
+                template.map((meta) =>
+                    decode(tsc)(importer)(explore)(meta, [], []),
+                ),
             );
 
     const decode_number =
+        (tsc: typeof ts) =>
         (importer: FunctionImporter) =>
         (tags: IMetadataTag[]) =>
         (comments: ICommentTag[]): ts.Expression => {
@@ -300,24 +314,26 @@ export namespace RandomProgrammer {
                 : tags.find((t) => t.kind === "type" && t.value === "int")
                 ? "uint"
                 : "double";
-            return random_custom(COALESCE(importer))("number")(comments)(
-                RandomRanger.number({
+            return random_custom(tsc)(COALESCE(tsc)(importer))("number")(
+                comments,
+            )(
+                RandomRanger.number(tsc)({
                     type,
                     transform: (value) =>
-                        ts.factory.createNumericLiteral(value),
+                        tsc.factory.createNumericLiteral(value),
                     setter: (args) =>
-                        ts.factory.createCallExpression(
+                        tsc.factory.createCallExpression(
                             type === "double" &&
                                 tags.every(
                                     (t) =>
                                         t.kind !== "multipleOf" &&
                                         t.kind !== "step",
                                 )
-                                ? COALESCE(importer)("number")
-                                : COALESCE(importer)("integer"),
+                                ? COALESCE(tsc)(importer)("number")
+                                : COALESCE(tsc)(importer)("integer"),
                             undefined,
                             args.map((val) =>
-                                ts.factory.createNumericLiteral(val),
+                                tsc.factory.createNumericLiteral(val),
                             ),
                         ),
                 })({
@@ -329,32 +345,33 @@ export namespace RandomProgrammer {
         };
 
     const decode_bigint =
+        (tsc: typeof ts) =>
         (importer: FunctionImporter) =>
         (tags: IMetadataTag[]) =>
         (comments: ICommentTag[]): ts.Expression =>
-            random_custom(COALESCE(importer))("bigint")(comments)(
-                RandomRanger.number({
+            random_custom(tsc)(COALESCE(tsc)(importer))("bigint")(comments)(
+                RandomRanger.number(tsc)({
                     type: tags.find(
                         (t) => t.kind === "type" && t.value === "uint",
                     )
                         ? "uint"
                         : "int",
                     transform: (value) =>
-                        ts.factory.createCallExpression(
-                            ts.factory.createIdentifier("BigInt"),
+                        tsc.factory.createCallExpression(
+                            tsc.factory.createIdentifier("BigInt"),
                             undefined,
-                            [ts.factory.createStringLiteral(value.toString())],
+                            [tsc.factory.createStringLiteral(value.toString())],
                         ),
                     setter: (args) =>
-                        ts.factory.createCallExpression(
-                            COALESCE(importer)("bigint"),
+                        tsc.factory.createCallExpression(
+                            COALESCE(tsc)(importer)("bigint"),
                             undefined,
                             args.map((value) =>
-                                ts.factory.createCallExpression(
-                                    ts.factory.createIdentifier("BigInt"),
+                                tsc.factory.createCallExpression(
+                                    tsc.factory.createIdentifier("BigInt"),
                                     undefined,
                                     [
-                                        ts.factory.createStringLiteral(
+                                        tsc.factory.createStringLiteral(
                                             value.toString(),
                                         ),
                                     ],
@@ -369,26 +386,29 @@ export namespace RandomProgrammer {
             );
 
     const decode_string =
+        (tsc: typeof ts) =>
         (importer: FunctionImporter) =>
         (tags: IMetadataTag[]) =>
         (comments: ICommentTag[]): ts.Expression =>
-            random_custom(COALESCE(importer))("string")(comments)(
+            random_custom(tsc)(COALESCE(tsc)(importer))("string")(comments)(
                 (() => {
                     for (const t of tags)
                         if (t.kind === "format")
-                            return ts.factory.createCallExpression(
-                                COALESCE(importer)(t.value),
+                            return tsc.factory.createCallExpression(
+                                COALESCE(tsc)(importer)(t.value),
                                 undefined,
                                 undefined,
                             );
                         else if (t.kind === "pattern")
-                            return ts.factory.createCallExpression(
-                                COALESCE(importer)("pattern"),
+                            return tsc.factory.createCallExpression(
+                                COALESCE(tsc)(importer)("pattern"),
                                 undefined,
-                                [ts.factory.createIdentifier(`/${t.value}/`)],
+                                [tsc.factory.createIdentifier(`/${t.value}/`)],
                             );
 
-                    const tail = RandomRanger.length(COALESCE(importer))({
+                    const tail = RandomRanger.length(tsc)(
+                        COALESCE(tsc)(importer),
+                    )({
                         minimum: 5,
                         maximum: 25,
                         gap: 5,
@@ -397,8 +417,8 @@ export namespace RandomProgrammer {
                         minimum: "minLength",
                         maximum: "maxLength",
                     })(tags);
-                    return ts.factory.createCallExpression(
-                        COALESCE(importer)("string"),
+                    return tsc.factory.createCallExpression(
+                        COALESCE(tsc)(importer)("string"),
                         undefined,
                         tail ? [tail] : undefined,
                     );
@@ -413,11 +433,12 @@ interface IExplore {
 }
 
 const FUNCTOR = (i: number) => `$ro${i}`;
-const COALESCE = (importer: FunctionImporter) => (name: string) =>
-    ExpressionFactory.coalesce(
-        ts.factory.createPropertyAccessChain(
-            ts.factory.createIdentifier("generator"),
-            ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
-            ts.factory.createIdentifier(name),
-        ),
-    )(IdentifierFactory.access(importer.use("generator"))(name));
+const COALESCE =
+    (tsc: typeof ts) => (importer: FunctionImporter) => (name: string) =>
+        ExpressionFactory.coalesce(tsc)(
+            tsc.factory.createPropertyAccessChain(
+                tsc.factory.createIdentifier("generator"),
+                tsc.factory.createToken(tsc.SyntaxKind.QuestionDotToken),
+                tsc.factory.createIdentifier(name),
+            ),
+        )(IdentifierFactory.access(tsc)(importer.use("generator"))(name));

@@ -1,7 +1,9 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../metadata/Metadata";
 import { explore_metadata } from "./internal/metadata/explore_metadata";
+
+import { IProject } from "../transformers/IProject";
 
 import { MetadataCollection } from "./MetadataCollection";
 
@@ -13,14 +15,13 @@ export namespace MetadataFactory {
     }
 
     export const analyze =
-        (checker: ts.TypeChecker) =>
+        (project: IProject.IModule) =>
         (options: IOptions) =>
         (collection: MetadataCollection) =>
         (type: ts.Type | null): Metadata => {
             // CONSTRUCT SCHEMA WITH OBJECTS
-            const metadata: Metadata = explore_metadata(checker)(options)(
-                collection,
-            )(type, false);
+            const metadata: Metadata =
+                explore_metadata(project)(options)(collection)(false)(type);
 
             // FIND RECURSIVE OBJECTS
             for (const object of collection.objects())
@@ -49,14 +50,4 @@ export namespace MetadataFactory {
                 meta.maps.some((map) => isRecursive(name)(map.value))
             );
         };
-
-    /**
-     * @deprecated Use `analyze` function instead
-     */
-    export const generate = (
-        checker: ts.TypeChecker,
-        collection: MetadataCollection,
-        type: ts.Type,
-        options: IOptions,
-    ) => analyze(checker)(options)(collection)(type);
 }

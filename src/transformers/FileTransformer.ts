@@ -1,4 +1,6 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
+
+import { TsNodeUtil } from "../utils/TsNodeUtil";
 
 import { IProject } from "./IProject";
 import { NodeTransformer } from "./NodeTransformer";
@@ -10,7 +12,7 @@ export namespace FileTransformer {
         (file: ts.SourceFile): ts.SourceFile =>
             file.isDeclarationFile
                 ? file
-                : ts.visitEachChild(
+                : project.tsc.visitEachChild(
                       file,
                       (node) => iterate_node(project)(context)(node),
                       context,
@@ -20,7 +22,7 @@ export namespace FileTransformer {
         (project: IProject) =>
         (context: ts.TransformationContext) =>
         (node: ts.Node): ts.Node =>
-            ts.visitEachChild(
+            project.tsc.visitEachChild(
                 try_transform_node(project)(node),
                 (child) => iterate_node(project)(context)(child),
                 context,
@@ -34,10 +36,11 @@ export namespace FileTransformer {
             } catch (exp) {
                 if (!(exp instanceof Error)) throw exp;
 
-                const file: ts.SourceFile = node.getSourceFile();
-                const { line, character } = file.getLineAndCharacterOfPosition(
-                    node.pos,
-                );
+                const file: ts.SourceFile = TsNodeUtil.getSourceFile(
+                    project.tsc,
+                )(node);
+                const { line, character } =
+                    project.tsc.getLineAndCharacterOfPosition(file, node.pos);
                 exp.message += ` - ${file.fileName}:${line + 1}:${
                     character + 1
                 }`;

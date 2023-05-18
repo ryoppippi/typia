@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { StatementFactory } from "../../factories/StatementFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
@@ -22,10 +22,11 @@ export namespace RandomJoiner {
     ) => ts.Expression;
 
     export const array =
+        (tsc: typeof ts) =>
         (coalesce: (method: string) => ts.Expression) =>
         (decoder: Decoder) =>
         (item: Metadata, tags: IMetadataTag[], comments: ICommentTag[]) => {
-            const tail = RandomRanger.length(coalesce)({
+            const tail = RandomRanger.length(tsc)(coalesce)({
                 minimum: 0,
                 maximum: 3,
                 gap: 3,
@@ -34,11 +35,11 @@ export namespace RandomJoiner {
                 minimum: "minItems",
                 maximum: "maxItems",
             })(tags);
-            return ts.factory.createCallExpression(
+            return tsc.factory.createCallExpression(
                 coalesce("array"),
                 undefined,
                 [
-                    ts.factory.createArrowFunction(
+                    tsc.factory.createArrowFunction(
                         undefined,
                         undefined,
                         [],
@@ -52,19 +53,21 @@ export namespace RandomJoiner {
         };
 
     export const tuple =
+        (tsc: typeof ts) =>
         (decoder: Decoder) =>
         (items: Metadata[], tags: IMetadataTag[], comments: ICommentTag[]) =>
-            ts.factory.createArrayLiteralExpression(
+            tsc.factory.createArrayLiteralExpression(
                 items.map((i) => decoder(i.rest ?? i, tags, comments)),
                 true,
             );
 
     export const object =
+        (tsc: typeof ts) =>
         (coalesce: (method: string) => ts.Expression) =>
         (decoder: Decoder) =>
         (obj: MetadataObject): ts.ConciseBody => {
             if (obj.properties.length === 0)
-                return ts.factory.createIdentifier("{}");
+                return tsc.factory.createIdentifier("{}");
 
             // LIST UP PROPERTIES
             const regular = obj.properties.filter((p) => p.key.isSoleLiteral());
@@ -74,13 +77,13 @@ export namespace RandomJoiner {
 
             // REGULAR OBJECT
             const literal: ts.ObjectLiteralExpression =
-                ts.factory.createObjectLiteralExpression(
+                tsc.factory.createObjectLiteralExpression(
                     regular.map((p) => {
                         const str: string = p.key.getSoleLiteral()!;
-                        return ts.factory.createPropertyAssignment(
+                        return tsc.factory.createPropertyAssignment(
                             Escaper.variable(str)
                                 ? str
-                                : ts.factory.createStringLiteral(str),
+                                : tsc.factory.createStringLiteral(str),
                             decoder(
                                 p.value,
                                 p.tags,
@@ -93,32 +96,32 @@ export namespace RandomJoiner {
             if (dynamic.length === 0) return literal;
 
             const properties: ts.Statement[] = dynamic.map((p) =>
-                ts.factory.createExpressionStatement(
-                    dynamicProperty(coalesce)(decoder)(p),
+                tsc.factory.createExpressionStatement(
+                    dynamicProperty(tsc)(coalesce)(decoder)(p),
                 ),
             );
-            return ts.factory.createBlock(
+            return tsc.factory.createBlock(
                 [
-                    StatementFactory.constant(
+                    StatementFactory.constant(tsc)(
                         "output",
-                        ts.factory.createAsExpression(
+                        tsc.factory.createAsExpression(
                             literal,
-                            TypeFactory.keyword("any"),
+                            TypeFactory.keyword(tsc)("any"),
                         ),
                     ),
                     ...(obj.recursive
                         ? [
-                              ts.factory.createIfStatement(
-                                  ts.factory.createGreaterThanEquals(
-                                      ts.factory.createNumericLiteral(5),
-                                      ts.factory.createIdentifier("_depth"),
+                              tsc.factory.createIfStatement(
+                                  tsc.factory.createGreaterThanEquals(
+                                      tsc.factory.createNumericLiteral(5),
+                                      tsc.factory.createIdentifier("_depth"),
                                   ),
-                                  ts.factory.createBlock(properties, true),
+                                  tsc.factory.createBlock(properties, true),
                               ),
                           ]
                         : properties),
-                    ts.factory.createReturnStatement(
-                        ts.factory.createIdentifier("output"),
+                    tsc.factory.createReturnStatement(
+                        tsc.factory.createIdentifier("output"),
                     ),
                 ],
                 true,
@@ -126,22 +129,23 @@ export namespace RandomJoiner {
         };
 
     const dynamicProperty =
+        (tsc: typeof ts) =>
         (coalesce: (method: string) => ts.Expression) =>
         (decoder: Decoder) =>
         (p: MetadataProperty) =>
-            ts.factory.createCallExpression(coalesce("array"), undefined, [
-                ts.factory.createArrowFunction(
+            tsc.factory.createCallExpression(coalesce("array"), undefined, [
+                tsc.factory.createArrowFunction(
                     undefined,
                     undefined,
                     [],
                     undefined,
                     undefined,
-                    ts.factory.createBinaryExpression(
-                        ts.factory.createElementAccessExpression(
-                            ts.factory.createIdentifier("output"),
+                    tsc.factory.createBinaryExpression(
+                        tsc.factory.createElementAccessExpression(
+                            tsc.factory.createIdentifier("output"),
                             decoder(p.key, [], []),
                         ),
-                        ts.factory.createToken(ts.SyntaxKind.EqualsToken),
+                        tsc.factory.createToken(tsc.SyntaxKind.EqualsToken),
                         decoder(
                             p.value,
                             p.tags,
@@ -149,12 +153,12 @@ export namespace RandomJoiner {
                         ),
                     ),
                 ),
-                ts.factory.createCallExpression(
+                tsc.factory.createCallExpression(
                     coalesce("integer"),
                     undefined,
                     [
-                        ts.factory.createNumericLiteral(0),
-                        ts.factory.createNumericLiteral(3),
+                        tsc.factory.createNumericLiteral(0),
+                        tsc.factory.createNumericLiteral(3),
                     ],
                 ),
             ]);

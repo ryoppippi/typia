@@ -1,4 +1,5 @@
-import ts from "typescript";
+import { JSDocTagInfo } from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
@@ -14,6 +15,7 @@ import { UnionExplorer } from "../helpers/UnionExplorer";
  * @internal
  */
 export const check_union_array_like =
+    (tsc: typeof ts) =>
     <T>(accessor: check_union_array_like.IAccessor<T>) =>
     (props: check_union_array_like.IProps<T>) =>
     (
@@ -21,7 +23,7 @@ export const check_union_array_like =
         targets: T[],
         explore: FeatureProgrammer.IExplore,
         tags: IMetadataTag[],
-        jsDocTags: ts.JSDocTagInfo[],
+        jsDocTags: JSDocTagInfo[],
     ) => {
         // ONLY ONE TYPE
         if (targets.length === 1)
@@ -38,24 +40,24 @@ export const check_union_array_like =
         //----
         // TUPLES
         const tupleListVariable: ts.VariableStatement =
-            StatementFactory.constant(
+            StatementFactory.constant(tsc)(
                 "tupleList",
-                ts.factory.createArrayLiteralExpression(
+                tsc.factory.createArrayLiteralExpression(
                     targets.map((meta) =>
-                        ts.factory.createArrayLiteralExpression([
-                            ts.factory.createArrowFunction(
+                        tsc.factory.createArrayLiteralExpression([
+                            tsc.factory.createArrowFunction(
                                 undefined,
                                 undefined,
                                 [
-                                    IdentifierFactory.parameter(
+                                    IdentifierFactory.parameter(tsc)(
                                         "top",
-                                        TypeFactory.keyword("any"),
+                                        TypeFactory.keyword(tsc)("any"),
                                     ),
                                 ],
                                 undefined,
                                 undefined,
                                 props.checker(
-                                    ts.factory.createIdentifier("top"),
+                                    tsc.factory.createIdentifier("top"),
                                     meta,
                                     {
                                         ...explore,
@@ -67,19 +69,19 @@ export const check_union_array_like =
                                     input,
                                 ),
                             ),
-                            ts.factory.createArrowFunction(
+                            tsc.factory.createArrowFunction(
                                 undefined,
                                 undefined,
                                 [
-                                    IdentifierFactory.parameter(
+                                    IdentifierFactory.parameter(tsc)(
                                         "top",
-                                        TypeFactory.keyword("any"),
+                                        TypeFactory.keyword(tsc)("any"),
                                     ),
                                 ],
                                 undefined,
                                 undefined,
                                 props.decoder(
-                                    ts.factory.createIdentifier("top"),
+                                    tsc.factory.createIdentifier("top"),
                                     meta,
                                     {
                                         ...explore,
@@ -95,24 +97,24 @@ export const check_union_array_like =
             );
 
         // FILTERED TUPLES
-        const filteredVariable = StatementFactory.constant(
+        const filteredVariable = StatementFactory.constant(tsc)(
             "filtered",
-            ts.factory.createCallExpression(
-                ts.factory.createIdentifier("tupleList.filter"),
+            tsc.factory.createCallExpression(
+                tsc.factory.createIdentifier("tupleList.filter"),
                 undefined,
                 [
-                    ts.factory.createArrowFunction(
+                    tsc.factory.createArrowFunction(
                         undefined,
                         undefined,
-                        [IdentifierFactory.parameter("tuple")],
+                        [IdentifierFactory.parameter(tsc)("tuple")],
                         undefined,
                         undefined,
-                        ts.factory.createStrictEquality(
+                        tsc.factory.createStrictEquality(
                             props.success,
-                            ts.factory.createCallExpression(
-                                ts.factory.createIdentifier("tuple[0]"),
+                            tsc.factory.createCallExpression(
+                                tsc.factory.createIdentifier("tuple[0]"),
                                 undefined,
-                                [ts.factory.createIdentifier("front")],
+                                [tsc.factory.createIdentifier("front")],
                             ),
                         ),
                     ),
@@ -124,14 +126,14 @@ export const check_union_array_like =
         // STATEMENTS
         //----
         // ONLY ONE TYPE
-        const uniqueStatement = ts.factory.createIfStatement(
-            ts.factory.createStrictEquality(
-                ts.factory.createNumericLiteral(1),
-                ts.factory.createIdentifier("filtered.length"),
+        const uniqueStatement = tsc.factory.createIfStatement(
+            tsc.factory.createStrictEquality(
+                tsc.factory.createNumericLiteral(1),
+                tsc.factory.createIdentifier("filtered.length"),
             ),
-            ts.factory.createReturnStatement(
-                ts.factory.createCallExpression(
-                    ts.factory.createIdentifier(`filtered[0][1]`),
+            tsc.factory.createReturnStatement(
+                tsc.factory.createCallExpression(
+                    tsc.factory.createIdentifier(`filtered[0][1]`),
                     undefined,
                     [accessor.array(input)],
                 ),
@@ -139,56 +141,56 @@ export const check_union_array_like =
         );
 
         // UNION TYPE
-        const forOfStatement = ts.factory.createForOfStatement(
+        const forOfStatement = tsc.factory.createForOfStatement(
             undefined,
-            ts.factory.createVariableDeclarationList(
-                [ts.factory.createVariableDeclaration("tuple")],
-                ts.NodeFlags.Const,
+            tsc.factory.createVariableDeclarationList(
+                [tsc.factory.createVariableDeclaration("tuple")],
+                tsc.NodeFlags.Const,
             ),
             // StatementFactory.variable(ts.NodeFlags.Const, "tuple"),
-            ts.factory.createIdentifier("filtered"),
-            ts.factory.createIfStatement(
-                ts.factory.createCallExpression(
-                    IdentifierFactory.access(
-                        ts.factory.createIdentifier("array"),
+            tsc.factory.createIdentifier("filtered"),
+            tsc.factory.createIfStatement(
+                tsc.factory.createCallExpression(
+                    IdentifierFactory.access(tsc)(
+                        tsc.factory.createIdentifier("array"),
                     )("every"),
                     undefined,
                     [
-                        ts.factory.createArrowFunction(
+                        tsc.factory.createArrowFunction(
                             undefined,
                             undefined,
                             [
-                                IdentifierFactory.parameter(
+                                IdentifierFactory.parameter(tsc)(
                                     "value",
-                                    TypeFactory.keyword("any"),
+                                    TypeFactory.keyword(tsc)("any"),
                                 ),
                             ],
                             undefined,
                             undefined,
-                            ts.factory.createStrictEquality(
+                            tsc.factory.createStrictEquality(
                                 props.success,
-                                ts.factory.createCallExpression(
-                                    ts.factory.createIdentifier("tuple[0]"),
+                                tsc.factory.createCallExpression(
+                                    tsc.factory.createIdentifier("tuple[0]"),
                                     undefined,
-                                    [ts.factory.createIdentifier("value")],
+                                    [tsc.factory.createIdentifier("value")],
                                 ),
                             ),
                         ),
                     ],
                 ),
-                ts.factory.createReturnStatement(
-                    ts.factory.createCallExpression(
-                        ts.factory.createIdentifier(`tuple[1]`),
+                tsc.factory.createReturnStatement(
+                    tsc.factory.createCallExpression(
+                        tsc.factory.createIdentifier(`tuple[1]`),
                         undefined,
-                        [ts.factory.createIdentifier("array")],
+                        [tsc.factory.createIdentifier("array")],
                     ),
                 ),
             ),
         );
-        const unionStatement = ts.factory.createIfStatement(
-            ts.factory.createLessThan(
-                ts.factory.createNumericLiteral(1),
-                ts.factory.createIdentifier("filtered.length"),
+        const unionStatement = tsc.factory.createIfStatement(
+            tsc.factory.createLessThan(
+                tsc.factory.createNumericLiteral(1),
+                tsc.factory.createIdentifier("filtered.length"),
             ),
             forOfStatement,
         );
@@ -197,26 +199,26 @@ export const check_union_array_like =
             // ARRAY.LENGTH := 0
             ...(accessor.size !== null
                 ? [
-                      ts.factory.createIfStatement(
-                          ts.factory.createStrictEquality(
-                              ts.factory.createNumericLiteral(0),
+                      tsc.factory.createIfStatement(
+                          tsc.factory.createStrictEquality(
+                              tsc.factory.createNumericLiteral(0),
                               accessor.size(input),
                           ),
-                          ts.isReturnStatement(props.empty)
+                          tsc.isReturnStatement(props.empty)
                               ? props.empty
-                              : ts.factory.createReturnStatement(props.empty),
+                              : tsc.factory.createReturnStatement(props.empty),
                       ),
                   ]
                 : []),
 
             // UNION PREDICATORS
             tupleListVariable,
-            StatementFactory.constant("front", accessor.front(input)),
+            StatementFactory.constant(tsc)("front", accessor.front(input)),
             filteredVariable,
             uniqueStatement,
 
             // CONDITIONAL STATEMENTS
-            StatementFactory.constant("array", accessor.array(input)),
+            StatementFactory.constant(tsc)("array", accessor.array(input)),
             unionStatement,
             props.failure(
                 input,
@@ -225,14 +227,14 @@ export const check_union_array_like =
             ),
         ];
 
-        return ts.factory.createCallExpression(
-            ts.factory.createArrowFunction(
+        return tsc.factory.createCallExpression(
+            tsc.factory.createArrowFunction(
                 undefined,
                 undefined,
                 [],
                 undefined,
                 undefined,
-                ts.factory.createBlock(block, true),
+                tsc.factory.createBlock(block, true),
             ),
             undefined,
             undefined,
@@ -249,7 +251,7 @@ export namespace check_union_array_like {
             target: T,
             explore: FeatureProgrammer.IExplore,
             tags: IMetadataTag[],
-            jsDocTags: ts.JSDocTagInfo[],
+            jsDocTags: JSDocTagInfo[],
             array: ts.Expression,
         ): ts.Expression;
         decoder: UnionExplorer.Decoder<T>;

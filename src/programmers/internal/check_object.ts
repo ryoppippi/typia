@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { FunctionImporter } from "../helpers/FunctionImporeter";
 import { IExpressionEntry } from "../helpers/IExpressionEntry";
@@ -9,6 +9,7 @@ import { check_everything } from "./check_everything";
  * @internal
  */
 export const check_object =
+    (tsc: typeof ts) =>
     (props: check_object.IProps) =>
     (importer: FunctionImporter) =>
     (input: ts.Expression, entries: IExpressionEntry<ts.Expression>[]) => {
@@ -19,13 +20,19 @@ export const check_object =
 
         // REGULAR WITHOUT DYNAMIC PROPERTIES
         if (props.equals === false && dynamic.length === 0)
-            return regular.length === 0 ? props.positive : reduce(props)(flags);
+            return regular.length === 0
+                ? props.positive
+                : reduce(tsc)(props)(flags);
 
         // CHECK DYNAMIC PROPERTIES
         flags.push(
-            check_dynamic_properties(props)(importer)(input, regular, dynamic),
+            check_dynamic_properties(tsc)(props)(importer)(
+                input,
+                regular,
+                dynamic,
+            ),
         );
-        return reduce(props)(flags);
+        return reduce(tsc)(props)(flags);
     };
 
 /**
@@ -47,9 +54,12 @@ export namespace check_object {
 /**
  * @internal
  */
-const reduce = (props: check_object.IProps) => (expressions: ts.Expression[]) =>
-    props.assert
-        ? expressions.reduce(props.reduce)
-        : check_everything(
-              ts.factory.createArrayLiteralExpression(expressions),
-          );
+const reduce =
+    (tsc: typeof ts) =>
+    (props: check_object.IProps) =>
+    (expressions: ts.Expression[]) =>
+        props.assert
+            ? expressions.reduce(props.reduce)
+            : check_everything(tsc)(
+                  tsc.factory.createArrayLiteralExpression(expressions),
+              );

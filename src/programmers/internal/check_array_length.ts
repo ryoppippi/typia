@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IMetadataTag } from "../../metadata/IMetadataTag";
 
@@ -6,24 +6,24 @@ import { IMetadataTag } from "../../metadata/IMetadataTag";
  * @internal
  */
 export const check_array_length =
-    (metaTags: IMetadataTag[]) => (input: ts.Expression) =>
+    (tsc: typeof ts) => (metaTags: IMetadataTag[]) => (input: ts.Expression) =>
         metaTags
             .map((tag) => ({
                 tag,
                 expression:
                     tag.kind === "items"
-                        ? ts.factory.createStrictEquality(
-                              ts.factory.createNumericLiteral(tag.value),
+                        ? tsc.factory.createStrictEquality(
+                              tsc.factory.createNumericLiteral(tag.value),
                               input,
                           )
                         : tag.kind === "minItems"
-                        ? ts.factory.createLessThanEquals(
-                              ts.factory.createNumericLiteral(tag.value),
+                        ? tsc.factory.createLessThanEquals(
+                              tsc.factory.createNumericLiteral(tag.value),
                               input,
                           )
                         : tag.kind === "maxItems"
-                        ? ts.factory.createGreaterThanEquals(
-                              ts.factory.createNumericLiteral(tag.value),
+                        ? tsc.factory.createGreaterThanEquals(
+                              tsc.factory.createNumericLiteral(tag.value),
                               input,
                           )
                         : null!,

@@ -1,19 +1,19 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
+
+import { IProject } from "../../../transformers/IProject";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
 import { TypeFactory } from "../../TypeFactory";
 
 export const iterate_metadata_native =
-    (checker: ts.TypeChecker) =>
-    (meta: Metadata, type: ts.Type): boolean => {
-        const validator = validate(checker)(type);
-        const name: string = TypeFactory.getFullName(checker)(
-            type,
-            type.getSymbol(),
-        );
+    (p: IProject.IModule) =>
+    (meta: Metadata) =>
+    (type: ts.Type): boolean => {
+        const validator = validate(p)(type);
+        const name: string = TypeFactory.getFullName(p)(type, type.symbol);
 
         const simple = SIMPLES.get(name);
         if (simple && validator(simple)) {
@@ -39,24 +39,22 @@ export const iterate_metadata_native =
     };
 
 const validate =
-    (checker: ts.TypeChecker) => (type: ts.Type) => (info: IClassInfo) =>
+    (p: IProject.IModule) => (type: ts.Type) => (info: IClassInfo) =>
         (info.methods ?? []).every((method) => {
-            const returnType = TypeFactory.getReturnType(checker)(type)(
-                method.name,
-            );
+            const returnType = TypeFactory.getReturnType(p)(type)(method.name);
             return (
                 returnType !== null &&
-                checker.typeToString(returnType) === method.return
+                p.checker.typeToString(returnType) === method.return
             );
         }) &&
         (info.properties ?? []).every((property) => {
-            const prop = checker.getPropertyOfType(type, property.name);
+            const prop = p.checker.getPropertyOfType(type, property.name);
             const propType = prop?.valueDeclaration
-                ? checker.getTypeAtLocation(prop?.valueDeclaration)
+                ? p.checker.getTypeAtLocation(prop?.valueDeclaration)
                 : undefined;
             return (
                 propType !== undefined &&
-                checker.typeToString(propType) === property.type
+                p.checker.typeToString(propType) === property.type
             );
         });
 

@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
 
@@ -8,47 +8,47 @@ import { ArrayUtil } from "../../../utils/ArrayUtil";
 
 const same = (type: ts.Type | null) => {
     if (type === null) return () => false;
-    return (flag: ts.TypeFlags) => (type.getFlags() & flag) !== 0;
+    return (flag: ts.TypeFlags) => (type.flags & flag) !== 0;
 };
 
-export const iterate_metadata_atomic = (
-    meta: Metadata,
-    type: ts.Type,
-): boolean => {
-    // PREPARE INTERNAL FUNCTIONS
-    const filter = same(type);
-    const check = (info: IAtomicInfo) => {
-        if (filter(info.atomic) || filter(info.literal)) {
-            ArrayUtil.add(meta.atomics, info.name);
-            return true;
-        }
-        return false;
+export const iterate_metadata_atomic =
+    (tsc: typeof ts) =>
+    (meta: Metadata) =>
+    (type: ts.Type): boolean => {
+        // PREPARE INTERNAL FUNCTIONS
+        const filter = same(type);
+        const check = (info: IAtomicInfo) => {
+            if (filter(info.atomic) || filter(info.literal)) {
+                ArrayUtil.add(meta.atomics, info.name);
+                return true;
+            }
+            return false;
+        };
+
+        // CHECK EACH TYPES
+        return ATOMICS(tsc).some((info) => check(info));
     };
 
-    // CHECK EACH TYPES
-    return ATOMICS.some((info) => check(info));
-};
-
-const ATOMICS: IAtomicInfo[] = [
+const ATOMICS = (tsc: typeof ts): IAtomicInfo[] => [
     {
         name: "boolean",
-        atomic: ts.TypeFlags.BooleanLike,
-        literal: ts.TypeFlags.BooleanLiteral,
+        atomic: tsc.TypeFlags.BooleanLike,
+        literal: tsc.TypeFlags.BooleanLiteral,
     },
     {
         name: "number",
-        atomic: ts.TypeFlags.NumberLike,
-        literal: ts.TypeFlags.NumberLiteral,
+        atomic: tsc.TypeFlags.NumberLike,
+        literal: tsc.TypeFlags.NumberLiteral,
     },
     {
         name: "bigint",
-        atomic: ts.TypeFlags.BigInt,
-        literal: ts.TypeFlags.BigIntLiteral,
+        atomic: tsc.TypeFlags.BigInt,
+        literal: tsc.TypeFlags.BigIntLiteral,
     },
     {
         name: "string",
-        atomic: ts.TypeFlags.StringLike,
-        literal: ts.TypeFlags.StringLiteral,
+        atomic: tsc.TypeFlags.StringLike,
+        literal: tsc.TypeFlags.StringLiteral,
     },
 ];
 

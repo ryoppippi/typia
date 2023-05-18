@@ -1,6 +1,8 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { Metadata } from "../../../metadata/Metadata";
+
+import { IProject } from "../../../transformers/IProject";
 
 import { Writable } from "../../../typings/Writable";
 
@@ -11,11 +13,12 @@ import { MetadataFactory } from "../../MetadataFactory";
 import { explore_metadata } from "./explore_metadata";
 
 export const iterate_metadata_tuple =
-    (checker: ts.TypeChecker) =>
+    ({ tsc, checker }: IProject.IModule) =>
     (options: MetadataFactory.IOptions) =>
     (collection: MetadataCollection) =>
-    (meta: Metadata, type: ts.TupleType): boolean => {
-        if (!(checker as any).isTupleType(type)) return false;
+    (meta: Metadata) =>
+    (type: ts.TupleType): boolean => {
+        if (!checker.isTupleType(type)) return false;
 
         const elementFlags: readonly ts.ElementFlags[] =
             type.elementFlags ??
@@ -25,17 +28,17 @@ export const iterate_metadata_tuple =
         const children: Metadata[] = checker
             .getTypeArguments(type as ts.TypeReference)
             .map((elem, i) => {
-                const child: Metadata = explore_metadata(checker)(options)(
-                    collection,
-                )(elem, false);
+                const child: Metadata = explore_metadata({ tsc, checker })(
+                    options,
+                )(collection)(false)(elem);
 
                 // CHECK OPTIONAL
                 const flag: ts.ElementFlags | undefined = elementFlags[i];
-                if (flag === ts.ElementFlags.Optional)
+                if (flag === tsc.ElementFlags.Optional)
                     Writable(child).optional = true;
 
                 // REST TYPE
-                if (flag !== ts.ElementFlags.Rest) return child;
+                if (flag !== tsc.ElementFlags.Rest) return child;
                 const wrapper: Metadata = Metadata.initialize();
                 Writable(wrapper).rest = child;
                 return wrapper;

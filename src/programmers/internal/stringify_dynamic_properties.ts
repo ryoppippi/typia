@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { TemplateFactory } from "../../factories/TemplateFactory";
@@ -9,159 +9,165 @@ import { metadata_to_pattern } from "./metadata_to_pattern";
 /**
  * @internal
  */
-export const stringify_dynamic_properties = (
-    dynamic: IExpressionEntry<ts.Expression>[],
-    regular: string[],
-): ts.Expression => {
-    // BASIC STATMEMENT, CHECK UNDEFINED
-    const statements: ts.Statement[] = [
-        ts.factory.createIfStatement(
-            ts.factory.createStrictEquality(
-                ts.factory.createIdentifier("undefined"),
-                ts.factory.createIdentifier("value"),
+export const stringify_dynamic_properties =
+    (tsc: typeof ts) =>
+    (
+        dynamic: IExpressionEntry<ts.Expression>[],
+        regular: string[],
+    ): ts.Expression => {
+        // BASIC STATMEMENT, CHECK UNDEFINED
+        const statements: ts.Statement[] = [
+            tsc.factory.createIfStatement(
+                tsc.factory.createStrictEquality(
+                    tsc.factory.createIdentifier("undefined"),
+                    tsc.factory.createIdentifier("value"),
+                ),
+                tsc.factory.createReturnStatement(
+                    tsc.factory.createStringLiteral(""),
+                ),
             ),
-            ts.factory.createReturnStatement(
-                ts.factory.createStringLiteral(""),
-            ),
-        ),
-    ];
+        ];
 
-    // PREPARE RETURN FUNCTION
-    const output = () => {
-        const mapped = ts.factory.createCallExpression(
-            IdentifierFactory.access(
-                ts.factory.createCallExpression(
-                    ts.factory.createIdentifier("Object.entries"),
-                    undefined,
-                    [ts.factory.createIdentifier("input")],
-                ),
-            )("map"),
-            undefined,
-            [
-                ts.factory.createArrowFunction(
-                    undefined,
-                    undefined,
-                    [
-                        IdentifierFactory.parameter(
-                            ts.factory.createArrayBindingPattern([
-                                ts.factory.createBindingElement(
-                                    undefined,
-                                    undefined,
-                                    "key",
+        // PREPARE RETURN FUNCTION
+        const output = () => {
+            const mapped = tsc.factory.createCallExpression(
+                IdentifierFactory.access(tsc)(
+                    tsc.factory.createCallExpression(
+                        tsc.factory.createIdentifier("Object.entries"),
+                        undefined,
+                        [tsc.factory.createIdentifier("input")],
+                    ),
+                )("map"),
+                undefined,
+                [
+                    tsc.factory.createArrowFunction(
+                        undefined,
+                        undefined,
+                        [
+                            IdentifierFactory.parameter(tsc)(
+                                tsc.factory.createArrayBindingPattern([
+                                    tsc.factory.createBindingElement(
+                                        undefined,
+                                        undefined,
+                                        "key",
+                                    ),
+                                    tsc.factory.createBindingElement(
+                                        undefined,
+                                        undefined,
+                                        "value",
+                                    ),
+                                ]),
+                                tsc.factory.createTypeReferenceNode(
+                                    "[string, any]",
                                 ),
-                                ts.factory.createBindingElement(
-                                    undefined,
-                                    undefined,
-                                    "value",
-                                ),
-                            ]),
-                            ts.factory.createTypeReferenceNode("[string, any]"),
+                            ),
+                        ],
+                        undefined,
+                        undefined,
+                        tsc.factory.createBlock(statements),
+                    ),
+                ],
+            );
+            const filtered = tsc.factory.createCallExpression(
+                IdentifierFactory.access(tsc)(mapped)("filter"),
+                undefined,
+                [
+                    tsc.factory.createArrowFunction(
+                        undefined,
+                        undefined,
+                        [IdentifierFactory.parameter(tsc)("str")],
+                        undefined,
+                        undefined,
+                        tsc.factory.createStrictInequality(
+                            tsc.factory.createStringLiteral(""),
+                            tsc.factory.createIdentifier("str"),
                         ),
-                    ],
-                    undefined,
-                    undefined,
-                    ts.factory.createBlock(statements),
-                ),
-            ],
-        );
-        const filtered = ts.factory.createCallExpression(
-            IdentifierFactory.access(mapped)("filter"),
-            undefined,
-            [
-                ts.factory.createArrowFunction(
-                    undefined,
-                    undefined,
-                    [IdentifierFactory.parameter("str")],
-                    undefined,
-                    undefined,
-                    ts.factory.createStrictInequality(
-                        ts.factory.createStringLiteral(""),
-                        ts.factory.createIdentifier("str"),
+                    ),
+                ],
+            );
+            return tsc.factory.createCallExpression(
+                IdentifierFactory.access(tsc)(filtered)("join"),
+                undefined,
+                [tsc.factory.createStringLiteral(",")],
+            );
+        };
+
+        // WHEN REGULAR PROPERTY EXISTS
+        if (regular.length)
+            statements.push(
+                tsc.factory.createIfStatement(
+                    tsc.factory.createCallExpression(
+                        IdentifierFactory.access(tsc)(
+                            tsc.factory.createArrayLiteralExpression(
+                                regular.map((key) =>
+                                    tsc.factory.createStringLiteral(key),
+                                ),
+                            ),
+                        )("some"),
+                        undefined,
+                        [
+                            tsc.factory.createArrowFunction(
+                                undefined,
+                                undefined,
+                                [IdentifierFactory.parameter(tsc)("regular")],
+                                undefined,
+                                undefined,
+                                tsc.factory.createStrictEquality(
+                                    tsc.factory.createIdentifier("regular"),
+                                    tsc.factory.createIdentifier("key"),
+                                ),
+                            ),
+                        ],
+                    ),
+                    tsc.factory.createReturnStatement(
+                        tsc.factory.createStringLiteral(""),
                     ),
                 ),
-            ],
-        );
-        return ts.factory.createCallExpression(
-            IdentifierFactory.access(filtered)("join"),
-            undefined,
-            [ts.factory.createStringLiteral(",")],
-        );
-    };
+            );
 
-    // WHEN REGULAR PROPERTY EXISTS
-    if (regular.length)
-        statements.push(
-            ts.factory.createIfStatement(
-                ts.factory.createCallExpression(
-                    IdentifierFactory.access(
-                        ts.factory.createArrayLiteralExpression(
-                            regular.map((key) =>
-                                ts.factory.createStringLiteral(key),
-                            ),
-                        ),
-                    )("some"),
+        // ONLY STRING TYPED KEY EXISTS
+        const simple: boolean =
+            dynamic.length === 1 &&
+            dynamic[0]!.key.size() === 1 &&
+            dynamic[0]!.key.atomics[0] === "string";
+        if (simple === true) {
+            statements.push(stringify(tsc)(dynamic[0]!));
+            return output();
+        }
+
+        // COMPOSITE TEMPLATE LITERAL TYPES
+        for (const entry of dynamic) {
+            const condition: ts.IfStatement = tsc.factory.createIfStatement(
+                tsc.factory.createCallExpression(
+                    tsc.factory.createIdentifier(
+                        `RegExp(/${metadata_to_pattern(true)(
+                            entry.key,
+                        )}/).test`,
+                    ),
                     undefined,
-                    [
-                        ts.factory.createArrowFunction(
-                            undefined,
-                            undefined,
-                            [IdentifierFactory.parameter("regular")],
-                            undefined,
-                            undefined,
-                            ts.factory.createStrictEquality(
-                                ts.factory.createIdentifier("regular"),
-                                ts.factory.createIdentifier("key"),
-                            ),
-                        ),
-                    ],
+                    [tsc.factory.createIdentifier("key")],
                 ),
-                ts.factory.createReturnStatement(
-                    ts.factory.createStringLiteral(""),
-                ),
-            ),
-        );
-
-    // ONLY STRING TYPED KEY EXISTS
-    const simple: boolean =
-        dynamic.length === 1 &&
-        dynamic[0]!.key.size() === 1 &&
-        dynamic[0]!.key.atomics[0] === "string";
-    if (simple === true) {
-        statements.push(stringify(dynamic[0]!));
+                stringify(tsc)(entry),
+            );
+            statements.push(condition);
+        }
         return output();
-    }
-
-    // COMPOSITE TEMPLATE LITERAL TYPES
-    for (const entry of dynamic) {
-        const condition: ts.IfStatement = ts.factory.createIfStatement(
-            ts.factory.createCallExpression(
-                ts.factory.createIdentifier(
-                    `RegExp(/${metadata_to_pattern(true)(entry.key)}/).test`,
-                ),
-                undefined,
-                [ts.factory.createIdentifier("key")],
-            ),
-            stringify(entry),
-        );
-        statements.push(condition);
-    }
-    return output();
-};
+    };
 
 /**
  * @internal
  */
-const stringify = (
-    entry: IExpressionEntry<ts.Expression>,
-): ts.ReturnStatement =>
-    ts.factory.createReturnStatement(
-        TemplateFactory.generate([
-            ts.factory.createCallExpression(
-                ts.factory.createIdentifier("JSON.stringify"),
-                [],
-                [ts.factory.createIdentifier("key")],
-            ),
-            ts.factory.createStringLiteral(":"),
-            entry.expression,
-        ]),
-    );
+const stringify =
+    (tsc: typeof ts) =>
+    (entry: IExpressionEntry<ts.Expression>): ts.ReturnStatement =>
+        tsc.factory.createReturnStatement(
+            TemplateFactory.generate(tsc)([
+                tsc.factory.createCallExpression(
+                    tsc.factory.createIdentifier("JSON.stringify"),
+                    [],
+                    [tsc.factory.createIdentifier("key")],
+                ),
+                tsc.factory.createStringLiteral(":"),
+                entry.expression,
+            ]),
+        );

@@ -1,4 +1,7 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
+
+import { TsNodeUtil } from "../../utils/TsNodeUtil";
+import { TsTypeUtil } from "../../utils/TsTypeUtil";
 
 import { IProject } from "../IProject";
 
@@ -12,7 +15,7 @@ export namespace GenericTransformer {
                 modulo: ts.LeftHandSideExpression,
             ) => (type: ts.Type, name: string) => ts.ArrowFunction,
         ) =>
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (expression: ts.CallExpression) => {
             // CHECK PARAMETER
@@ -23,31 +26,29 @@ export namespace GenericTransformer {
             const [type, node, generic]: [ts.Type, ts.Node, boolean] =
                 expression.typeArguments && expression.typeArguments[0]
                     ? [
-                          project.checker.getTypeFromTypeNode(
+                          p.checker.getTypeFromTypeNode(
                               expression.typeArguments[0],
                           ),
                           expression.typeArguments[0],
                           true,
                       ]
                     : [
-                          project.checker.getTypeAtLocation(
-                              expression.arguments[0]!,
-                          ),
+                          p.checker.getTypeAtLocation(expression.arguments[0]!),
                           expression.arguments[0]!,
                           false,
                       ];
-            if (type.isTypeParameter())
+            if (TsTypeUtil.isTypeParameter(p.tsc)(type))
                 throw new Error(
                     `Error on typia.${method}(): non-specified generic argument.`,
                 );
 
             // DO TRANSFORM
-            return ts.factory.createCallExpression(
-                programmer(project)(modulo)(
+            return p.tsc.factory.createCallExpression(
+                programmer(p)(modulo)(
                     type,
                     generic
-                        ? node.getFullText().trim()
-                        : name(project.checker)(type)(node),
+                        ? TsNodeUtil.getFullText(p.tsc)(node).trim()
+                        : name(p)(type)(node),
                 ),
                 undefined,
                 [expression.arguments[0]!],
@@ -63,7 +64,7 @@ export namespace GenericTransformer {
                 modulo: ts.LeftHandSideExpression,
             ) => (type: ts.Type, name: string) => ts.ArrowFunction,
         ) =>
-        (project: IProject) =>
+        (p: IProject) =>
         (modulo: ts.LeftHandSideExpression) =>
         (expression: ts.CallExpression) => {
             // CHECK GENERIC ARGUMENT EXISTENCE
@@ -74,24 +75,27 @@ export namespace GenericTransformer {
 
             // GET TYPE INFO
             const node: ts.TypeNode = expression.typeArguments[0];
-            const type: ts.Type = project.checker.getTypeFromTypeNode(node);
+            const type: ts.Type = p.checker.getTypeFromTypeNode(node);
 
-            if (type.isTypeParameter())
+            if (TsTypeUtil.isTypeParameter(p.tsc)(type))
                 throw new Error(
                     `Error on typia.${method}(): non-specified generic argument.`,
                 );
 
             // DO TRANSFORM
-            return programmer(project)(modulo)(type, node.getFullText().trim());
+            return programmer(p)(modulo)(
+                type,
+                TsNodeUtil.getFullText(p.tsc)(node).trim(),
+            );
         };
 
     const name =
-        (checker: ts.TypeChecker) =>
+        (project: IProject) =>
         (type: ts.Type) =>
         (node: ts.Node): string =>
-            checker.typeToString(
+            project.checker.typeToString(
                 type,
                 node,
-                ts.TypeFormatFlags.NodeBuilderFlagsMask,
+                project.tsc.TypeFormatFlags.NodeBuilderFlagsMask,
             );
 }

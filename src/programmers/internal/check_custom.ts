@@ -1,4 +1,4 @@
-import ts from "typescript";
+import type ts from "typescript/lib/tsclibrary";
 
 import { IJsDocTagInfo } from "../../metadata/IJsDocTagInfo";
 
@@ -10,6 +10,7 @@ import { get_comment_tags } from "./get_comment_tags";
  * @internal
  */
 export const check_custom =
+    (tsc: typeof ts) =>
     (type: string, alias?: string) =>
     (importer: FunctionImporter) =>
     (jsDocTags: IJsDocTagInfo[]) =>
@@ -18,13 +19,13 @@ export const check_custom =
             expected: `${alias ?? type} (@${tag.name}${
                 tag.value?.length ? ` ${tag.value}` : ""
             })`,
-            expression: ts.factory.createCallExpression(
+            expression: tsc.factory.createCallExpression(
                 importer.use("is_custom"),
                 undefined,
                 [
-                    ts.factory.createStringLiteral(tag.name),
-                    ts.factory.createStringLiteral(type),
-                    ts.factory.createStringLiteral(tag.value ?? ""),
+                    tsc.factory.createStringLiteral(tag.name),
+                    tsc.factory.createStringLiteral(type),
+                    tsc.factory.createStringLiteral(tag.value ?? ""),
                     input,
                 ],
             ),
