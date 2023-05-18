@@ -10,14 +10,11 @@ export namespace TsSymbolUtil {
             const node = symbol.declarations?.[0];
             if (!node) return undefined;
 
-            return tsc
-                .getJSDocCommentsAndTags(node)
-                .map((doc) =>
-                    doc.kind === tsc.SyntaxKind.JSDoc
-                        ? jsDocToText(tsc)(doc as ts.JSDoc)
-                        : jsTagToText(emendTag(tsc)(doc)),
-                )
-                .join(" ");
+            const range: ts.TextRange = tsc.getCommentRange(node);
+            const text: string = TsNodeUtil.getSourceFile(tsc)(
+                node,
+            ).text.substring(range.pos, range.end);
+            return filter(text).join("\n");
         };
 
     export const getCommentTags =
@@ -26,10 +23,21 @@ export namespace TsSymbolUtil {
             const node = symbol.declarations?.[0];
             if (!node) return undefined;
 
-            // tsc.getJSDocCommentsAndTags()
             const tagList: ts.JSDocTag[] = tsc
                 .getJSDocTags(node)
                 .map(emendTag(tsc));
+            // if (
+            //     tagList.some(
+            //         (tag) => tag.tagName.escapedText.toString() === "type",
+            //     )
+            // ) {
+            //     const entire = tsc.getJSDocCommentsAndTags(node);
+            //     const texts = entire.map((e) =>
+            //         tsc.isJSDoc(e) ? jsDocToText(e) : jsTagToText(e),
+            //     );
+            //     console.log(texts);
+            // }
+
             return tagList.map((tag) => ({
                 name: tag.tagName.escapedText.toString(),
                 text:
@@ -61,36 +69,78 @@ export namespace TsSymbolUtil {
             const comment: string = TsNodeUtil.getSourceFile(tsc)(tag)
                 .text.substring(tag.pos, tag.end)
                 .replace(`@${tagName}`, "")
-                .trim();
+                .split("\n")
+                .map((str) => trim(str))
+                .filter((str) => !!str.length)
+                .join("\n");
             return comment.length
                 ? {
                       ...tag,
-                      comment: "",
+                      comment,
                   }
                 : tag;
         };
 
-    const jsDocToText =
-        (tsc: typeof ts) =>
-        (doc: ts.JSDoc): string =>
-            [
-                jsCommentToText(doc.comment),
-                ...(doc.tags ?? []).map(emendTag(tsc)).map(jsTagToText),
-            ]
-                .filter((str) => !!str.length)
-                .join(" ");
+    const filter = (text: string): string[] => {
+        const elements: string[] = text.split("\n");
+        const first: number = lastIndexOf(elements)((elem) =>
+            elem.trim().startsWith("/**"),
+        );
+        const last: number = lastIndexOf(elements)((elem) =>
+            elem.trim().endsWith("*/"),
+        );
 
-    const jsTagToText = (doc: ts.JSDocTag): string =>
-        ["@" + doc.tagName.escapedText.toString(), jsCommentToText(doc.comment)]
-            .filter((str) => !!str.length)
-            .join(" ");
+        const cut: string[] = elements.slice(first, last + 1);
+        return cut
+            .map((elem, i) => {
+                if (i === 0) elem = elem.substring(elem.lastIndexOf("/**") + 3);
+                if (i === cut.length - 1)
+                    elem = elem.substring(0, elem.lastIndexOf("*/"));
+                return trim(elem);
+            })
+            .filter((elem) => elem.length > 0);
+    };
 
-    const jsCommentToText = (
-        comment: string | ts.NodeArray<ts.JSDocComment> | undefined,
-    ): string =>
-        comment === undefined
-            ? ""
-            : typeof comment === "string"
-            ? comment
-            : comment.map((c) => c.text).join("");
+    const lastIndexOf =
+        <T>(array: T[]) =>
+        (pred: (elem: T) => boolean) => {
+            for (let i = array.length - 1; i >= 0; i--)
+                if (pred(array[i]!)) return i;
+            return -1;
+        };
+
+    const trim = (str: string): string => {
+        const vulnerable = (ch: string) =>
+            ch === " " ||
+            ch === "\n" ||
+            ch == "\r" ||
+            ch === "\t" ||
+            ch === "*";
+        let start: number;
+        let end: number;
+        for (start = 0; start < str.length; ++start)
+            if (!vulnerable(str.charAt(start))) break;
+        for (end = str.length - 1; end >= 0; --end)
+            if (!vulnerable(str.charAt(end))) break;
+        return start > end ? "" : str.substring(start, end + 1).trim();
+    };
 }
+
+// const jsDocToText = (doc: ts.JSDoc): string =>
+//     [jsCommentToText(doc.comment), ...(doc.tags ?? []).map(jsTagToText)]
+//         .filter((str) => !!str.length)
+//         .join(" ");
+
+// const jsTagToText = (doc: ts.JSDocTag): string =>
+//     ["@" + doc.tagName.escapedText.toString(), jsCommentToText(doc.comment)]
+//         .filter((str) => !!str.length)
+//         .join(" ");
+
+// const jsCommentToText = (
+//     comment: string | ts.NodeArray<ts.JSDocComment> | undefined,
+// ): string =>
+//     comment === undefined
+//         ? ""
+//         : typeof comment === "string"
+//         ? comment
+//         : comment.map((c) => c.text).join("");

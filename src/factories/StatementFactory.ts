@@ -1,4 +1,3 @@
-import { transpile as TsTranspile } from "typescript";
 import type ts from "typescript/lib/tsclibrary";
 
 export namespace StatementFactory {
@@ -18,9 +17,4 @@ export namespace StatementFactory {
                     tsc.NodeFlags.Const,
                 ),
             );
-
-    export const transpile = (tsc: typeof ts) => (script: string) =>
-        tsc.factory.createExpressionStatement(
-            tsc.factory.createIdentifier(TsTranspile(script)), // @todo
-        );
 }

@@ -2,6 +2,9 @@ import { Spoiler } from "../helpers/Spoiler";
 
 export type TagType = TagType.Type[];
 export namespace TagType {
+    /**
+     * Let's test tag type.
+     */
     export interface Type {
         /**
          * Integer type.
