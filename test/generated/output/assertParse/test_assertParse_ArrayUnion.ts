@@ -20,16 +20,6 @@ export const test_assertParse_ArrayUnion = _test_assertParse(
                                     const tupleList = [
                                         [
                                             (top: any) =>
-                                                "string" === typeof top,
-                                            (top: any) =>
-                                                top.every(
-                                                    (elem: any) =>
-                                                        "string" ===
-                                                        typeof elem,
-                                                ),
-                                        ],
-                                        [
-                                            (top: any) =>
                                                 "boolean" === typeof top,
                                             (top: any) =>
                                                 top.every(
@@ -48,6 +38,16 @@ export const test_assertParse_ArrayUnion = _test_assertParse(
                                                         "number" ===
                                                             typeof elem &&
                                                         Number.isFinite(elem),
+                                                ),
+                                        ],
+                                        [
+                                            (top: any) =>
+                                                "string" === typeof top,
+                                            (top: any) =>
+                                                top.every(
+                                                    (elem: any) =>
+                                                        "string" ===
+                                                        typeof elem,
                                                 ),
                                         ],
                                     ];
@@ -99,31 +99,6 @@ export const test_assertParse_ArrayUnion = _test_assertParse(
                                     (() => {
                                         if (0 === elem.length) return true;
                                         const tupleList = [
-                                            [
-                                                (top: any) =>
-                                                    "string" === typeof top,
-                                                (top: any) =>
-                                                    top.every(
-                                                        (
-                                                            elem: any,
-                                                            _index2: number,
-                                                        ) =>
-                                                            "string" ===
-                                                                typeof elem ||
-                                                            $guard(true, {
-                                                                path:
-                                                                    _path +
-                                                                    "[" +
-                                                                    _index1 +
-                                                                    "][" +
-                                                                    _index2 +
-                                                                    "]",
-                                                                expected:
-                                                                    "string",
-                                                                value: elem,
-                                                            }),
-                                                    ),
-                                            ],
                                             [
                                                 (top: any) =>
                                                     "boolean" === typeof top,
@@ -178,6 +153,31 @@ export const test_assertParse_ArrayUnion = _test_assertParse(
                                                             }),
                                                     ),
                                             ],
+                                            [
+                                                (top: any) =>
+                                                    "string" === typeof top,
+                                                (top: any) =>
+                                                    top.every(
+                                                        (
+                                                            elem: any,
+                                                            _index2: number,
+                                                        ) =>
+                                                            "string" ===
+                                                                typeof elem ||
+                                                            $guard(true, {
+                                                                path:
+                                                                    _path +
+                                                                    "[" +
+                                                                    _index1 +
+                                                                    "][" +
+                                                                    _index2 +
+                                                                    "]",
+                                                                expected:
+                                                                    "string",
+                                                                value: elem,
+                                                            }),
+                                                    ),
+                                            ],
                                         ];
                                         const front = elem[0];
                                         const filtered = tupleList.filter(
@@ -199,7 +199,7 @@ export const test_assertParse_ArrayUnion = _test_assertParse(
                                         return $guard(_exceptionable, {
                                             path: _path + "[" + _index1 + "]",
                                             expected:
-                                                "(Array<string> | Array<boolean> | Array<number>)",
+                                                "(Array<boolean> | Array<number> | Array<string>)",
                                             value: elem,
                                         });
                                     })(),

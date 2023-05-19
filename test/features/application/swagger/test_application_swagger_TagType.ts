@@ -1,5 +1,4 @@
-import typia from "typia";
-
+import typia from "../../../../src";
 import { _test_application } from "../../../internal/_test_application";
 import { TagType } from "../../../structures/TagType";
 

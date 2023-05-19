@@ -7,10 +7,17 @@ export const test_createIsClone_TagType = _test_isClone(
     TagType.generate,
     (input: any): typia.Primitive<TagType> | null => {
         const is = (input: any): input is TagType => {
+            const $is_custom = (typia.createIsClone as any).is_custom;
             const $io0 = (input: any): boolean =>
                 "number" === typeof input.int &&
                 Number.isFinite(input.int) &&
                 parseInt(input.int) === input.int &&
+                $is_custom(
+                    "example",
+                    "number",
+                    "https://example.com",
+                    input.int,
+                ) &&
                 "number" === typeof input.uint &&
                 Number.isFinite(input.uint) &&
                 parseInt(input.uint) === input.uint &&
@@ -24,6 +31,7 @@ export const test_createIsClone_TagType = _test_isClone(
             );
         };
         const clone = (input: TagType): typia.Primitive<TagType> => {
+            const $is_custom = (typia.createIsClone as any).is_custom;
             const $co0 = (input: any): any => ({
                 int: input.int as any,
                 uint: input.uint as any,

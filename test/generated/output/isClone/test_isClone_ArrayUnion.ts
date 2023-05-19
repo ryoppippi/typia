@@ -17,14 +17,6 @@ export const test_isClone_ArrayUnion = _test_isClone(
                                 if (0 === elem.length) return true;
                                 const tupleList = [
                                     [
-                                        (top: any) => "string" === typeof top,
-                                        (top: any) =>
-                                            top.every(
-                                                (elem: any) =>
-                                                    "string" === typeof elem,
-                                            ),
-                                    ],
-                                    [
                                         (top: any) => "boolean" === typeof top,
                                         (top: any) =>
                                             top.every(
@@ -41,6 +33,14 @@ export const test_isClone_ArrayUnion = _test_isClone(
                                                 (elem: any) =>
                                                     "number" === typeof elem &&
                                                     Number.isFinite(elem),
+                                            ),
+                                    ],
+                                    [
+                                        (top: any) => "string" === typeof top,
+                                        (top: any) =>
+                                            top.every(
+                                                (elem: any) =>
+                                                    "string" === typeof elem,
                                             ),
                                     ],
                                 ];
@@ -77,14 +77,6 @@ export const test_isClone_ArrayUnion = _test_isClone(
                                     const tupleList = [
                                         [
                                             (top: any) =>
-                                                "string" === typeof top,
-                                            (top: any) =>
-                                                top.map(
-                                                    (elem: any) => elem as any,
-                                                ),
-                                        ],
-                                        [
-                                            (top: any) =>
                                                 "boolean" === typeof top,
                                             (top: any) =>
                                                 top.map(
@@ -94,6 +86,14 @@ export const test_isClone_ArrayUnion = _test_isClone(
                                         [
                                             (top: any) =>
                                                 "number" === typeof top,
+                                            (top: any) =>
+                                                top.map(
+                                                    (elem: any) => elem as any,
+                                                ),
+                                        ],
+                                        [
+                                            (top: any) =>
+                                                "string" === typeof top,
                                             (top: any) =>
                                                 top.map(
                                                     (elem: any) => elem as any,
@@ -119,7 +119,7 @@ export const test_isClone_ArrayUnion = _test_isClone(
                                                 return tuple[1](array);
                                     $throws({
                                         expected:
-                                            "(Array<string> | Array<boolean> | Array<number>)",
+                                            "(Array<boolean> | Array<number> | Array<string>)",
                                         value: elem,
                                     });
                                 })()

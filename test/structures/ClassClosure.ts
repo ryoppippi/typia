@@ -7,13 +7,15 @@ export namespace ClassClosure {
     export const JSONABLE = false;
 
     export class Something {
-        public constructor(public readonly id: string) {}
+        public constructor(public readonly id: string, dummy: boolean) {
+            dummy;
+        }
         public readonly type: "something" = "something" as const;
         public readonly closure: () => string = () => `${this.type}:${this.id}`;
     }
 
     export function generate(): ClassClosure {
-        return new Something(TestRandomGenerator.string());
+        return new Something(TestRandomGenerator.string(), Math.random() < 0.5);
     }
 
     export const SPOILERS: Spoiler<ClassClosure>[] = [

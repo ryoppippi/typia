@@ -12,6 +12,12 @@ export const test_createValidatePrune_TagType = _test_validatePrune(
                     "number" === typeof input.int &&
                     Number.isFinite(input.int) &&
                     parseInt(input.int) === input.int &&
+                    $is_custom(
+                        "example",
+                        "number",
+                        "https://example.com",
+                        input.int,
+                    ) &&
                     "number" === typeof input.uint &&
                     Number.isFinite(input.uint) &&
                     parseInt(input.uint) === input.uint &&
@@ -28,6 +34,7 @@ export const test_createValidatePrune_TagType = _test_validatePrune(
             };
             const errors = [] as any[];
             const $report = (typia.createValidatePrune as any).report(errors);
+            const $is_custom = (typia.createValidatePrune as any).is_custom;
             if (false === __is(input))
                 ((
                     input: any,
@@ -46,6 +53,18 @@ export const test_createValidatePrune_TagType = _test_validatePrune(
                                     $report(_exceptionable, {
                                         path: _path + ".int",
                                         expected: "number (@type int)",
+                                        value: input.int,
+                                    })) &&
+                                ($is_custom(
+                                    "example",
+                                    "number",
+                                    "https://example.com",
+                                    input.int,
+                                ) ||
+                                    $report(_exceptionable, {
+                                        path: _path + ".int",
+                                        expected:
+                                            "number (@example https://example.com)",
                                         value: input.int,
                                     }))) ||
                                 $report(_exceptionable, {
@@ -118,6 +137,7 @@ export const test_createValidatePrune_TagType = _test_validatePrune(
             } as any;
         };
         const prune = (input: TagType): void => {
+            const $is_custom = (typia.createValidatePrune as any).is_custom;
             const $po0 = (input: any): any => {
                 for (const key of Object.keys(input)) {
                     if ("int" === key || "uint" === key) continue;

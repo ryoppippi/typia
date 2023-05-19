@@ -67,7 +67,9 @@ export namespace TypiaProgrammer {
                 ((compilerOptions.plugins as any[]) ?? []).find(
                     (p: any) =>
                         p.transform === "typia/lib/transform" ||
-                        p.transform === "../src/transform.ts",
+                        p.transform === "./lib/transform" ||
+                        p.path === "typia/lib/transform" ||
+                        p.path === "./lib/transform",
                 ) ?? {},
         };
         const result: ts.TransformationResult<ts.SourceFile> = ts.transform(

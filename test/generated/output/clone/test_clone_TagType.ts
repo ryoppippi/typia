@@ -7,6 +7,7 @@ export const test_clone_TagType = _test_clone(
     TagType.generate,
     (input) =>
         ((input: Array<TagType.Type>): typia.Primitive<Array<TagType.Type>> => {
+            const $is_custom = (typia.clone as any).is_custom;
             const $co0 = (input: any): any => ({
                 int: input.int as any,
                 uint: input.uint as any,

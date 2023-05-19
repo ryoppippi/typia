@@ -16,14 +16,6 @@ export const test_createValidate_ArrayUnion = _test_validate(
                             if (0 === elem.length) return true;
                             const tupleList = [
                                 [
-                                    (top: any) => "string" === typeof top,
-                                    (top: any) =>
-                                        top.every(
-                                            (elem: any) =>
-                                                "string" === typeof elem,
-                                        ),
-                                ],
-                                [
                                     (top: any) => "boolean" === typeof top,
                                     (top: any) =>
                                         top.every(
@@ -40,6 +32,14 @@ export const test_createValidate_ArrayUnion = _test_validate(
                                             (elem: any) =>
                                                 "number" === typeof elem &&
                                                 Number.isFinite(elem),
+                                        ),
+                                ],
+                                [
+                                    (top: any) => "string" === typeof top,
+                                    (top: any) =>
+                                        top.every(
+                                            (elem: any) =>
+                                                "string" === typeof elem,
                                         ),
                                 ],
                             ];
@@ -93,40 +93,6 @@ export const test_createValidate_ArrayUnion = _test_validate(
                                         (() => {
                                             if (0 === elem.length) return true;
                                             const tupleList = [
-                                                [
-                                                    (top: any) =>
-                                                        "string" === typeof top,
-                                                    (top: any) =>
-                                                        top
-                                                            .map(
-                                                                (
-                                                                    elem: any,
-                                                                    _index2: number,
-                                                                ) =>
-                                                                    "string" ===
-                                                                        typeof elem ||
-                                                                    $report(
-                                                                        true,
-                                                                        {
-                                                                            path:
-                                                                                _path +
-                                                                                "[" +
-                                                                                _index1 +
-                                                                                "][" +
-                                                                                _index2 +
-                                                                                "]",
-                                                                            expected:
-                                                                                "string",
-                                                                            value: elem,
-                                                                        },
-                                                                    ),
-                                                            )
-                                                            .every(
-                                                                (
-                                                                    flag: boolean,
-                                                                ) => flag,
-                                                            ),
-                                                ],
                                                 [
                                                     (top: any) =>
                                                         "boolean" ===
@@ -201,6 +167,40 @@ export const test_createValidate_ArrayUnion = _test_validate(
                                                                 ) => flag,
                                                             ),
                                                 ],
+                                                [
+                                                    (top: any) =>
+                                                        "string" === typeof top,
+                                                    (top: any) =>
+                                                        top
+                                                            .map(
+                                                                (
+                                                                    elem: any,
+                                                                    _index2: number,
+                                                                ) =>
+                                                                    "string" ===
+                                                                        typeof elem ||
+                                                                    $report(
+                                                                        true,
+                                                                        {
+                                                                            path:
+                                                                                _path +
+                                                                                "[" +
+                                                                                _index1 +
+                                                                                "][" +
+                                                                                _index2 +
+                                                                                "]",
+                                                                            expected:
+                                                                                "string",
+                                                                            value: elem,
+                                                                        },
+                                                                    ),
+                                                            )
+                                                            .every(
+                                                                (
+                                                                    flag: boolean,
+                                                                ) => flag,
+                                                            ),
+                                                ],
                                             ];
                                             const front = elem[0];
                                             const filtered = tupleList.filter(
@@ -224,7 +224,7 @@ export const test_createValidate_ArrayUnion = _test_validate(
                                                 path:
                                                     _path + "[" + _index1 + "]",
                                                 expected:
-                                                    "(Array<string> | Array<boolean> | Array<number>)",
+                                                    "(Array<boolean> | Array<number> | Array<string>)",
                                                 value: elem,
                                             });
                                         })()) ||

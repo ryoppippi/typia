@@ -17,6 +17,12 @@ export const test_validateClone_TagType = _test_validateClone(
                         "number" === typeof input.int &&
                         Number.isFinite(input.int) &&
                         parseInt(input.int) === input.int &&
+                        $is_custom(
+                            "example",
+                            "number",
+                            "https://example.com",
+                            input.int,
+                        ) &&
                         "number" === typeof input.uint &&
                         Number.isFinite(input.uint) &&
                         parseInt(input.uint) === input.uint &&
@@ -33,6 +39,7 @@ export const test_validateClone_TagType = _test_validateClone(
                 };
                 const errors = [] as any[];
                 const $report = (typia.validateClone as any).report(errors);
+                const $is_custom = (typia.validateClone as any).is_custom;
                 if (false === __is(input))
                     ((
                         input: any,
@@ -51,6 +58,18 @@ export const test_validateClone_TagType = _test_validateClone(
                                         $report(_exceptionable, {
                                             path: _path + ".int",
                                             expected: "number (@type int)",
+                                            value: input.int,
+                                        })) &&
+                                    ($is_custom(
+                                        "example",
+                                        "number",
+                                        "https://example.com",
+                                        input.int,
+                                    ) ||
+                                        $report(_exceptionable, {
+                                            path: _path + ".int",
+                                            expected:
+                                                "number (@example https://example.com)",
                                             value: input.int,
                                         }))) ||
                                     $report(_exceptionable, {
@@ -129,6 +148,7 @@ export const test_validateClone_TagType = _test_validateClone(
             const clone = (
                 input: Array<TagType.Type>,
             ): typia.Primitive<Array<TagType.Type>> => {
+                const $is_custom = (typia.validateClone as any).is_custom;
                 const $co0 = (input: any): any => ({
                     int: input.int as any,
                     uint: input.uint as any,

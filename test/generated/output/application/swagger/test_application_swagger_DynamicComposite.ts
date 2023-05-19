@@ -1,8 +1,100 @@
-import typia from "typia";
-
+import typia from "../../../../../src";
 import { _test_application } from "../../../../internal/_test_application";
 import { DynamicComposite } from "../../../../structures/DynamicComposite";
 
 export const test_application_swagger_DynamicComposite = _test_application(
     "swagger",
-)("DynamicComposite", typia.application<[DynamicComposite], "swagger">());
+)("DynamicComposite", {
+    schemas: [
+        {
+            $ref: "#/components/schemas/DynamicComposite",
+        },
+    ],
+    components: {
+        schemas: {
+            DynamicComposite: {
+                type: "object",
+                properties: {
+                    id: {
+                        description: "",
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "string",
+                    },
+                    name: {
+                        description: "",
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "string",
+                    },
+                },
+                nullable: false,
+                required: ["id", "name"],
+                description: "",
+                "x-typia-jsDocTags": [],
+                "x-typia-patternProperties": {
+                    "^-?\\d+\\.?\\d*$": {
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "number",
+                    },
+                    "^(prefix_(.*))": {
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "string",
+                    },
+                    "((.*)_postfix)$": {
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "string",
+                    },
+                    "^(value_-?\\d+\\.?\\d*)$": {
+                        oneOf: [
+                            {
+                                "x-typia-required": true,
+                                "x-typia-optional": false,
+                                type: "string",
+                            },
+                            {
+                                "x-typia-required": true,
+                                "x-typia-optional": false,
+                                type: "number",
+                            },
+                            {
+                                "x-typia-required": true,
+                                "x-typia-optional": false,
+                                type: "boolean",
+                            },
+                        ],
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                    },
+                    "^(between_(.*)_and_-?\\d+\\.?\\d*)$": {
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "boolean",
+                    },
+                },
+                additionalProperties: {
+                    oneOf: [
+                        {
+                            "x-typia-required": false,
+                            type: "number",
+                        },
+                        {
+                            "x-typia-required": false,
+                            type: "string",
+                        },
+                        {
+                            "x-typia-required": false,
+                            type: "boolean",
+                        },
+                    ],
+                    "x-typia-required": false,
+                },
+            },
+        },
+    },
+    purpose: "swagger",
+    prefix: "#/components/schemas",
+});

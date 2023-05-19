@@ -1,5 +1,4 @@
-import { TypeGuardError } from "typia";
-
+import typia from "../../src";
 import { Spoiler } from "../helpers/Spoiler";
 import { primitive_equal_to } from "../helpers/primitive_equal_to";
 
@@ -26,7 +25,7 @@ export function _test_assertStringify<T>(
             try {
                 converter(elem);
             } catch (exp) {
-                if (exp instanceof TypeGuardError)
+                if (typia.is<typia.TypeGuardError>(exp))
                     if (exp.path && paths.includes(exp.path) === true) continue;
                     else
                         console.log({

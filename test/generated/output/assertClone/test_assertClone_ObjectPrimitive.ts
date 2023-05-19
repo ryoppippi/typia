@@ -14,9 +14,9 @@ export const test_assertClone_ObjectPrimitive = _test_assertClone(
                 ): input is ObjectPrimitive.IArticle => {
                     const $io0 = (input: any): boolean =>
                         "string" === typeof input.id &&
-                        ("md" === input.extension ||
-                            "html" === input.extension ||
-                            "txt" === input.extension) &&
+                        ("txt" === input.extension ||
+                            "md" === input.extension ||
+                            "html" === input.extension) &&
                         "string" === typeof input.title &&
                         "string" === typeof input.body &&
                         Array.isArray(input.files) &&
@@ -57,9 +57,9 @@ export const test_assertClone_ObjectPrimitive = _test_assertClone(
                                     expected: "string",
                                     value: input.id,
                                 })) &&
-                            ("md" === input.extension ||
+                            ("txt" === input.extension ||
+                                "md" === input.extension ||
                                 "html" === input.extension ||
-                                "txt" === input.extension ||
                                 $guard(_exceptionable, {
                                     path: _path + ".extension",
                                     expected: '("html" | "md" | "txt")',

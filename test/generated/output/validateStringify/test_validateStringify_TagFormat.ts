@@ -208,17 +208,19 @@ export const test_validateStringify_TagFormat = _test_validateStringify(
                 const $is_datetime = (typia.validateStringify as any)
                     .is_datetime;
                 const $so0 = (input: any): any =>
-                    `{"uuid":${'"' + input.uuid + '"'},"email":${
-                        '"' + input.email + '"'
-                    },"url":${'"' + input.url + '"'},"ipv4":${
-                        '"' + input.ipv4 + '"'
-                    },"ipv6":${'"' + input.ipv6 + '"'},"date":${
-                        '"' + input.date + '"'
-                    },"date_time":${'"' + input.date_time + '"'},"datetime":${
-                        '"' + input.datetime + '"'
-                    },"dateTime":${
-                        '"' + input.dateTime + '"'
-                    },"custom":${$string(input.custom)}}`;
+                    `{"uuid":${$string(input.uuid)},"email":${$string(
+                        input.email,
+                    )},"url":${$string(input.url)},"ipv4":${$string(
+                        input.ipv4,
+                    )},"ipv6":${$string(input.ipv6)},"date":${$string(
+                        input.date,
+                    )},"date_time":${$string(
+                        input.date_time,
+                    )},"datetime":${$string(
+                        input.datetime,
+                    )},"dateTime":${$string(input.dateTime)},"custom":${$string(
+                        input.custom,
+                    )}}`;
                 return $so0(input);
             };
             const output = validate(input) as any;

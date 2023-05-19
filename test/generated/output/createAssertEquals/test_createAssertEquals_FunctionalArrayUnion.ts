@@ -20,14 +20,6 @@ export const test_createAssertEquals_FunctionalArrayUnion = _test_assertEquals(
                             if (0 === elem.length) return true;
                             const tupleList = [
                                 [
-                                    (top: any) => "string" === typeof top,
-                                    (top: any) =>
-                                        top.every(
-                                            (elem: any, _index2: number) =>
-                                                "string" === typeof elem,
-                                        ),
-                                ],
-                                [
                                     (top: any) =>
                                         "number" === typeof top &&
                                         Number.isFinite(top),
@@ -36,6 +28,14 @@ export const test_createAssertEquals_FunctionalArrayUnion = _test_assertEquals(
                                             (elem: any, _index2: number) =>
                                                 "number" === typeof elem &&
                                                 Number.isFinite(elem),
+                                        ),
+                                ],
+                                [
+                                    (top: any) => "string" === typeof top,
+                                    (top: any) =>
+                                        top.every(
+                                            (elem: any, _index2: number) =>
+                                                "string" === typeof elem,
                                         ),
                                 ],
                                 [
@@ -105,25 +105,6 @@ export const test_createAssertEquals_FunctionalArrayUnion = _test_assertEquals(
                                 if (0 === elem.length) return true;
                                 const tupleList = [
                                     [
-                                        (top: any) => "string" === typeof top,
-                                        (top: any) =>
-                                            top.every(
-                                                (elem: any, _index2: number) =>
-                                                    "string" === typeof elem ||
-                                                    $guard(true, {
-                                                        path:
-                                                            _path +
-                                                            "[" +
-                                                            _index1 +
-                                                            "][" +
-                                                            _index2 +
-                                                            "]",
-                                                        expected: "string",
-                                                        value: elem,
-                                                    }),
-                                            ),
-                                    ],
-                                    [
                                         (top: any) =>
                                             "number" === typeof top &&
                                             Number.isFinite(top),
@@ -143,6 +124,25 @@ export const test_createAssertEquals_FunctionalArrayUnion = _test_assertEquals(
                                                             _index2 +
                                                             "]",
                                                         expected: "number",
+                                                        value: elem,
+                                                    }),
+                                            ),
+                                    ],
+                                    [
+                                        (top: any) => "string" === typeof top,
+                                        (top: any) =>
+                                            top.every(
+                                                (elem: any, _index2: number) =>
+                                                    "string" === typeof elem ||
+                                                    $guard(true, {
+                                                        path:
+                                                            _path +
+                                                            "[" +
+                                                            _index1 +
+                                                            "][" +
+                                                            _index2 +
+                                                            "]",
+                                                        expected: "string",
                                                         value: elem,
                                                     }),
                                             ),
@@ -219,7 +219,7 @@ export const test_createAssertEquals_FunctionalArrayUnion = _test_assertEquals(
                                 return $guard(_exceptionable, {
                                     path: _path + "[" + _index1 + "]",
                                     expected:
-                                        "(Array<string> | Array<number> | Array<unknown> | Array<null>)",
+                                        "(Array<number> | Array<string> | Array<unknown> | Array<null>)",
                                     value: elem,
                                 });
                             })(),

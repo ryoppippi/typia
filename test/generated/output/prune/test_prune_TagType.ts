@@ -7,6 +7,7 @@ export const test_prune_TagType = _test_prune(
     TagType.generate,
     (input) =>
         ((input: Array<TagType.Type>): void => {
+            const $is_custom = (typia.prune as any).is_custom;
             const $po0 = (input: any): any => {
                 for (const key of Object.keys(input)) {
                     if ("int" === key || "uint" === key) continue;

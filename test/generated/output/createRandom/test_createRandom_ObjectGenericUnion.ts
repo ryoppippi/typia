@@ -74,15 +74,15 @@ export const test_createRandom_ObjectGenericUnion = _test_random(
             _recursive: boolean = false,
             _depth: number = 0,
         ): any => ({
+            name:
+                (generator?.customs ?? $generator.customs)?.string?.([]) ??
+                (generator?.string ?? $generator.string)(),
             extension: $pick([
                 () => null,
                 () =>
                     (generator?.customs ?? $generator.customs)?.string?.([]) ??
                     (generator?.string ?? $generator.string)(),
             ])(),
-            name:
-                (generator?.customs ?? $generator.customs)?.string?.([]) ??
-                (generator?.string ?? $generator.string)(),
             url:
                 (generator?.customs ?? $generator.customs)?.string?.([]) ??
                 (generator?.string ?? $generator.string)(),
@@ -177,9 +177,9 @@ export const test_createRandom_ObjectGenericUnion = _test_random(
                         "object" === typeof elem && null !== elem && $io3(elem),
                 );
             const $io3 = (input: any): boolean =>
+                "string" === typeof input.name &&
                 (null === input.extension ||
                     "string" === typeof input.extension) &&
-                "string" === typeof input.name &&
                 "string" === typeof input.url;
             const $io4 = (input: any): boolean =>
                 "string" === typeof input.id &&
@@ -192,9 +192,9 @@ export const test_createRandom_ObjectGenericUnion = _test_random(
                         "object" === typeof elem && null !== elem && $io5(elem),
                 );
             const $io5 = (input: any): boolean =>
+                "string" === typeof input.name &&
                 (null === input.extension ||
                     "string" === typeof input.extension) &&
-                "string" === typeof input.name &&
                 "string" === typeof input.url;
             const $io6 = (input: any): boolean =>
                 "string" === typeof input.writer &&
@@ -403,18 +403,18 @@ export const test_createRandom_ObjectGenericUnion = _test_random(
                     _path: string,
                     _exceptionable: boolean = true,
                 ): boolean =>
+                    ("string" === typeof input.name ||
+                        $guard(_exceptionable, {
+                            path: _path + ".name",
+                            expected: "string",
+                            value: input.name,
+                        })) &&
                     (null === input.extension ||
                         "string" === typeof input.extension ||
                         $guard(_exceptionable, {
                             path: _path + ".extension",
                             expected: "(null | string)",
                             value: input.extension,
-                        })) &&
-                    ("string" === typeof input.name ||
-                        $guard(_exceptionable, {
-                            path: _path + ".name",
-                            expected: "string",
-                            value: input.name,
                         })) &&
                     ("string" === typeof input.url ||
                         $guard(_exceptionable, {
@@ -476,18 +476,18 @@ export const test_createRandom_ObjectGenericUnion = _test_random(
                     _path: string,
                     _exceptionable: boolean = true,
                 ): boolean =>
+                    ("string" === typeof input.name ||
+                        $guard(_exceptionable, {
+                            path: _path + ".name",
+                            expected: "string",
+                            value: input.name,
+                        })) &&
                     (null === input.extension ||
                         "string" === typeof input.extension ||
                         $guard(_exceptionable, {
                             path: _path + ".extension",
                             expected: "(null | string)",
                             value: input.extension,
-                        })) &&
-                    ("string" === typeof input.name ||
-                        $guard(_exceptionable, {
-                            path: _path + ".name",
-                            expected: "string",
-                            value: input.name,
                         })) &&
                     ("string" === typeof input.url ||
                         $guard(_exceptionable, {

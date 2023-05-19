@@ -110,14 +110,14 @@ export const test_createValidateEquals_ObjectGenericUnion =
                     input: any,
                     _exceptionable: boolean = true,
                 ): boolean =>
+                    "string" === typeof input.name &&
                     (null === input.extension ||
                         "string" === typeof input.extension) &&
-                    "string" === typeof input.name &&
                     "string" === typeof input.url &&
                     (3 === Object.keys(input).length ||
                         Object.keys(input).every((key) => {
                             if (
-                                ["extension", "name", "url"].some(
+                                ["name", "extension", "url"].some(
                                     (prop) => key === prop,
                                 )
                             )
@@ -551,18 +551,18 @@ export const test_createValidateEquals_ObjectGenericUnion =
                         _exceptionable: boolean = true,
                     ): boolean =>
                         [
+                            "string" === typeof input.name ||
+                                $report(_exceptionable, {
+                                    path: _path + ".name",
+                                    expected: "string",
+                                    value: input.name,
+                                }),
                             null === input.extension ||
                                 "string" === typeof input.extension ||
                                 $report(_exceptionable, {
                                     path: _path + ".extension",
                                     expected: "(null | string)",
                                     value: input.extension,
-                                }),
-                            "string" === typeof input.name ||
-                                $report(_exceptionable, {
-                                    path: _path + ".name",
-                                    expected: "string",
-                                    value: input.name,
                                 }),
                             "string" === typeof input.url ||
                                 $report(_exceptionable, {
@@ -575,7 +575,7 @@ export const test_createValidateEquals_ObjectGenericUnion =
                                 Object.keys(input)
                                     .map((key) => {
                                         if (
-                                            ["extension", "name", "url"].some(
+                                            ["name", "extension", "url"].some(
                                                 (prop) => key === prop,
                                             )
                                         )

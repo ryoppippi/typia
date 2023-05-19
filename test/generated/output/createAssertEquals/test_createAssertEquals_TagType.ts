@@ -7,6 +7,7 @@ export const test_createAssertEquals_TagType = _test_assertEquals(
     TagType.generate,
     (input: any): TagType => {
         const $guard = (typia.createAssertEquals as any).guard;
+        const $is_custom = (typia.createAssertEquals as any).is_custom;
         const $join = (typia.createAssertEquals as any).join;
         const __is = (
             input: any,
@@ -19,6 +20,12 @@ export const test_createAssertEquals_TagType = _test_assertEquals(
                 "number" === typeof input.int &&
                 Number.isFinite(input.int) &&
                 parseInt(input.int) === input.int &&
+                $is_custom(
+                    "example",
+                    "number",
+                    "https://example.com",
+                    input.int,
+                ) &&
                 "number" === typeof input.uint &&
                 Number.isFinite(input.uint) &&
                 parseInt(input.uint) === input.uint &&
@@ -58,6 +65,18 @@ export const test_createAssertEquals_TagType = _test_assertEquals(
                             $guard(_exceptionable, {
                                 path: _path + ".int",
                                 expected: "number (@type int)",
+                                value: input.int,
+                            })) &&
+                        ($is_custom(
+                            "example",
+                            "number",
+                            "https://example.com",
+                            input.int,
+                        ) ||
+                            $guard(_exceptionable, {
+                                path: _path + ".int",
+                                expected:
+                                    "number (@example https://example.com)",
                                 value: input.int,
                             }))) ||
                         $guard(_exceptionable, {

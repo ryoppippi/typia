@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 
-import { ArrayUtil } from "typia/lib/utils/ArrayUtil";
+import { ArrayUtil } from "../../src/utils/ArrayUtil";
 
 import { Spoiler } from "../helpers/Spoiler";
 import { TestRandomGenerator } from "../helpers/TestRandomGenerator";

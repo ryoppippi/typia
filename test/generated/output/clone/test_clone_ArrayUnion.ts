@@ -17,17 +17,17 @@ export const test_clone_ArrayUnion = _test_clone(
                                 if (0 === elem.length) return;
                                 const tupleList = [
                                     [
-                                        (top: any) => "string" === typeof top,
-                                        (top: any) =>
-                                            top.map((elem: any) => elem as any),
-                                    ],
-                                    [
                                         (top: any) => "boolean" === typeof top,
                                         (top: any) =>
                                             top.map((elem: any) => elem as any),
                                     ],
                                     [
                                         (top: any) => "number" === typeof top,
+                                        (top: any) =>
+                                            top.map((elem: any) => elem as any),
+                                    ],
+                                    [
+                                        (top: any) => "string" === typeof top,
                                         (top: any) =>
                                             top.map((elem: any) => elem as any),
                                     ],
@@ -50,7 +50,7 @@ export const test_clone_ArrayUnion = _test_clone(
                                             return tuple[1](array);
                                 $throws({
                                     expected:
-                                        "(Array<string> | Array<boolean> | Array<number>)",
+                                        "(Array<boolean> | Array<number> | Array<string>)",
                                     value: elem,
                                 });
                             })()

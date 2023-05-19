@@ -8,11 +8,18 @@ export const test_assert_TagType = _test_assert(
     (input) =>
         ((input: any): Array<TagType.Type> => {
             const $guard = (typia.assert as any).guard;
+            const $is_custom = (typia.assert as any).is_custom;
             const __is = (input: any): input is Array<TagType.Type> => {
                 const $io0 = (input: any): boolean =>
                     "number" === typeof input.int &&
                     Number.isFinite(input.int) &&
                     parseInt(input.int) === input.int &&
+                    $is_custom(
+                        "example",
+                        "number",
+                        "https://example.com",
+                        input.int,
+                    ) &&
                     "number" === typeof input.uint &&
                     Number.isFinite(input.uint) &&
                     parseInt(input.uint) === input.uint &&
@@ -44,6 +51,18 @@ export const test_assert_TagType = _test_assert(
                                 $guard(_exceptionable, {
                                     path: _path + ".int",
                                     expected: "number (@type int)",
+                                    value: input.int,
+                                })) &&
+                            ($is_custom(
+                                "example",
+                                "number",
+                                "https://example.com",
+                                input.int,
+                            ) ||
+                                $guard(_exceptionable, {
+                                    path: _path + ".int",
+                                    expected:
+                                        "number (@example https://example.com)",
                                     value: input.int,
                                 }))) ||
                             $guard(_exceptionable, {

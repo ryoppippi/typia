@@ -1,5 +1,4 @@
-import { TypeGuardError } from "typia";
-
+import typia from "../../src";
 import { Spoiler } from "../helpers/Spoiler";
 
 export function _test_assert<T>(
@@ -18,7 +17,7 @@ export function _test_assert<T>(
                     "Bug on typia.assert(): failed to return input value.",
                 );
         } catch (exp) {
-            if (exp instanceof TypeGuardError) {
+            if (typia.is<typia.TypeGuardError>(exp)) {
                 console.log(exp);
                 throw new Error(
                     `Bug on typia.assert(): failed to understand the ${name} type.`,
@@ -33,7 +32,7 @@ export function _test_assert<T>(
             try {
                 assert(elem);
             } catch (exp) {
-                if (exp instanceof TypeGuardError)
+                if (typia.is<typia.TypeGuardError>(exp))
                     if (exp.path && paths.includes(exp.path) === true) continue;
                     else
                         console.log({

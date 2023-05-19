@@ -26,7 +26,7 @@ export namespace TestApplicationGenerator {
             if (s.JSONABLE === false) continue;
 
             const content: string[] = [
-                `import typia from "typia"`,
+                `import typia from "../../../../src"`,
                 `import { ${s.name} } from "../../../structures/${s.name}";`,
                 `import { _test_application } from "../../../internal/_test_application";`,
                 "",

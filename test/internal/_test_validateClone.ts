@@ -1,5 +1,4 @@
-import TSON from "typia";
-
+import TSON from "../../src";
 import { Spoiler } from "../helpers/Spoiler";
 import { primitive_clone } from "../helpers/primitive_clone";
 import { primitive_equal_to } from "../helpers/primitive_equal_to";

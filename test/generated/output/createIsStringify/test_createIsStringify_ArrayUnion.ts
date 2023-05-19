@@ -16,14 +16,6 @@ export const test_createIsStringify_ArrayUnion = _test_isStringify(
                             if (0 === elem.length) return true;
                             const tupleList = [
                                 [
-                                    (top: any) => "string" === typeof top,
-                                    (top: any) =>
-                                        top.every(
-                                            (elem: any) =>
-                                                "string" === typeof elem,
-                                        ),
-                                ],
-                                [
                                     (top: any) => "boolean" === typeof top,
                                     (top: any) =>
                                         top.every(
@@ -40,6 +32,14 @@ export const test_createIsStringify_ArrayUnion = _test_isStringify(
                                             (elem: any) =>
                                                 "number" === typeof elem &&
                                                 Number.isFinite(elem),
+                                        ),
+                                ],
+                                [
+                                    (top: any) => "string" === typeof top,
+                                    (top: any) =>
+                                        top.every(
+                                            (elem: any) =>
+                                                "string" === typeof elem,
                                         ),
                                 ],
                             ];
@@ -65,21 +65,14 @@ export const test_createIsStringify_ArrayUnion = _test_isStringify(
             );
         };
         const stringify = (input: ArrayUnion): string => {
-            const $string = (typia.createIsStringify as any).string;
             const $number = (typia.createIsStringify as any).number;
+            const $string = (typia.createIsStringify as any).string;
             const $throws = (typia.createIsStringify as any).throws;
             return `[${input
                 .map((elem: any) =>
                     (() => {
                         if (0 === elem.length) return "[]";
                         const tupleList = [
-                            [
-                                (top: any) => "string" === typeof top,
-                                (top: any) =>
-                                    `[${top
-                                        .map((elem: any) => $string(elem))
-                                        .join(",")}]`,
-                            ],
                             [
                                 (top: any) => "boolean" === typeof top,
                                 (top: any) =>
@@ -92,6 +85,13 @@ export const test_createIsStringify_ArrayUnion = _test_isStringify(
                                 (top: any) =>
                                     `[${top
                                         .map((elem: any) => $number(elem))
+                                        .join(",")}]`,
+                            ],
+                            [
+                                (top: any) => "string" === typeof top,
+                                (top: any) =>
+                                    `[${top
+                                        .map((elem: any) => $string(elem))
                                         .join(",")}]`,
                             ],
                         ];
@@ -112,7 +112,7 @@ export const test_createIsStringify_ArrayUnion = _test_isStringify(
                                     return tuple[1](array);
                         $throws({
                             expected:
-                                "(Array<string> | Array<boolean> | Array<number>)",
+                                "(Array<boolean> | Array<number> | Array<string>)",
                             value: elem,
                         });
                     })(),

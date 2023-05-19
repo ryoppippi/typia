@@ -34,7 +34,7 @@ export const emplace_metadata_object =
             parent,
         )
             ? (node) =>
-                  tsc.isPropertyDeclaration(node) &&
+                  (tsc.isPropertyDeclaration(node) || tsc.isParameter(node)) &&
                   node.modifiers !== undefined &&
                   node.modifiers.every(
                       (mod) =>

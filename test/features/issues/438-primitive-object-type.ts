@@ -1,4 +1,4 @@
-import typia from "typia";
+import typia from "../../../src";
 
 export function test_issue_438_primitve_object_type(): void {
     type X = object;
@@ -7,6 +7,7 @@ export function test_issue_438_primitve_object_type(): void {
     type Type = {};
     interface Interface {}
     class Class {}
+
     const meta = typia.metadata<[X, Y, Z, Type, Interface, Class]>();
     if (
         meta.collection.length !== 4 ||

@@ -1,6 +1,6 @@
-import { TypeGuardError } from "typia";
+import { Escaper } from "../../src/utils/Escaper";
 
-import { Escaper } from "typia/lib/utils/Escaper";
+import typia from "../../src";
 
 export function _test_assertEquals<T>(
     name: string,
@@ -19,7 +19,7 @@ export function _test_assertEquals<T>(
                     "Bug on typia.assertEquals(): failed to return input value.",
                 );
         } catch (exp) {
-            if (exp instanceof TypeGuardError) {
+            if (typia.is<typia.TypeGuardError>(exp)) {
                 throw new Error(
                     `Bug on typia.assertEquals(): failed to understand the ${name} type.`,
                 );
@@ -51,7 +51,7 @@ export function _test_assertEquals<T>(
                 );
             } catch (exp) {
                 if (
-                    exp instanceof TypeGuardError &&
+                    typia.is<typia.TypeGuardError>(exp) &&
                     exp.method === "typia.assertEquals" &&
                     exp.path === fullPath &&
                     exp.expected === "undefined" &&
@@ -59,7 +59,7 @@ export function _test_assertEquals<T>(
                 ) {
                     delete value[key];
                     continue;
-                } else if (exp instanceof TypeGuardError) {
+                } else if (typia.is<typia.TypeGuardError>(exp)) {
                     console.log({
                         method: exp.method,
                         path: exp.path,

@@ -204,20 +204,6 @@ export const test_is_InstanceUnion = _test_is(
                                         ],
                                         [
                                             (top: any) =>
-                                                "object" === typeof top &&
-                                                null !== top &&
-                                                $iu0(top),
-                                            (top: any) =>
-                                                top.every(
-                                                    (elem: any) =>
-                                                        "object" ===
-                                                            typeof elem &&
-                                                        null !== elem &&
-                                                        $iu0(elem),
-                                                ),
-                                        ],
-                                        [
-                                            (top: any) =>
                                                 "boolean" === typeof top,
                                             (top: any) =>
                                                 top.every(
@@ -236,6 +222,20 @@ export const test_is_InstanceUnion = _test_is(
                                                         "number" ===
                                                             typeof elem &&
                                                         Number.isFinite(elem),
+                                                ),
+                                        ],
+                                        [
+                                            (top: any) =>
+                                                "object" === typeof top &&
+                                                null !== top &&
+                                                $iu0(top),
+                                            (top: any) =>
+                                                top.every(
+                                                    (elem: any) =>
+                                                        "object" ===
+                                                            typeof elem &&
+                                                        null !== elem &&
+                                                        $iu0(elem),
                                                 ),
                                         ],
                                     ];

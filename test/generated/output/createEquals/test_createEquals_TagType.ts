@@ -6,10 +6,12 @@ export const test_createEquals_TagType = _test_equals(
     "TagType",
     TagType.generate,
     (input: any, _exceptionable: boolean = true): input is TagType => {
+        const $is_custom = (typia.createEquals as any).is_custom;
         const $io0 = (input: any, _exceptionable: boolean = true): boolean =>
             "number" === typeof input.int &&
             Number.isFinite(input.int) &&
             parseInt(input.int) === input.int &&
+            $is_custom("example", "number", "https://example.com", input.int) &&
             "number" === typeof input.uint &&
             Number.isFinite(input.uint) &&
             parseInt(input.uint) === input.uint &&

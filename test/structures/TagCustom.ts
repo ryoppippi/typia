@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 
-import { RandomGenerator } from "typia/lib/utils/RandomGenerator";
+import { RandomGenerator } from "../../src/utils/RandomGenerator";
 
 import typia from "../../src";
 import { Spoiler } from "../helpers/Spoiler";

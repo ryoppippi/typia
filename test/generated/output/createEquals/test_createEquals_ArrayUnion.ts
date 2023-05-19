@@ -15,14 +15,6 @@ export const test_createEquals_ArrayUnion = _test_equals(
                         if (0 === elem.length) return true;
                         const tupleList = [
                             [
-                                (top: any) => "string" === typeof top,
-                                (top: any) =>
-                                    top.every(
-                                        (elem: any, _index2: number) =>
-                                            "string" === typeof elem,
-                                    ),
-                            ],
-                            [
                                 (top: any) => "boolean" === typeof top,
                                 (top: any) =>
                                     top.every(
@@ -39,6 +31,14 @@ export const test_createEquals_ArrayUnion = _test_equals(
                                         (elem: any, _index2: number) =>
                                             "number" === typeof elem &&
                                             Number.isFinite(elem),
+                                    ),
+                            ],
+                            [
+                                (top: any) => "string" === typeof top,
+                                (top: any) =>
+                                    top.every(
+                                        (elem: any, _index2: number) =>
+                                            "string" === typeof elem,
                                     ),
                             ],
                         ];

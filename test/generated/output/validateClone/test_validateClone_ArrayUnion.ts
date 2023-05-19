@@ -25,16 +25,6 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                     const tupleList = [
                                         [
                                             (top: any) =>
-                                                "string" === typeof top,
-                                            (top: any) =>
-                                                top.every(
-                                                    (elem: any) =>
-                                                        "string" ===
-                                                        typeof elem,
-                                                ),
-                                        ],
-                                        [
-                                            (top: any) =>
                                                 "boolean" === typeof top,
                                             (top: any) =>
                                                 top.every(
@@ -53,6 +43,16 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                                         "number" ===
                                                             typeof elem &&
                                                         Number.isFinite(elem),
+                                                ),
+                                        ],
+                                        [
+                                            (top: any) =>
+                                                "string" === typeof top,
+                                            (top: any) =>
+                                                top.every(
+                                                    (elem: any) =>
+                                                        "string" ===
+                                                        typeof elem,
                                                 ),
                                         ],
                                     ];
@@ -112,42 +112,6 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                                     if (0 === elem.length)
                                                         return true;
                                                     const tupleList = [
-                                                        [
-                                                            (top: any) =>
-                                                                "string" ===
-                                                                typeof top,
-                                                            (top: any) =>
-                                                                top
-                                                                    .map(
-                                                                        (
-                                                                            elem: any,
-                                                                            _index2: number,
-                                                                        ) =>
-                                                                            "string" ===
-                                                                                typeof elem ||
-                                                                            $report(
-                                                                                true,
-                                                                                {
-                                                                                    path:
-                                                                                        _path +
-                                                                                        "[" +
-                                                                                        _index1 +
-                                                                                        "][" +
-                                                                                        _index2 +
-                                                                                        "]",
-                                                                                    expected:
-                                                                                        "string",
-                                                                                    value: elem,
-                                                                                },
-                                                                            ),
-                                                                    )
-                                                                    .every(
-                                                                        (
-                                                                            flag: boolean,
-                                                                        ) =>
-                                                                            flag,
-                                                                    ),
-                                                        ],
                                                         [
                                                             (top: any) =>
                                                                 "boolean" ===
@@ -226,6 +190,42 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                                                             flag,
                                                                     ),
                                                         ],
+                                                        [
+                                                            (top: any) =>
+                                                                "string" ===
+                                                                typeof top,
+                                                            (top: any) =>
+                                                                top
+                                                                    .map(
+                                                                        (
+                                                                            elem: any,
+                                                                            _index2: number,
+                                                                        ) =>
+                                                                            "string" ===
+                                                                                typeof elem ||
+                                                                            $report(
+                                                                                true,
+                                                                                {
+                                                                                    path:
+                                                                                        _path +
+                                                                                        "[" +
+                                                                                        _index1 +
+                                                                                        "][" +
+                                                                                        _index2 +
+                                                                                        "]",
+                                                                                    expected:
+                                                                                        "string",
+                                                                                    value: elem,
+                                                                                },
+                                                                            ),
+                                                                    )
+                                                                    .every(
+                                                                        (
+                                                                            flag: boolean,
+                                                                        ) =>
+                                                                            flag,
+                                                                    ),
+                                                        ],
                                                     ];
                                                     const front = elem[0];
                                                     const filtered =
@@ -264,7 +264,7 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                                                 _index1 +
                                                                 "]",
                                                             expected:
-                                                                "(Array<string> | Array<boolean> | Array<number>)",
+                                                                "(Array<boolean> | Array<number> | Array<string>)",
                                                             value: elem,
                                                         },
                                                     );
@@ -305,14 +305,6 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                     const tupleList = [
                                         [
                                             (top: any) =>
-                                                "string" === typeof top,
-                                            (top: any) =>
-                                                top.map(
-                                                    (elem: any) => elem as any,
-                                                ),
-                                        ],
-                                        [
-                                            (top: any) =>
                                                 "boolean" === typeof top,
                                             (top: any) =>
                                                 top.map(
@@ -322,6 +314,14 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                         [
                                             (top: any) =>
                                                 "number" === typeof top,
+                                            (top: any) =>
+                                                top.map(
+                                                    (elem: any) => elem as any,
+                                                ),
+                                        ],
+                                        [
+                                            (top: any) =>
+                                                "string" === typeof top,
                                             (top: any) =>
                                                 top.map(
                                                     (elem: any) => elem as any,
@@ -347,7 +347,7 @@ export const test_validateClone_ArrayUnion = _test_validateClone(
                                                 return tuple[1](array);
                                     $throws({
                                         expected:
-                                            "(Array<string> | Array<boolean> | Array<number>)",
+                                            "(Array<boolean> | Array<number> | Array<string>)",
                                         value: elem,
                                     });
                                 })()

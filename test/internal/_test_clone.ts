@@ -1,5 +1,4 @@
-import { Primitive } from "typia/lib/Primitive";
-
+import { Primitive } from "../../src/Primitive";
 import { primitive_clone } from "../helpers/primitive_clone";
 import { primitive_equal_to } from "../helpers/primitive_equal_to";
 

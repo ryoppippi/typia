@@ -20,10 +20,10 @@ export const test_createValidate_NativeUnion = _test_validate(
                     input.signed instanceof BigInt64Array) &&
                 (input.float instanceof Float32Array ||
                     input.float instanceof Float64Array) &&
-                (input.buffer instanceof ArrayBuffer ||
+                (input.buffer instanceof Buffer ||
+                    input.buffer instanceof ArrayBuffer ||
                     input.buffer instanceof SharedArrayBuffer ||
-                    input.buffer instanceof DataView ||
-                    input.buffer instanceof Buffer) &&
+                    input.buffer instanceof DataView) &&
                 (input.weak instanceof WeakSet ||
                     input.weak instanceof WeakMap);
             return (
@@ -83,10 +83,10 @@ export const test_createValidate_NativeUnion = _test_validate(
                                 expected: "(Float32Array | Float64Array)",
                                 value: input.float,
                             }),
-                        input.buffer instanceof ArrayBuffer ||
+                        input.buffer instanceof Buffer ||
+                            input.buffer instanceof ArrayBuffer ||
                             input.buffer instanceof SharedArrayBuffer ||
                             input.buffer instanceof DataView ||
-                            input.buffer instanceof Buffer ||
                             $report(_exceptionable, {
                                 path: _path + ".buffer",
                                 expected:

@@ -18,6 +18,12 @@ export const test_validateEquals_TagType = _test_validateEquals(
                     "number" === typeof input.int &&
                     Number.isFinite(input.int) &&
                     parseInt(input.int) === input.int &&
+                    $is_custom(
+                        "example",
+                        "number",
+                        "https://example.com",
+                        input.int,
+                    ) &&
                     "number" === typeof input.uint &&
                     Number.isFinite(input.uint) &&
                     parseInt(input.uint) === input.uint &&
@@ -42,6 +48,7 @@ export const test_validateEquals_TagType = _test_validateEquals(
             };
             const errors = [] as any[];
             const $report = (typia.validateEquals as any).report(errors);
+            const $is_custom = (typia.validateEquals as any).is_custom;
             const $join = (typia.validateEquals as any).join;
             if (false === __is(input))
                 ((
@@ -61,6 +68,18 @@ export const test_validateEquals_TagType = _test_validateEquals(
                                     $report(_exceptionable, {
                                         path: _path + ".int",
                                         expected: "number (@type int)",
+                                        value: input.int,
+                                    })) &&
+                                ($is_custom(
+                                    "example",
+                                    "number",
+                                    "https://example.com",
+                                    input.int,
+                                ) ||
+                                    $report(_exceptionable, {
+                                        path: _path + ".int",
+                                        expected:
+                                            "number (@example https://example.com)",
                                         value: input.int,
                                     }))) ||
                                 $report(_exceptionable, {

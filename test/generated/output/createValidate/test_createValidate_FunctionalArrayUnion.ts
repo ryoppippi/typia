@@ -16,14 +16,6 @@ export const test_createValidate_FunctionalArrayUnion = _test_validate(
                             if (0 === elem.length) return true;
                             const tupleList = [
                                 [
-                                    (top: any) => "string" === typeof top,
-                                    (top: any) =>
-                                        top.every(
-                                            (elem: any) =>
-                                                "string" === typeof elem,
-                                        ),
-                                ],
-                                [
                                     (top: any) =>
                                         "number" === typeof top &&
                                         Number.isFinite(top),
@@ -32,6 +24,14 @@ export const test_createValidate_FunctionalArrayUnion = _test_validate(
                                             (elem: any) =>
                                                 "number" === typeof elem &&
                                                 Number.isFinite(elem),
+                                        ),
+                                ],
+                                [
+                                    (top: any) => "string" === typeof top,
+                                    (top: any) =>
+                                        top.every(
+                                            (elem: any) =>
+                                                "string" === typeof elem,
                                         ),
                                 ],
                                 [
@@ -105,40 +105,6 @@ export const test_createValidate_FunctionalArrayUnion = _test_validate(
                                             const tupleList = [
                                                 [
                                                     (top: any) =>
-                                                        "string" === typeof top,
-                                                    (top: any) =>
-                                                        top
-                                                            .map(
-                                                                (
-                                                                    elem: any,
-                                                                    _index2: number,
-                                                                ) =>
-                                                                    "string" ===
-                                                                        typeof elem ||
-                                                                    $report(
-                                                                        true,
-                                                                        {
-                                                                            path:
-                                                                                _path +
-                                                                                "[" +
-                                                                                _index1 +
-                                                                                "][" +
-                                                                                _index2 +
-                                                                                "]",
-                                                                            expected:
-                                                                                "string",
-                                                                            value: elem,
-                                                                        },
-                                                                    ),
-                                                            )
-                                                            .every(
-                                                                (
-                                                                    flag: boolean,
-                                                                ) => flag,
-                                                            ),
-                                                ],
-                                                [
-                                                    (top: any) =>
                                                         "number" ===
                                                             typeof top &&
                                                         Number.isFinite(top),
@@ -166,6 +132,40 @@ export const test_createValidate_FunctionalArrayUnion = _test_validate(
                                                                                 "]",
                                                                             expected:
                                                                                 "number",
+                                                                            value: elem,
+                                                                        },
+                                                                    ),
+                                                            )
+                                                            .every(
+                                                                (
+                                                                    flag: boolean,
+                                                                ) => flag,
+                                                            ),
+                                                ],
+                                                [
+                                                    (top: any) =>
+                                                        "string" === typeof top,
+                                                    (top: any) =>
+                                                        top
+                                                            .map(
+                                                                (
+                                                                    elem: any,
+                                                                    _index2: number,
+                                                                ) =>
+                                                                    "string" ===
+                                                                        typeof elem ||
+                                                                    $report(
+                                                                        true,
+                                                                        {
+                                                                            path:
+                                                                                _path +
+                                                                                "[" +
+                                                                                _index1 +
+                                                                                "][" +
+                                                                                _index2 +
+                                                                                "]",
+                                                                            expected:
+                                                                                "string",
                                                                             value: elem,
                                                                         },
                                                                     ),
@@ -286,7 +286,7 @@ export const test_createValidate_FunctionalArrayUnion = _test_validate(
                                                 path:
                                                     _path + "[" + _index1 + "]",
                                                 expected:
-                                                    "(Array<string> | Array<number> | Array<unknown> | Array<null>)",
+                                                    "(Array<number> | Array<string> | Array<unknown> | Array<null>)",
                                                 value: elem,
                                             });
                                         })()) ||

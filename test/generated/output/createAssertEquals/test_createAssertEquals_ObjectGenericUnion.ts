@@ -107,14 +107,14 @@ export const test_createAssertEquals_ObjectGenericUnion = _test_assertEquals(
                 input: any,
                 _exceptionable: boolean = true,
             ): boolean =>
+                "string" === typeof input.name &&
                 (null === input.extension ||
                     "string" === typeof input.extension) &&
-                "string" === typeof input.name &&
                 "string" === typeof input.url &&
                 (3 === Object.keys(input).length ||
                     Object.keys(input).every((key) => {
                         if (
-                            ["extension", "name", "url"].some(
+                            ["name", "extension", "url"].some(
                                 (prop) => key === prop,
                             )
                         )
@@ -440,18 +440,18 @@ export const test_createAssertEquals_ObjectGenericUnion = _test_assertEquals(
                     _path: string,
                     _exceptionable: boolean = true,
                 ): boolean =>
+                    ("string" === typeof input.name ||
+                        $guard(_exceptionable, {
+                            path: _path + ".name",
+                            expected: "string",
+                            value: input.name,
+                        })) &&
                     (null === input.extension ||
                         "string" === typeof input.extension ||
                         $guard(_exceptionable, {
                             path: _path + ".extension",
                             expected: "(null | string)",
                             value: input.extension,
-                        })) &&
-                    ("string" === typeof input.name ||
-                        $guard(_exceptionable, {
-                            path: _path + ".name",
-                            expected: "string",
-                            value: input.name,
                         })) &&
                     ("string" === typeof input.url ||
                         $guard(_exceptionable, {
@@ -463,7 +463,7 @@ export const test_createAssertEquals_ObjectGenericUnion = _test_assertEquals(
                         false === _exceptionable ||
                         Object.keys(input).every((key) => {
                             if (
-                                ["extension", "name", "url"].some(
+                                ["name", "extension", "url"].some(
                                     (prop) => key === prop,
                                 )
                             )

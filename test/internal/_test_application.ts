@@ -1,6 +1,6 @@
 import fs from "fs";
-import { IJsonApplication } from "typia";
 
+import { IJsonApplication } from "../../src";
 import { primitive_equal_to } from "../helpers/primitive_equal_to";
 
 export const _test_application =

@@ -139,7 +139,7 @@ export const test_validateStringify_TagCustom = _test_validateStringify(
                 const $is_uuid = (typia.validateStringify as any).is_uuid;
                 const $is_custom = (typia.validateStringify as any).is_custom;
                 const $so0 = (input: any): any =>
-                    `{"id":${'"' + input.id + '"'},"dollar":${$string(
+                    `{"id":${$string(input.id)},"dollar":${$string(
                         input.dollar,
                     )},"postfix":${$string(input.postfix)},"log":${$number(
                         input.log,

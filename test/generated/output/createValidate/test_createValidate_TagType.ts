@@ -11,6 +11,12 @@ export const test_createValidate_TagType = _test_validate(
                 "number" === typeof input.int &&
                 Number.isFinite(input.int) &&
                 parseInt(input.int) === input.int &&
+                $is_custom(
+                    "example",
+                    "number",
+                    "https://example.com",
+                    input.int,
+                ) &&
                 "number" === typeof input.uint &&
                 Number.isFinite(input.uint) &&
                 parseInt(input.uint) === input.uint &&
@@ -25,6 +31,7 @@ export const test_createValidate_TagType = _test_validate(
         };
         const errors = [] as any[];
         const $report = (typia.createValidate as any).report(errors);
+        const $is_custom = (typia.createValidate as any).is_custom;
         if (false === __is(input))
             ((
                 input: any,
@@ -43,6 +50,18 @@ export const test_createValidate_TagType = _test_validate(
                                 $report(_exceptionable, {
                                     path: _path + ".int",
                                     expected: "number (@type int)",
+                                    value: input.int,
+                                })) &&
+                            ($is_custom(
+                                "example",
+                                "number",
+                                "https://example.com",
+                                input.int,
+                            ) ||
+                                $report(_exceptionable, {
+                                    path: _path + ".int",
+                                    expected:
+                                        "number (@example https://example.com)",
                                     value: input.int,
                                 }))) ||
                             $report(_exceptionable, {

@@ -1,9 +1,27 @@
-import typia from "typia";
-
+import typia from "../../../../../src";
 import { _test_application } from "../../../../internal/_test_application";
 import { DynamicNever } from "../../../../structures/DynamicNever";
 
 export const test_application_ajv_DynamicNever = _test_application("ajv")(
     "DynamicNever",
-    typia.application<[DynamicNever], "ajv">(),
+    {
+        schemas: [
+            {
+                $ref: "#/components/schemas/DynamicNever",
+            },
+        ],
+        components: {
+            schemas: {
+                DynamicNever: {
+                    $id: "#/components/schemas/DynamicNever",
+                    type: "object",
+                    properties: {},
+                    description: "",
+                    "x-typia-jsDocTags": [],
+                },
+            },
+        },
+        purpose: "ajv",
+        prefix: "#/components/schemas",
+    },
 );

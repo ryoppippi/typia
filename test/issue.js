@@ -5,6 +5,6 @@ SuppressWarnings([() => true]);
 
 runner.register({
     project: __dirname + "/tsconfig.issue.json",
-    argv: [...process.argv, "--allowPlugins"]
+    argv: ["--allowPlugins"],
 });
 require(`./issues/${process.argv[2]}.ts`);

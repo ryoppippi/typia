@@ -7,10 +7,17 @@ export const test_is_TagType = _test_is(
     TagType.generate,
     (input) =>
         ((input: any): input is Array<TagType.Type> => {
+            const $is_custom = (typia.is as any).is_custom;
             const $io0 = (input: any): boolean =>
                 "number" === typeof input.int &&
                 Number.isFinite(input.int) &&
                 parseInt(input.int) === input.int &&
+                $is_custom(
+                    "example",
+                    "number",
+                    "https://example.com",
+                    input.int,
+                ) &&
                 "number" === typeof input.uint &&
                 Number.isFinite(input.uint) &&
                 parseInt(input.uint) === input.uint &&

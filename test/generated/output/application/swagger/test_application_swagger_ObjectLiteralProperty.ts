@@ -1,11 +1,43 @@
-import typia from "typia";
-
+import typia from "../../../../../src";
 import { _test_application } from "../../../../internal/_test_application";
 import { ObjectLiteralProperty } from "../../../../structures/ObjectLiteralProperty";
 
 export const test_application_swagger_ObjectLiteralProperty = _test_application(
     "swagger",
-)(
-    "ObjectLiteralProperty",
-    typia.application<[ObjectLiteralProperty], "swagger">(),
-);
+)("ObjectLiteralProperty", {
+    schemas: [
+        {
+            $ref: "#/components/schemas/ObjectLiteralProperty.ISomething",
+        },
+    ],
+    components: {
+        schemas: {
+            "ObjectLiteralProperty.ISomething": {
+                type: "object",
+                properties: {
+                    "something-interesting-do-you-want?": {
+                        description: "",
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "string",
+                    },
+                    "or-something-crazy-do-you-want?": {
+                        description: "",
+                        "x-typia-required": true,
+                        "x-typia-optional": false,
+                        type: "string",
+                    },
+                },
+                nullable: false,
+                required: [
+                    "something-interesting-do-you-want?",
+                    "or-something-crazy-do-you-want?",
+                ],
+                description: "",
+                "x-typia-jsDocTags": [],
+            },
+        },
+    },
+    purpose: "swagger",
+    prefix: "#/components/schemas",
+});

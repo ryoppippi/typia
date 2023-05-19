@@ -9,11 +9,18 @@ export const test_assertStringify_TagType = _test_assertStringify(
         ((input: any): string => {
             const assert = (input: any): Array<TagType.Type> => {
                 const $guard = (typia.assertStringify as any).guard;
+                const $is_custom = (typia.assertStringify as any).is_custom;
                 const __is = (input: any): input is Array<TagType.Type> => {
                     const $io0 = (input: any): boolean =>
                         "number" === typeof input.int &&
                         Number.isFinite(input.int) &&
                         parseInt(input.int) === input.int &&
+                        $is_custom(
+                            "example",
+                            "number",
+                            "https://example.com",
+                            input.int,
+                        ) &&
                         "number" === typeof input.uint &&
                         Number.isFinite(input.uint) &&
                         parseInt(input.uint) === input.uint &&
@@ -45,6 +52,18 @@ export const test_assertStringify_TagType = _test_assertStringify(
                                     $guard(_exceptionable, {
                                         path: _path + ".int",
                                         expected: "number (@type int)",
+                                        value: input.int,
+                                    })) &&
+                                ($is_custom(
+                                    "example",
+                                    "number",
+                                    "https://example.com",
+                                    input.int,
+                                ) ||
+                                    $guard(_exceptionable, {
+                                        path: _path + ".int",
+                                        expected:
+                                            "number (@example https://example.com)",
                                         value: input.int,
                                     }))) ||
                                 $guard(_exceptionable, {
@@ -99,6 +118,7 @@ export const test_assertStringify_TagType = _test_assertStringify(
             };
             const stringify = (input: Array<TagType.Type>): string => {
                 const $number = (typia.assertStringify as any).number;
+                const $is_custom = (typia.assertStringify as any).is_custom;
                 return `[${input
                     .map(
                         (elem: any) =>

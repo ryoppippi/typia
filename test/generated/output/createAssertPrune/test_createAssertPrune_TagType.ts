@@ -8,11 +8,18 @@ export const test_createAssertPrune_TagType = _test_assertPrune(
     (input: any): TagType => {
         const assert = (input: any): TagType => {
             const $guard = (typia.createAssertPrune as any).guard;
+            const $is_custom = (typia.createAssertPrune as any).is_custom;
             const __is = (input: any): input is TagType => {
                 const $io0 = (input: any): boolean =>
                     "number" === typeof input.int &&
                     Number.isFinite(input.int) &&
                     parseInt(input.int) === input.int &&
+                    $is_custom(
+                        "example",
+                        "number",
+                        "https://example.com",
+                        input.int,
+                    ) &&
                     "number" === typeof input.uint &&
                     Number.isFinite(input.uint) &&
                     parseInt(input.uint) === input.uint &&
@@ -44,6 +51,18 @@ export const test_createAssertPrune_TagType = _test_assertPrune(
                                 $guard(_exceptionable, {
                                     path: _path + ".int",
                                     expected: "number (@type int)",
+                                    value: input.int,
+                                })) &&
+                            ($is_custom(
+                                "example",
+                                "number",
+                                "https://example.com",
+                                input.int,
+                            ) ||
+                                $guard(_exceptionable, {
+                                    path: _path + ".int",
+                                    expected:
+                                        "number (@example https://example.com)",
                                     value: input.int,
                                 }))) ||
                             $guard(_exceptionable, {
@@ -92,6 +111,7 @@ export const test_createAssertPrune_TagType = _test_assertPrune(
             return input;
         };
         const prune = (input: TagType): void => {
+            const $is_custom = (typia.createAssertPrune as any).is_custom;
             const $po0 = (input: any): any => {
                 for (const key of Object.keys(input)) {
                     if ("int" === key || "uint" === key) continue;

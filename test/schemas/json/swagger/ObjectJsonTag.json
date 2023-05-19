@@ -11,7 +11,7 @@
         "properties": {
           "vulnerable": {
             "deprecated": true,
-            "description": "",
+            "description": "@deprecated",
             "x-typia-jsDocTags": [
               {
                 "name": "deprecated"
@@ -29,7 +29,7 @@
           },
           "title": {
             "title": "something",
-            "description": "Titled property.",
+            "description": "Titled property.\n@title something",
             "x-typia-jsDocTags": [
               {
                 "name": "title",
@@ -46,8 +46,8 @@
             "type": "string"
           },
           "complicate_title": {
-            "title": "something weirdo with {@link something } tag",
-            "description": "Complicate title.",
+            "title": "something weirdo with  tag",
+            "description": "Complicate title.\n@title something weirdo with {@link something} tag",
             "x-typia-jsDocTags": [
               {
                 "name": "title",
@@ -57,15 +57,7 @@
                     "kind": "text"
                   },
                   {
-                    "text": "{@link ",
-                    "kind": "link"
-                  },
-                  {
-                    "text": "something ",
-                    "kind": "linkText"
-                  },
-                  {
-                    "text": "}",
+                    "text": "",
                     "kind": "link"
                   },
                   {
@@ -87,6 +79,7 @@
           "title",
           "complicate_title"
         ],
+        "description": "Complicate title.\n@title something weirdo with {@link something} tag",
         "x-typia-jsDocTags": []
       }
     }

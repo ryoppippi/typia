@@ -8,10 +8,17 @@ export const test_isStringify_TagType = _test_isStringify(
     (input) =>
         ((input: Array<TagType.Type>): string | null => {
             const is = (input: any): input is Array<TagType.Type> => {
+                const $is_custom = (typia.isStringify as any).is_custom;
                 const $io0 = (input: any): boolean =>
                     "number" === typeof input.int &&
                     Number.isFinite(input.int) &&
                     parseInt(input.int) === input.int &&
+                    $is_custom(
+                        "example",
+                        "number",
+                        "https://example.com",
+                        input.int,
+                    ) &&
                     "number" === typeof input.uint &&
                     Number.isFinite(input.uint) &&
                     parseInt(input.uint) === input.uint &&
@@ -28,6 +35,7 @@ export const test_isStringify_TagType = _test_isStringify(
             };
             const stringify = (input: Array<TagType.Type>): string => {
                 const $number = (typia.isStringify as any).number;
+                const $is_custom = (typia.isStringify as any).is_custom;
                 return `[${input
                     .map(
                         (elem: any) =>

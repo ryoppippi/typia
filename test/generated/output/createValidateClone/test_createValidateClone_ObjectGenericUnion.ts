@@ -52,9 +52,9 @@ export const test_createValidateClone_ObjectGenericUnion = _test_validateClone(
                             $io3(elem),
                     );
                 const $io3 = (input: any): boolean =>
+                    "string" === typeof input.name &&
                     (null === input.extension ||
                         "string" === typeof input.extension) &&
-                    "string" === typeof input.name &&
                     "string" === typeof input.url;
                 const $io4 = (input: any): boolean =>
                     "string" === typeof input.writer &&
@@ -364,18 +364,18 @@ export const test_createValidateClone_ObjectGenericUnion = _test_validateClone(
                         _exceptionable: boolean = true,
                     ): boolean =>
                         [
+                            "string" === typeof input.name ||
+                                $report(_exceptionable, {
+                                    path: _path + ".name",
+                                    expected: "string",
+                                    value: input.name,
+                                }),
                             null === input.extension ||
                                 "string" === typeof input.extension ||
                                 $report(_exceptionable, {
                                     path: _path + ".extension",
                                     expected: "(null | string)",
                                     value: input.extension,
-                                }),
-                            "string" === typeof input.name ||
-                                $report(_exceptionable, {
-                                    path: _path + ".name",
-                                    expected: "string",
-                                    value: input.name,
                                 }),
                             "string" === typeof input.url ||
                                 $report(_exceptionable, {
@@ -639,9 +639,9 @@ export const test_createValidateClone_ObjectGenericUnion = _test_validateClone(
                         "object" === typeof elem && null !== elem && $io3(elem),
                 );
             const $io3 = (input: any): boolean =>
+                "string" === typeof input.name &&
                 (null === input.extension ||
                     "string" === typeof input.extension) &&
-                "string" === typeof input.name &&
                 "string" === typeof input.url;
             const $io4 = (input: any): boolean =>
                 "string" === typeof input.writer &&
@@ -712,8 +712,8 @@ export const test_createValidateClone_ObjectGenericUnion = _test_validateClone(
                     : (input.files as any),
             });
             const $co3 = (input: any): any => ({
-                extension: input.extension as any,
                 name: input.name as any,
+                extension: input.extension as any,
                 url: input.url as any,
             });
             const $co4 = (input: any): any => ({

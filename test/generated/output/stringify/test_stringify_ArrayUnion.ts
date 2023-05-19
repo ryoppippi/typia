@@ -7,21 +7,14 @@ export const test_stringify_ArrayUnion = _test_stringify(
     ArrayUnion.generate,
     (input) =>
         ((input: Array<ArrayUnion.IUnion>): string => {
-            const $string = (typia.stringify as any).string;
             const $number = (typia.stringify as any).number;
+            const $string = (typia.stringify as any).string;
             const $throws = (typia.stringify as any).throws;
             return `[${input
                 .map((elem: any) =>
                     (() => {
                         if (0 === elem.length) return "[]";
                         const tupleList = [
-                            [
-                                (top: any) => "string" === typeof top,
-                                (top: any) =>
-                                    `[${top
-                                        .map((elem: any) => $string(elem))
-                                        .join(",")}]`,
-                            ],
                             [
                                 (top: any) => "boolean" === typeof top,
                                 (top: any) =>
@@ -34,6 +27,13 @@ export const test_stringify_ArrayUnion = _test_stringify(
                                 (top: any) =>
                                     `[${top
                                         .map((elem: any) => $number(elem))
+                                        .join(",")}]`,
+                            ],
+                            [
+                                (top: any) => "string" === typeof top,
+                                (top: any) =>
+                                    `[${top
+                                        .map((elem: any) => $string(elem))
                                         .join(",")}]`,
                             ],
                         ];
@@ -54,7 +54,7 @@ export const test_stringify_ArrayUnion = _test_stringify(
                                     return tuple[1](array);
                         $throws({
                             expected:
-                                "(Array<string> | Array<boolean> | Array<number>)",
+                                "(Array<boolean> | Array<number> | Array<string>)",
                             value: elem,
                         });
                     })(),

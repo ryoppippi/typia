@@ -13,14 +13,6 @@ export const test_random_ArrayUnion = _test_random(
             return (generator?.array ?? $generator.array)(() =>
                 $pick([
                     () =>
-                        (generator?.array ?? $generator.array)(
-                            () =>
-                                (
-                                    generator?.customs ?? $generator.customs
-                                )?.string?.([]) ??
-                                (generator?.string ?? $generator.string)(),
-                        ),
-                    () =>
                         (generator?.array ?? $generator.array)(() =>
                             (generator?.boolean ?? $generator.boolean)(),
                         ),
@@ -34,6 +26,14 @@ export const test_random_ArrayUnion = _test_random(
                                     0,
                                     100,
                                 ),
+                        ),
+                    () =>
+                        (generator?.array ?? $generator.array)(
+                            () =>
+                                (
+                                    generator?.customs ?? $generator.customs
+                                )?.string?.([]) ??
+                                (generator?.string ?? $generator.string)(),
                         ),
                 ])(),
             );
@@ -49,14 +49,6 @@ export const test_random_ArrayUnion = _test_random(
                         (() => {
                             if (0 === elem.length) return true;
                             const tupleList = [
-                                [
-                                    (top: any) => "string" === typeof top,
-                                    (top: any) =>
-                                        top.every(
-                                            (elem: any) =>
-                                                "string" === typeof elem,
-                                        ),
-                                ],
                                 [
                                     (top: any) => "boolean" === typeof top,
                                     (top: any) =>
@@ -74,6 +66,14 @@ export const test_random_ArrayUnion = _test_random(
                                             (elem: any) =>
                                                 "number" === typeof elem &&
                                                 Number.isFinite(elem),
+                                        ),
+                                ],
+                                [
+                                    (top: any) => "string" === typeof top,
+                                    (top: any) =>
+                                        top.every(
+                                            (elem: any) =>
+                                                "string" === typeof elem,
                                         ),
                                 ],
                             ];
@@ -125,25 +125,6 @@ export const test_random_ArrayUnion = _test_random(
                                 if (0 === elem.length) return true;
                                 const tupleList = [
                                     [
-                                        (top: any) => "string" === typeof top,
-                                        (top: any) =>
-                                            top.every(
-                                                (elem: any, _index2: number) =>
-                                                    "string" === typeof elem ||
-                                                    $guard(true, {
-                                                        path:
-                                                            _path +
-                                                            "[" +
-                                                            _index1 +
-                                                            "][" +
-                                                            _index2 +
-                                                            "]",
-                                                        expected: "string",
-                                                        value: elem,
-                                                    }),
-                                            ),
-                                    ],
-                                    [
                                         (top: any) => "boolean" === typeof top,
                                         (top: any) =>
                                             top.every(
@@ -186,6 +167,25 @@ export const test_random_ArrayUnion = _test_random(
                                                     }),
                                             ),
                                     ],
+                                    [
+                                        (top: any) => "string" === typeof top,
+                                        (top: any) =>
+                                            top.every(
+                                                (elem: any, _index2: number) =>
+                                                    "string" === typeof elem ||
+                                                    $guard(true, {
+                                                        path:
+                                                            _path +
+                                                            "[" +
+                                                            _index1 +
+                                                            "][" +
+                                                            _index2 +
+                                                            "]",
+                                                        expected: "string",
+                                                        value: elem,
+                                                    }),
+                                            ),
+                                    ],
                                 ];
                                 const front = elem[0];
                                 const filtered = tupleList.filter(
@@ -206,7 +206,7 @@ export const test_random_ArrayUnion = _test_random(
                                 return $guard(_exceptionable, {
                                     path: _path + "[" + _index1 + "]",
                                     expected:
-                                        "(Array<string> | Array<boolean> | Array<number>)",
+                                        "(Array<boolean> | Array<number> | Array<string>)",
                                     value: elem,
                                 });
                             })(),

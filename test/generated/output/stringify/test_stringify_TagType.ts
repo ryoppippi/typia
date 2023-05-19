@@ -8,6 +8,7 @@ export const test_stringify_TagType = _test_stringify(
     (input) =>
         ((input: Array<TagType.Type>): string => {
             const $number = (typia.stringify as any).number;
+            const $is_custom = (typia.stringify as any).is_custom;
             return `[${input
                 .map(
                     (elem: any) =>

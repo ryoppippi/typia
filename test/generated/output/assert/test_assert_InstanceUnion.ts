@@ -222,20 +222,6 @@ export const test_assert_InstanceUnion = _test_assert(
                                             ],
                                             [
                                                 (top: any) =>
-                                                    "object" === typeof top &&
-                                                    null !== top &&
-                                                    $iu0(top),
-                                                (top: any) =>
-                                                    top.every(
-                                                        (elem: any) =>
-                                                            "object" ===
-                                                                typeof elem &&
-                                                            null !== elem &&
-                                                            $iu0(elem),
-                                                    ),
-                                            ],
-                                            [
-                                                (top: any) =>
                                                     "boolean" === typeof top,
                                                 (top: any) =>
                                                     top.every(
@@ -256,6 +242,20 @@ export const test_assert_InstanceUnion = _test_assert(
                                                             Number.isFinite(
                                                                 elem,
                                                             ),
+                                                    ),
+                                            ],
+                                            [
+                                                (top: any) =>
+                                                    "object" === typeof top &&
+                                                    null !== top &&
+                                                    $iu0(top),
+                                                (top: any) =>
+                                                    top.every(
+                                                        (elem: any) =>
+                                                            "object" ===
+                                                                typeof elem &&
+                                                            null !== elem &&
+                                                            $iu0(elem),
                                                     ),
                                             ],
                                         ];
@@ -876,60 +876,13 @@ export const test_assert_InstanceUnion = _test_assert(
                                                 ],
                                                 [
                                                     (top: any) =>
-                                                        "object" ===
-                                                            typeof top &&
-                                                        null !== top &&
-                                                        $au0(
-                                                            top,
-                                                            _path + "[0]",
-                                                            false,
-                                                        ),
-                                                    (top: any) =>
-                                                        top.every(
-                                                            (
-                                                                elem: any,
-                                                                _index3: number,
-                                                            ) =>
-                                                                (("object" ===
-                                                                    typeof elem &&
-                                                                    null !==
-                                                                        elem) ||
-                                                                    $guard(
-                                                                        true,
-                                                                        {
-                                                                            path:
-                                                                                _path +
-                                                                                "[" +
-                                                                                _index1 +
-                                                                                "][" +
-                                                                                _index3 +
-                                                                                "]",
-                                                                            expected:
-                                                                                '(ObjectUnionExplicit.Discriminator<"circle", ObjectUnionExplicit.ICircle> | ObjectUnionExplicit.Discriminator<"line", ObjectUnionExplicit.ILine> | ObjectUnionExplicit.Discriminator<"point", ObjectUnionExplicit.IPoint> | ObjectUnionExplicit.Discriminator<"polygon", ObjectUnionExplicit.IPolygon> | ObjectUnionExplicit.Discriminator<"polyline", ObjectUnionExplicit.IPolyline> | ObjectUnionExplicit.Discriminator<"rectangle", ObjectUnionExplicit.IRectangle> | ObjectUnionExplicit.Discriminator<"triangle", ObjectUnionExplicit.ITriangle>)',
-                                                                            value: elem,
-                                                                        },
-                                                                    )) &&
-                                                                $au0(
-                                                                    elem,
-                                                                    _path +
-                                                                        "[" +
-                                                                        _index1 +
-                                                                        "][" +
-                                                                        _index3 +
-                                                                        "]",
-                                                                    true,
-                                                                ),
-                                                        ),
-                                                ],
-                                                [
-                                                    (top: any) =>
                                                         "boolean" ===
                                                         typeof top,
                                                     (top: any) =>
                                                         top.every(
                                                             (
                                                                 elem: any,
-                                                                _index4: number,
+                                                                _index3: number,
                                                             ) =>
                                                                 "boolean" ===
                                                                     typeof elem ||
@@ -939,7 +892,7 @@ export const test_assert_InstanceUnion = _test_assert(
                                                                         "[" +
                                                                         _index1 +
                                                                         "][" +
-                                                                        _index4 +
+                                                                        _index3 +
                                                                         "]",
                                                                     expected:
                                                                         "boolean",
@@ -956,7 +909,7 @@ export const test_assert_InstanceUnion = _test_assert(
                                                         top.every(
                                                             (
                                                                 elem: any,
-                                                                _index5: number,
+                                                                _index4: number,
                                                             ) =>
                                                                 ("number" ===
                                                                     typeof elem &&
@@ -969,12 +922,59 @@ export const test_assert_InstanceUnion = _test_assert(
                                                                         "[" +
                                                                         _index1 +
                                                                         "][" +
-                                                                        _index5 +
+                                                                        _index4 +
                                                                         "]",
                                                                     expected:
                                                                         "number",
                                                                     value: elem,
                                                                 }),
+                                                        ),
+                                                ],
+                                                [
+                                                    (top: any) =>
+                                                        "object" ===
+                                                            typeof top &&
+                                                        null !== top &&
+                                                        $au0(
+                                                            top,
+                                                            _path + "[0]",
+                                                            false,
+                                                        ),
+                                                    (top: any) =>
+                                                        top.every(
+                                                            (
+                                                                elem: any,
+                                                                _index5: number,
+                                                            ) =>
+                                                                (("object" ===
+                                                                    typeof elem &&
+                                                                    null !==
+                                                                        elem) ||
+                                                                    $guard(
+                                                                        true,
+                                                                        {
+                                                                            path:
+                                                                                _path +
+                                                                                "[" +
+                                                                                _index1 +
+                                                                                "][" +
+                                                                                _index5 +
+                                                                                "]",
+                                                                            expected:
+                                                                                '(ObjectUnionExplicit.Discriminator<"circle", ObjectUnionExplicit.ICircle> | ObjectUnionExplicit.Discriminator<"line", ObjectUnionExplicit.ILine> | ObjectUnionExplicit.Discriminator<"point", ObjectUnionExplicit.IPoint> | ObjectUnionExplicit.Discriminator<"polygon", ObjectUnionExplicit.IPolygon> | ObjectUnionExplicit.Discriminator<"polyline", ObjectUnionExplicit.IPolyline> | ObjectUnionExplicit.Discriminator<"rectangle", ObjectUnionExplicit.IRectangle> | ObjectUnionExplicit.Discriminator<"triangle", ObjectUnionExplicit.ITriangle>)',
+                                                                            value: elem,
+                                                                        },
+                                                                    )) &&
+                                                                $au0(
+                                                                    elem,
+                                                                    _path +
+                                                                        "[" +
+                                                                        _index1 +
+                                                                        "][" +
+                                                                        _index5 +
+                                                                        "]",
+                                                                    true,
+                                                                ),
                                                         ),
                                                 ],
                                             ];
@@ -1000,7 +1000,7 @@ export const test_assert_InstanceUnion = _test_assert(
                                                 path:
                                                     _path + "[" + _index1 + "]",
                                                 expected:
-                                                    '([string, string] | [boolean, number, number] | [] | Array<(ObjectUnionExplicit.Discriminator<"circle", ObjectUnionExplicit.ICircle> | ObjectUnionExplicit.Discriminator<"line", ObjectUnionExplicit.ILine> | ObjectUnionExplicit.Discriminator<"point", ObjectUnionExplicit.IPoint> | ObjectUnionExplicit.Discriminator<"polygon", ObjectUnionExplicit.IPolygon> | ObjectUnionExplicit.Discriminator<"polyline", ObjectUnionExplicit.IPolyline> | ObjectUnionExplicit.Discriminator<"rectangle", ObjectUnionExplicit.IRectangle> | ObjectUnionExplicit.Discriminator<"triangle", ObjectUnionExplicit.ITriangle>)> | Array<boolean> | Array<number>)',
+                                                    '([string, string] | [boolean, number, number] | [] | Array<boolean> | Array<number> | Array<(ObjectUnionExplicit.Discriminator<"circle", ObjectUnionExplicit.ICircle> | ObjectUnionExplicit.Discriminator<"line", ObjectUnionExplicit.ILine> | ObjectUnionExplicit.Discriminator<"point", ObjectUnionExplicit.IPoint> | ObjectUnionExplicit.Discriminator<"polygon", ObjectUnionExplicit.IPolygon> | ObjectUnionExplicit.Discriminator<"polyline", ObjectUnionExplicit.IPolyline> | ObjectUnionExplicit.Discriminator<"rectangle", ObjectUnionExplicit.IRectangle> | ObjectUnionExplicit.Discriminator<"triangle", ObjectUnionExplicit.ITriangle>)>)',
                                                 value: elem,
                                             });
                                         })()) ||
