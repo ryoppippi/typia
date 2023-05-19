@@ -67,7 +67,6 @@ export const test_application_ajv_DynamicEnumeration = _test_application("ajv")(
                             type: "string",
                         },
                     },
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

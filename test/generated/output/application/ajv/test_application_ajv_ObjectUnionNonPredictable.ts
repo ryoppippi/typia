@@ -22,13 +22,11 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                     properties: {
                         value: {
                             $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_ObjectUnionNonPredictable.IUnion_gt_",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             "ObjectUnionNonPredictable.IPointer_lt_ObjectUnionNonPredictable.IUnion_gt_":
@@ -40,30 +38,25 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                             oneOf: [
                                 {
                                     $ref: "#/components/schemas/ObjectUnionNonPredictable.IWrapper_lt_boolean_gt_",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ObjectUnionNonPredictable.IWrapper_lt_number_gt_",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ObjectUnionNonPredictable.IWrapper_lt_string_gt_",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             "ObjectUnionNonPredictable.IWrapper_lt_boolean_gt_": {
@@ -72,13 +65,11 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                 properties: {
                     value: {
                         $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_boolean_gt_",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionNonPredictable.IPointer_lt_boolean_gt_": {
@@ -86,14 +77,12 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionNonPredictable.IWrapper_lt_number_gt_": {
@@ -102,13 +91,11 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                 properties: {
                     value: {
                         $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_number_gt_",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionNonPredictable.IPointer_lt_number_gt_": {
@@ -116,14 +103,12 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionNonPredictable.IWrapper_lt_string_gt_": {
@@ -132,13 +117,11 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                 properties: {
                     value: {
                         $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_string_gt_",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionNonPredictable.IPointer_lt_string_gt_": {
@@ -146,14 +129,12 @@ export const test_application_ajv_ObjectUnionNonPredictable = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

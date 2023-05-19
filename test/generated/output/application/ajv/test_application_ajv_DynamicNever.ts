@@ -16,7 +16,6 @@ export const test_application_ajv_DynamicNever = _test_application("ajv")(
                     $id: "#/components/schemas/DynamicNever",
                     type: "object",
                     properties: {},
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

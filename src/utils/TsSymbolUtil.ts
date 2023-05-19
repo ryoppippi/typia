@@ -14,7 +14,8 @@ export namespace TsSymbolUtil {
             const text: string = TsNodeUtil.getSourceFile(tsc)(
                 node,
             ).text.substring(range.pos, range.end);
-            return transform(text).join("\n");
+            const output: string = transform(text).join("\n");
+            return output.length ? output : undefined;
         };
 
     export const getCommentTags =

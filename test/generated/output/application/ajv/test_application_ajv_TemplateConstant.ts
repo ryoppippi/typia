@@ -20,21 +20,18 @@ export const test_application_ajv_TemplateConstant = _test_application("ajv")(
                     type: "object",
                     properties: {
                         prefix: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["prefix_A", "prefix_B", "prefix_C"],
                         },
                         postfix: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["1_postfix", "3_postfix", "2_postfix"],
                         },
                         combined: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -52,7 +49,6 @@ export const test_application_ajv_TemplateConstant = _test_application("ajv")(
                         },
                     },
                     required: ["prefix", "postfix", "combined"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

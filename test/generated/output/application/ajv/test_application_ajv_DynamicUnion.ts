@@ -16,7 +16,6 @@ export const test_application_ajv_DynamicUnion = _test_application("ajv")(
                     $id: "#/components/schemas/DynamicUnion",
                     type: "object",
                     properties: {},
-                    description: "",
                     "x-typia-jsDocTags": [],
                     patternProperties: {
                         "^-?\\d+\\.?\\d*$": {

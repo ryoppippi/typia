@@ -17,50 +17,42 @@ export const test_application_ajv_ObjectPrimitive = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         extension: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["txt", "md", "html"],
                         },
                         title: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         body: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         files: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
                                 $ref: "#/components/schemas/ObjectPrimitive.IFile",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                         secret: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "boolean",
                         },
                         created_at: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -75,7 +67,6 @@ export const test_application_ajv_ObjectPrimitive = _test_application("ajv")(
                         "secret",
                         "created_at",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectPrimitive.IFile": {
@@ -83,38 +74,32 @@ export const test_application_ajv_ObjectPrimitive = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         extension: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         url: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         created_at: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["id", "name", "extension", "url", "created_at"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

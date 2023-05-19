@@ -38,7 +38,6 @@ export const test_application_swagger_DynamicConstant = _test_application(
                 },
                 nullable: false,
                 required: ["a", "b", "c", "d"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

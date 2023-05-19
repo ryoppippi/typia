@@ -17,31 +17,26 @@ export const test_application_ajv_MapSimple = _test_application("ajv")(
                     type: "object",
                     properties: {
                         boolean: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Map",
                         },
                         number: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Map",
                         },
                         strings: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Map",
                         },
                         arrays: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Map",
                         },
                         objects: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Map",
@@ -54,7 +49,6 @@ export const test_application_ajv_MapSimple = _test_application("ajv")(
                         "arrays",
                         "objects",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 Map: {

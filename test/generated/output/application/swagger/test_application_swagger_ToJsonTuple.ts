@@ -58,13 +58,11 @@ export const test_application_swagger_ToJsonTuple = _test_application(
                 type: "object",
                 properties: {
                     code: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -72,7 +70,6 @@ export const test_application_swagger_ToJsonTuple = _test_application(
                 },
                 nullable: false,
                 required: ["code", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

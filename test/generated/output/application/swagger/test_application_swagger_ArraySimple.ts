@@ -19,25 +19,21 @@ export const test_application_swagger_ArraySimple = _test_application(
                 type: "object",
                 properties: {
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     email: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     hobbies: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ArraySimple.IHobby",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
@@ -45,26 +41,22 @@ export const test_application_swagger_ArraySimple = _test_application(
                 },
                 nullable: false,
                 required: ["name", "email", "hobbies"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ArraySimple.IHobby": {
                 type: "object",
                 properties: {
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     body: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     rank: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
@@ -72,7 +64,6 @@ export const test_application_swagger_ArraySimple = _test_application(
                 },
                 nullable: false,
                 required: ["name", "body", "rank"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

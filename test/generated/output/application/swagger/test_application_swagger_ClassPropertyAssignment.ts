@@ -15,33 +15,28 @@ export const test_application_swagger_ClassPropertyAssignment =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         note: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["assignment"],
                         },
                         editable: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "boolean",
                             enum: [false],
                         },
                         incremental: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "boolean",
@@ -49,7 +44,6 @@ export const test_application_swagger_ClassPropertyAssignment =
                     },
                     nullable: false,
                     required: ["id", "name", "note", "editable", "incremental"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

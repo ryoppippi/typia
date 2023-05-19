@@ -30,26 +30,22 @@ export const test_application_ajv_ObjectTuple = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         code: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["id", "code", "name"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectTuple.ICitizen": {
@@ -57,26 +53,22 @@ export const test_application_ajv_ObjectTuple = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         mobile: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["id", "mobile", "name"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

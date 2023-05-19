@@ -16,13 +16,11 @@ export const test_application_swagger_ClassMethod = _test_application(
                 type: "object",
                 properties: {
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     age: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
@@ -30,7 +28,6 @@ export const test_application_swagger_ClassMethod = _test_application(
                 },
                 nullable: false,
                 required: ["name", "age"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

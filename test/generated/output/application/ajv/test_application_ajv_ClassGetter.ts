@@ -17,13 +17,11 @@ export const test_application_ajv_ClassGetter = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -31,25 +29,21 @@ export const test_application_ajv_ClassGetter = _test_application("ajv")(
                         dead: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "boolean",
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["id", "name", "dead"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

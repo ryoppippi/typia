@@ -36,19 +36,16 @@ export const test_application_swagger_ToJsonUnion = _test_application(
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                     mobile: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -56,26 +53,22 @@ export const test_application_swagger_ToJsonUnion = _test_application(
                 },
                 nullable: false,
                 required: ["id", "mobile", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ToJsonUnion.IProduct": {
                 type: "object",
                 properties: {
                     manufacturer: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     brand: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -83,7 +76,6 @@ export const test_application_swagger_ToJsonUnion = _test_application(
                 },
                 nullable: false,
                 required: ["manufacturer", "brand", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

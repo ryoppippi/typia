@@ -20,37 +20,31 @@ export const test_application_ajv_ArrayHierarchical = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         serial: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         established_at: {
                             $ref: "#/components/schemas/ArrayHierarchical.ITimestamp",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         departments: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
                                 $ref: "#/components/schemas/ArrayHierarchical.IDepartment",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
@@ -63,7 +57,6 @@ export const test_application_ajv_ArrayHierarchical = _test_application("ajv")(
                         "established_at",
                         "departments",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayHierarchical.ITimestamp": {
@@ -71,20 +64,17 @@ export const test_application_ajv_ArrayHierarchical = _test_application("ajv")(
                     type: "object",
                     properties: {
                         time: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         zone: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                     },
                     required: ["time", "zone"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayHierarchical.IDepartment": {
@@ -92,37 +82,31 @@ export const test_application_ajv_ArrayHierarchical = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         code: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         sales: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         created_at: {
                             $ref: "#/components/schemas/ArrayHierarchical.ITimestamp",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         employees: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
                                 $ref: "#/components/schemas/ArrayHierarchical.IEmployee",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
@@ -135,7 +119,6 @@ export const test_application_ajv_ArrayHierarchical = _test_application("ajv")(
                         "created_at",
                         "employees",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayHierarchical.IEmployee": {
@@ -143,38 +126,32 @@ export const test_application_ajv_ArrayHierarchical = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         age: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         grade: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         employeed_at: {
                             $ref: "#/components/schemas/ArrayHierarchical.ITimestamp",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["id", "name", "age", "grade", "employeed_at"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

@@ -16,7 +16,6 @@ export const test_application_swagger_DynamicSimple = _test_application(
                 type: "object",
                 properties: {},
                 nullable: false,
-                description: "",
                 "x-typia-jsDocTags": [],
                 "x-typia-additionalProperties": {
                     "x-typia-required": true,

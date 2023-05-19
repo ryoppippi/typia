@@ -38,7 +38,6 @@ export const test_application_ajv_DynamicConstant = _test_application("ajv")(
                         },
                     },
                     required: ["a", "b", "c", "d"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

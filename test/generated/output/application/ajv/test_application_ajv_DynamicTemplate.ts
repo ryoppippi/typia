@@ -16,7 +16,6 @@ export const test_application_ajv_DynamicTemplate = _test_application("ajv")(
                     $id: "#/components/schemas/DynamicTemplate",
                     type: "object",
                     properties: {},
-                    description: "",
                     "x-typia-jsDocTags": [],
                     patternProperties: {
                         "^(prefix_(.*))": {

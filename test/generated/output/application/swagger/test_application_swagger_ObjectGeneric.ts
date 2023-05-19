@@ -50,25 +50,21 @@ export const test_application_swagger_ObjectGeneric = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
                     },
                     child: {
                         $ref: "#/components/schemas/ObjectGeneric.IChild_lt_boolean_comma__space_boolean_gt_",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     elements: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ObjectGeneric.IChild_lt_boolean_comma__space_boolean_gt_",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
@@ -76,20 +72,17 @@ export const test_application_swagger_ObjectGeneric = _test_application(
                 },
                 nullable: false,
                 required: ["value", "child", "elements"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectGeneric.IChild_lt_boolean_comma__space_boolean_gt_": {
                 type: "object",
                 properties: {
                     child_value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
                     },
                     child_next: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
@@ -97,32 +90,27 @@ export const test_application_swagger_ObjectGeneric = _test_application(
                 },
                 nullable: false,
                 required: ["child_value", "child_next"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectGeneric.ISomething_lt_number_gt_": {
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                     child: {
                         $ref: "#/components/schemas/ObjectGeneric.IChild_lt_number_comma__space_number_gt_",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     elements: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ObjectGeneric.IChild_lt_number_comma__space_number_gt_",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
@@ -130,20 +118,17 @@ export const test_application_swagger_ObjectGeneric = _test_application(
                 },
                 nullable: false,
                 required: ["value", "child", "elements"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectGeneric.IChild_lt_number_comma__space_number_gt_": {
                 type: "object",
                 properties: {
                     child_value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                     child_next: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
@@ -151,32 +136,27 @@ export const test_application_swagger_ObjectGeneric = _test_application(
                 },
                 nullable: false,
                 required: ["child_value", "child_next"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectGeneric.ISomething_lt_string_gt_": {
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     child: {
                         $ref: "#/components/schemas/ObjectGeneric.IChild_lt_string_comma__space_string_gt_",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     elements: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ObjectGeneric.IChild_lt_string_comma__space_string_gt_",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
@@ -184,20 +164,17 @@ export const test_application_swagger_ObjectGeneric = _test_application(
                 },
                 nullable: false,
                 required: ["value", "child", "elements"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectGeneric.IChild_lt_string_comma__space_string_gt_": {
                 type: "object",
                 properties: {
                     child_value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     child_next: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -205,7 +182,6 @@ export const test_application_swagger_ObjectGeneric = _test_application(
                 },
                 nullable: false,
                 required: ["child_value", "child_next"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

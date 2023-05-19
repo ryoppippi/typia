@@ -16,7 +16,6 @@ export const test_application_ajv_ObjectDynamic = _test_application("ajv")(
                     $id: "#/components/schemas/ObjectDynamic",
                     type: "object",
                     properties: {},
-                    description: "",
                     "x-typia-jsDocTags": [],
                     additionalProperties: {
                         oneOf: [

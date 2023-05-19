@@ -35,14 +35,12 @@ export const test_application_ajv_ConstantAtomicWrapper = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ConstantAtomicWrapper.IPointer_lt_number_gt_": {
@@ -50,14 +48,12 @@ export const test_application_ajv_ConstantAtomicWrapper = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ConstantAtomicWrapper.IPointer_lt_string_gt_": {
@@ -65,14 +61,12 @@ export const test_application_ajv_ConstantAtomicWrapper = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

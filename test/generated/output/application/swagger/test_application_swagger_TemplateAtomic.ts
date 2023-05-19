@@ -17,41 +17,35 @@ export const test_application_swagger_TemplateAtomic = _test_application(
                 properties: {
                     prefix: {
                         type: "string",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         pattern: "^(prefix_(.*))",
                     },
                     postfix: {
                         type: "string",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         pattern: "((.*)_postfix)$",
                     },
                     middle_string: {
                         type: "string",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         pattern: "^(the_(.*)_value)$",
                     },
                     middle_string_empty: {
                         type: "string",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         pattern: "^(the_(.*)_value)$",
                     },
                     middle_numeric: {
                         type: "string",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         pattern: "^(the_-?\\d+\\.?\\d*_value)$",
                     },
                     middle_boolean: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -59,7 +53,6 @@ export const test_application_swagger_TemplateAtomic = _test_application(
                     },
                     ipv4: {
                         type: "string",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         pattern:
@@ -67,7 +60,6 @@ export const test_application_swagger_TemplateAtomic = _test_application(
                     },
                     email: {
                         type: "string",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         pattern: "((.*)@(.*)\\.(.*))",
@@ -84,7 +76,6 @@ export const test_application_swagger_TemplateAtomic = _test_application(
                     "ipv4",
                     "email",
                 ],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

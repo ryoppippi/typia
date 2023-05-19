@@ -16,7 +16,6 @@ export const test_application_swagger_DynamicNever = _test_application(
                 type: "object",
                 properties: {},
                 nullable: false,
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

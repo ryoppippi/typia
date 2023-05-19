@@ -22,30 +22,25 @@ export const test_application_ajv_ObjectAlias = _test_application("ajv")(
                         id: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "string",
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         email: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -53,71 +48,60 @@ export const test_application_ajv_ObjectAlias = _test_application("ajv")(
                         sex: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "number",
                                     enum: [1, 2],
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "string",
                                     enum: ["male", "female"],
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         age: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "number",
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         dead: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "boolean",
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["id", "email", "name", "sex", "age", "dead"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

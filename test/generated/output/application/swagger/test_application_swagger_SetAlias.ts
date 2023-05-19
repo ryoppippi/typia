@@ -16,31 +16,26 @@ export const test_application_swagger_SetAlias = _test_application("swagger")(
                     type: "object",
                     properties: {
                         booleans: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         numbers: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         strings: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         arrays: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         objects: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
@@ -54,7 +49,6 @@ export const test_application_swagger_SetAlias = _test_application("swagger")(
                         "arrays",
                         "objects",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 Set: {

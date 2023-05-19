@@ -61,14 +61,12 @@ export const test_application_ajv_ToJsonArray = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["id"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

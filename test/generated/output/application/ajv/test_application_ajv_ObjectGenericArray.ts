@@ -18,25 +18,21 @@ export const test_application_ajv_ObjectGenericArray = _test_application("ajv")(
                     properties: {
                         pagination: {
                             $ref: "#/components/schemas/ObjectGenericArray.IPagination",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         data: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
                                 $ref: "#/components/schemas/ObjectGenericArray.IPerson",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                     },
                     required: ["pagination", "data"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectGenericArray.IPagination": {
@@ -44,32 +40,27 @@ export const test_application_ajv_ObjectGenericArray = _test_application("ajv")(
                     type: "object",
                     properties: {
                         page: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         limit: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         total_count: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         total_pages: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                     },
                     required: ["page", "limit", "total_count", "total_pages"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectGenericArray.IPerson": {
@@ -77,20 +68,17 @@ export const test_application_ajv_ObjectGenericArray = _test_application("ajv")(
                     type: "object",
                     properties: {
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         age: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                     },
                     required: ["name", "age"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

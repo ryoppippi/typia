@@ -40,20 +40,17 @@ export const test_application_swagger_ObjectNullable = _test_application(
                 type: "object",
                 properties: {
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     manufacturer: {
                         $ref: "#/components/schemas/ObjectNullable.IManufacturer",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     brand: {
                         $ref: "#/components/schemas/ObjectNullable.IBrand.Nullable",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
@@ -61,39 +58,33 @@ export const test_application_swagger_ObjectNullable = _test_application(
                         oneOf: [
                             {
                                 $ref: "#/components/schemas/ObjectNullable.IManufacturer.Nullable",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                             {
                                 $ref: "#/components/schemas/ObjectNullable.IBrand.Nullable",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         ],
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 nullable: false,
                 required: ["name", "manufacturer", "brand", "similar"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectNullable.IManufacturer": {
                 type: "object",
                 properties: {
                     type: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                         enum: ["manufacturer"],
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -101,21 +92,18 @@ export const test_application_swagger_ObjectNullable = _test_application(
                 },
                 nullable: false,
                 required: ["type", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectNullable.IBrand.Nullable": {
                 type: "object",
                 properties: {
                     type: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                         enum: ["brand"],
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -123,21 +111,18 @@ export const test_application_swagger_ObjectNullable = _test_application(
                 },
                 nullable: true,
                 required: ["type", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectNullable.IManufacturer.Nullable": {
                 type: "object",
                 properties: {
                     type: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                         enum: ["manufacturer"],
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -145,7 +130,6 @@ export const test_application_swagger_ObjectNullable = _test_application(
                 },
                 nullable: true,
                 required: ["type", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

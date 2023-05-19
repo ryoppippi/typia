@@ -37,26 +37,22 @@ export const test_application_ajv_ToJsonUnion = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         mobile: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["id", "mobile", "name"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ToJsonUnion.IProduct": {
@@ -64,26 +60,22 @@ export const test_application_ajv_ToJsonUnion = _test_application("ajv")(
                     type: "object",
                     properties: {
                         manufacturer: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         brand: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["manufacturer", "brand", "name"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

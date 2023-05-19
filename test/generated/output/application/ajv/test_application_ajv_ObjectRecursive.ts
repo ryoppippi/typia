@@ -21,7 +21,6 @@ export const test_application_ajv_ObjectRecursive = _test_application("ajv")(
                         parent: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
@@ -29,42 +28,35 @@ export const test_application_ajv_ObjectRecursive = _test_application("ajv")(
                                 {
                                     $recursiveRef:
                                         "#/components/schemas/ObjectRecursive.IDepartment",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         code: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         sequence: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         created_at: {
                             $ref: "#/components/schemas/ObjectRecursive.ITimestamp",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
@@ -77,7 +69,6 @@ export const test_application_ajv_ObjectRecursive = _test_application("ajv")(
                         "sequence",
                         "created_at",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectRecursive.ITimestamp": {
@@ -85,20 +76,17 @@ export const test_application_ajv_ObjectRecursive = _test_application("ajv")(
                     type: "object",
                     properties: {
                         time: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         zone: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                     },
                     required: ["time", "zone"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

@@ -43,19 +43,16 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                     type: "object",
                     properties: {
                         x: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         y: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -72,18 +69,15 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                     properties: {
                         p1: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         p2: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -98,20 +92,17 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                 type: "object",
                 properties: {
                     x: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                     y: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                 },
                 required: ["x", "y"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionExplicit.Discriminator_lt__doublequote_triangle_doublequote__comma__space_ObjectUnionExplicit.ITriangle_gt_":
@@ -121,24 +112,20 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                     properties: {
                         p1: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         p2: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         p3: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -155,30 +142,25 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                     properties: {
                         p1: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         p2: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         p3: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         p4: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -194,19 +176,16 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                     type: "object",
                     properties: {
                         points: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
                                 $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -223,24 +202,20 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                     properties: {
                         outer: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPolyline",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         inner: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
                                 $ref: "#/components/schemas/ObjectUnionExplicit.IPolyline",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -255,20 +230,17 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                 type: "object",
                 properties: {
                     points: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                 },
                 required: ["points"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionExplicit.Discriminator_lt__doublequote_circle_doublequote__comma__space_ObjectUnionExplicit.ICircle_gt_":
@@ -278,18 +250,15 @@ export const test_application_ajv_ObjectUnionExplicit = _test_application(
                     properties: {
                         centroid: {
                             $ref: "#/components/schemas/ObjectUnionExplicit.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         radius: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",

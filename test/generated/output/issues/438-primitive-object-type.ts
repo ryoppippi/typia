@@ -131,7 +131,6 @@ export function test_issue_438_primitve_object_type(): void {
             {
                 name: "Type",
                 properties: [],
-                description: "",
                 jsDocTags: [],
                 index: 1,
                 validated: false,
@@ -141,7 +140,6 @@ export function test_issue_438_primitve_object_type(): void {
             {
                 name: "Interface",
                 properties: [],
-                description: "",
                 jsDocTags: [],
                 index: 2,
                 validated: false,
@@ -151,7 +149,6 @@ export function test_issue_438_primitve_object_type(): void {
             {
                 name: "Class",
                 properties: [],
-                description: "",
                 jsDocTags: [],
                 index: 3,
                 validated: false,

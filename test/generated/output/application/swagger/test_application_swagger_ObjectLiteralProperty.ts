@@ -16,13 +16,11 @@ export const test_application_swagger_ObjectLiteralProperty = _test_application(
                 type: "object",
                 properties: {
                     "something-interesting-do-you-want?": {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     "or-something-crazy-do-you-want?": {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -33,7 +31,6 @@ export const test_application_swagger_ObjectLiteralProperty = _test_application(
                     "something-interesting-do-you-want?",
                     "or-something-crazy-do-you-want?",
                 ],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

@@ -54,14 +54,12 @@ export const test_application_ajv_TupleRestObject = _test_application("ajv")(
                     type: "object",
                     properties: {
                         value: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

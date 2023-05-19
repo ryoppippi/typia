@@ -16,13 +16,11 @@ export const test_application_swagger_ToJsonDouble = _test_application(
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                     flag: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
@@ -30,7 +28,6 @@ export const test_application_swagger_ToJsonDouble = _test_application(
                 },
                 nullable: false,
                 required: ["id", "flag"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

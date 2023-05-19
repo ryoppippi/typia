@@ -20,14 +20,12 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                         properties: {
                             value: {
                                 $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_ObjectUnionNonPredictable.IUnion_gt_",
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                         nullable: false,
                         required: ["value"],
-                        description: "",
                         "x-typia-jsDocTags": [],
                     },
                 "ObjectUnionNonPredictable.IPointer_lt_ObjectUnionNonPredictable.IUnion_gt_":
@@ -38,31 +36,26 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                                 oneOf: [
                                     {
                                         $ref: "#/components/schemas/ObjectUnionNonPredictable.IWrapper_lt_boolean_gt_",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ObjectUnionNonPredictable.IWrapper_lt_number_gt_",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ObjectUnionNonPredictable.IWrapper_lt_string_gt_",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                 ],
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                         nullable: false,
                         required: ["value"],
-                        description: "",
                         "x-typia-jsDocTags": [],
                     },
                 "ObjectUnionNonPredictable.IWrapper_lt_boolean_gt_": {
@@ -70,21 +63,18 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                     properties: {
                         value: {
                             $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_boolean_gt_",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     nullable: false,
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectUnionNonPredictable.IPointer_lt_boolean_gt_": {
                     type: "object",
                     properties: {
                         value: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "boolean",
@@ -92,7 +82,6 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                     },
                     nullable: false,
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectUnionNonPredictable.IWrapper_lt_number_gt_": {
@@ -100,21 +89,18 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                     properties: {
                         value: {
                             $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_number_gt_",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     nullable: false,
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectUnionNonPredictable.IPointer_lt_number_gt_": {
                     type: "object",
                     properties: {
                         value: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
@@ -122,7 +108,6 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                     },
                     nullable: false,
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectUnionNonPredictable.IWrapper_lt_string_gt_": {
@@ -130,21 +115,18 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                     properties: {
                         value: {
                             $ref: "#/components/schemas/ObjectUnionNonPredictable.IPointer_lt_string_gt_",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     nullable: false,
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectUnionNonPredictable.IPointer_lt_string_gt_": {
                     type: "object",
                     properties: {
                         value: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -152,7 +134,6 @@ export const test_application_swagger_ObjectUnionNonPredictable =
                     },
                     nullable: false,
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

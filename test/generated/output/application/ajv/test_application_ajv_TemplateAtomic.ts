@@ -18,41 +18,35 @@ export const test_application_ajv_TemplateAtomic = _test_application("ajv")(
                     properties: {
                         prefix: {
                             type: "string",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             pattern: "^(prefix_(.*))",
                         },
                         postfix: {
                             type: "string",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             pattern: "((.*)_postfix)$",
                         },
                         middle_string: {
                             type: "string",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             pattern: "^(the_(.*)_value)$",
                         },
                         middle_string_empty: {
                             type: "string",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             pattern: "^(the_(.*)_value)$",
                         },
                         middle_numeric: {
                             type: "string",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             pattern: "^(the_-?\\d+\\.?\\d*_value)$",
                         },
                         middle_boolean: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -60,7 +54,6 @@ export const test_application_ajv_TemplateAtomic = _test_application("ajv")(
                         },
                         ipv4: {
                             type: "string",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             pattern:
@@ -68,7 +61,6 @@ export const test_application_ajv_TemplateAtomic = _test_application("ajv")(
                         },
                         email: {
                             type: "string",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             pattern: "((.*)@(.*)\\.(.*))",
@@ -84,7 +76,6 @@ export const test_application_ajv_TemplateAtomic = _test_application("ajv")(
                         "ipv4",
                         "email",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

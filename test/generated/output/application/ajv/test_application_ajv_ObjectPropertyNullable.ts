@@ -63,25 +63,21 @@ export const test_application_ajv_ObjectPropertyNullable = _test_application(
                     value: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "null",
                             },
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "boolean",
                             },
                         ],
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectPropertyNullable.IPointer_lt_number_gt_": {
@@ -91,25 +87,21 @@ export const test_application_ajv_ObjectPropertyNullable = _test_application(
                     value: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "null",
                             },
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "number",
                             },
                         ],
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectPropertyNullable.IPointer_lt_string_gt_": {
@@ -119,25 +111,21 @@ export const test_application_ajv_ObjectPropertyNullable = _test_application(
                     value: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "null",
                             },
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "string",
                             },
                         ],
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectPropertyNullable.IPointer_lt_ObjectPropertyNullable.IMember_gt_":
@@ -148,25 +136,21 @@ export const test_application_ajv_ObjectPropertyNullable = _test_application(
                         value: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
                                     $ref: "#/components/schemas/ObjectPropertyNullable.IMember",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["value"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             "ObjectPropertyNullable.IMember": {
@@ -174,7 +158,6 @@ export const test_application_ajv_ObjectPropertyNullable = _test_application(
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -182,24 +165,20 @@ export const test_application_ajv_ObjectPropertyNullable = _test_application(
                     name: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "null",
                             },
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "string",
                             },
                         ],
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     grade: {
-                        description: "",
                         "x-typia-required": false,
                         "x-typia-optional": true,
                         type: "number",
@@ -207,44 +186,37 @@ export const test_application_ajv_ObjectPropertyNullable = _test_application(
                     serial: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": false,
                                 "x-typia-optional": true,
                                 type: "null",
                             },
                             {
-                                description: "",
                                 "x-typia-required": false,
                                 "x-typia-optional": true,
                                 type: "number",
                             },
                         ],
-                        description: "",
                         "x-typia-required": false,
                         "x-typia-optional": true,
                     },
                     activated: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "null",
                             },
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "boolean",
                             },
                         ],
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 required: ["id", "name", "activated"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

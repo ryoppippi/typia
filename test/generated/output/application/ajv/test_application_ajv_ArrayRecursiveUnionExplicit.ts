@@ -38,25 +38,21 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         children: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
@@ -65,43 +61,36 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionExplicit.IDirectory",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionExplicit.IImageFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionExplicit.ITextFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionExplicit.IZipFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionExplicit.IShortcut",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                 ],
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -109,7 +98,6 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                         },
                     },
                     required: ["id", "name", "path", "children", "type"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionExplicit.IImageFile": {
@@ -117,56 +105,47 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         width: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         height: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         url: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         size: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["file"],
                         },
                         extension: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -184,7 +163,6 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                         "type",
                         "extension",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionExplicit.ITextFile": {
@@ -192,44 +170,37 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         size: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         content: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["file"],
                         },
                         extension: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -245,7 +216,6 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                         "type",
                         "extension",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionExplicit.IZipFile": {
@@ -253,44 +223,37 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         size: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         count: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["file"],
                         },
                         extension: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -306,7 +269,6 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                         "type",
                         "extension",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionExplicit.IShortcut": {
@@ -315,19 +277,16 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -337,49 +296,41 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                                 {
                                     $recursiveRef:
                                         "#/components/schemas/ArrayRecursiveUnionExplicit.IDirectory",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ArrayRecursiveUnionExplicit.IImageFile",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ArrayRecursiveUnionExplicit.ITextFile",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ArrayRecursiveUnionExplicit.IZipFile",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $recursiveRef:
                                         "#/components/schemas/ArrayRecursiveUnionExplicit.IShortcut",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["file"],
                         },
                         extension: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -394,7 +345,6 @@ export const test_application_ajv_ArrayRecursiveUnionExplicit =
                         "type",
                         "extension",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

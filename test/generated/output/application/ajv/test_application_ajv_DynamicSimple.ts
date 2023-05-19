@@ -16,7 +16,6 @@ export const test_application_ajv_DynamicSimple = _test_application("ajv")(
                     $id: "#/components/schemas/DynamicSimple",
                     type: "object",
                     properties: {},
-                    description: "",
                     "x-typia-jsDocTags": [],
                     additionalProperties: {
                         "x-typia-required": true,

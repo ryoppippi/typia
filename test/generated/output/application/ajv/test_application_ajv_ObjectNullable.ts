@@ -35,64 +35,54 @@ export const test_application_ajv_ObjectNullable = _test_application("ajv")(
                     type: "object",
                     properties: {
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         manufacturer: {
                             $ref: "#/components/schemas/ObjectNullable.IManufacturer",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         brand: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
                                     $ref: "#/components/schemas/ObjectNullable.IBrand",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         similar: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
                                     $ref: "#/components/schemas/ObjectNullable.IManufacturer",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ObjectNullable.IBrand",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["name", "manufacturer", "brand", "similar"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectNullable.IManufacturer": {
@@ -100,21 +90,18 @@ export const test_application_ajv_ObjectNullable = _test_application("ajv")(
                     type: "object",
                     properties: {
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["manufacturer"],
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["type", "name"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectNullable.IBrand": {
@@ -122,21 +109,18 @@ export const test_application_ajv_ObjectNullable = _test_application("ajv")(
                     type: "object",
                     properties: {
                         type: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["brand"],
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["type", "name"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

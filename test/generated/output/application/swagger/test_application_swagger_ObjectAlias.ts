@@ -19,20 +19,17 @@ export const test_application_swagger_ObjectAlias = _test_application(
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                         nullable: true,
                     },
                     email: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -40,7 +37,6 @@ export const test_application_swagger_ObjectAlias = _test_application(
                     sex: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "number",
@@ -48,7 +44,6 @@ export const test_application_swagger_ObjectAlias = _test_application(
                                 nullable: true,
                             },
                             {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                                 type: "string",
@@ -56,19 +51,16 @@ export const test_application_swagger_ObjectAlias = _test_application(
                                 nullable: true,
                             },
                         ],
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     age: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                         nullable: true,
                     },
                     dead: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
@@ -77,7 +69,6 @@ export const test_application_swagger_ObjectAlias = _test_application(
                 },
                 nullable: false,
                 required: ["id", "email", "name", "sex", "age", "dead"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

@@ -67,7 +67,6 @@ export const test_application_swagger_DynamicEnumeration = _test_application(
                     },
                 },
                 nullable: false,
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

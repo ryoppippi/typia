@@ -42,19 +42,16 @@ export const test_application_swagger_ObjectTuple = _test_application(
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     code: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -62,26 +59,22 @@ export const test_application_swagger_ObjectTuple = _test_application(
                 },
                 nullable: false,
                 required: ["id", "code", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectTuple.ICitizen": {
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     mobile: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -89,7 +82,6 @@ export const test_application_swagger_ObjectTuple = _test_application(
                 },
                 nullable: false,
                 required: ["id", "mobile", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

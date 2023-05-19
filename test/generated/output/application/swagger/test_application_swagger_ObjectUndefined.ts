@@ -19,7 +19,6 @@ export const test_application_swagger_ObjectUndefined = _test_application(
                 type: "object",
                 properties: {
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -27,56 +26,47 @@ export const test_application_swagger_ObjectUndefined = _test_application(
                     professor: {
                         oneOf: [
                             {
-                                description: "",
                                 "x-typia-required": false,
                                 "x-typia-optional": true,
                                 type: "string",
                             },
                             {
-                                description: "",
                                 "x-typia-required": false,
                                 "x-typia-optional": true,
                                 type: "number",
                             },
                         ],
-                        description: "",
                         "x-typia-required": false,
                         "x-typia-optional": true,
                     },
                     classroom: {
                         $ref: "#/components/schemas/ObjectUndefined.IClassroom",
-                        description: "",
                         "x-typia-required": false,
                         "x-typia-optional": true,
                     },
                     grade: {
-                        description: "",
                         "x-typia-required": false,
                         "x-typia-optional": false,
                         type: "number",
                     },
                     unknown: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 nullable: false,
                 required: ["name", "unknown"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUndefined.IClassroom": {
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -84,7 +74,6 @@ export const test_application_swagger_ObjectUndefined = _test_application(
                 },
                 nullable: false,
                 required: ["id", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

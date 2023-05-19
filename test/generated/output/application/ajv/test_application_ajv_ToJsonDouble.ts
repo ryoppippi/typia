@@ -17,20 +17,17 @@ export const test_application_ajv_ToJsonDouble = _test_application("ajv")(
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         flag: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "boolean",
                         },
                     },
                     required: ["id", "flag"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

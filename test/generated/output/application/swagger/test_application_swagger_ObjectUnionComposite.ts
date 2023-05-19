@@ -44,13 +44,11 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 type: "object",
                 properties: {
                     x: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
                     },
                     y: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
@@ -58,7 +56,6 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 },
                 nullable: false,
                 required: ["x", "y"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionComposite.ILine": {
@@ -66,20 +63,17 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 properties: {
                     p1: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     p2: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 nullable: false,
                 required: ["p1", "p2"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionComposite.ITriangle": {
@@ -87,26 +81,22 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 properties: {
                     p1: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     p2: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     p3: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 nullable: false,
                 required: ["p1", "p2", "p3"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionComposite.IRectangle": {
@@ -114,45 +104,38 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 properties: {
                     p1: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     p2: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     p3: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     p4: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 nullable: false,
                 required: ["p1", "p2", "p3", "p4"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionComposite.IPolyline": {
                 type: "object",
                 properties: {
                     points: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
@@ -160,7 +143,6 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 },
                 nullable: false,
                 required: ["points"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionComposite.IPolygon": {
@@ -168,18 +150,15 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 properties: {
                     outer: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPolyline",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     inner: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ObjectUnionComposite.IPolyline",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
@@ -187,34 +166,29 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 },
                 nullable: false,
                 required: ["outer", "inner"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionComposite.IPointedShape": {
                 type: "object",
                 properties: {
                     outer: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "array",
                         items: {
                             $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     inner: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                 },
                 nullable: false,
                 required: ["outer", "inner"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
             "ObjectUnionComposite.ICircle": {
@@ -222,12 +196,10 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 properties: {
                     centroid: {
                         $ref: "#/components/schemas/ObjectUnionComposite.IPoint",
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                     },
                     radius: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "number",
@@ -235,7 +207,6 @@ export const test_application_swagger_ObjectUnionComposite = _test_application(
                 },
                 nullable: false,
                 required: ["centroid", "radius"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

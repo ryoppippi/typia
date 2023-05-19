@@ -16,19 +16,16 @@ export const test_application_swagger_ClassGetter = _test_application(
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     dead: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "boolean",
@@ -37,7 +34,6 @@ export const test_application_swagger_ClassGetter = _test_application(
                 },
                 nullable: false,
                 required: ["id", "name", "dead"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

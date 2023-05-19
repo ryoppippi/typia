@@ -16,7 +16,6 @@ export const test_application_swagger_ObjectGenericAlias = _test_application(
                 type: "object",
                 properties: {
                     value: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -24,7 +23,6 @@ export const test_application_swagger_ObjectGenericAlias = _test_application(
                 },
                 nullable: false,
                 required: ["value"],
-                description: "",
                 "x-typia-jsDocTags": [],
             },
         },

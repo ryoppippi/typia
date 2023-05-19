@@ -16,13 +16,11 @@ export const test_application_swagger_DynamicComposite = _test_application(
                 type: "object",
                 properties: {
                     id: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
                     },
                     name: {
-                        description: "",
                         "x-typia-required": true,
                         "x-typia-optional": false,
                         type: "string",
@@ -30,7 +28,6 @@ export const test_application_swagger_DynamicComposite = _test_application(
                 },
                 nullable: false,
                 required: ["id", "name"],
-                description: "",
                 "x-typia-jsDocTags": [],
                 "x-typia-patternProperties": {
                     "^-?\\d+\\.?\\d*$": {

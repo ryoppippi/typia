@@ -18,31 +18,26 @@ export const test_application_ajv_ObjectSimple = _test_application("ajv")(
                     properties: {
                         scale: {
                             $ref: "#/components/schemas/ObjectSimple.IPoint3D",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         position: {
                             $ref: "#/components/schemas/ObjectSimple.IPoint3D",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         rotate: {
                             $ref: "#/components/schemas/ObjectSimple.IPoint3D",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         pivot: {
                             $ref: "#/components/schemas/ObjectSimple.IPoint3D",
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["scale", "position", "rotate", "pivot"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ObjectSimple.IPoint3D": {
@@ -50,26 +45,22 @@ export const test_application_ajv_ObjectSimple = _test_application("ajv")(
                     type: "object",
                     properties: {
                         x: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         y: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         z: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                     },
                     required: ["x", "y", "z"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

@@ -16,7 +16,6 @@ export const test_application_ajv_DynamicUndefined = _test_application("ajv")(
                     $id: "#/components/schemas/DynamicUndefined",
                     type: "object",
                     properties: {},
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

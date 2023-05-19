@@ -16,7 +16,6 @@ export const test_application_ajv_DynamicArray = _test_application("ajv")(
                     $id: "#/components/schemas/DynamicArray",
                     type: "object",
                     properties: {},
-                    description: "",
                     "x-typia-jsDocTags": [],
                     additionalProperties: {
                         "x-typia-required": true,

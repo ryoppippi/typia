@@ -17,20 +17,17 @@ export const test_application_ajv_ClassMethod = _test_application("ajv")(
                     type: "object",
                     properties: {
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         age: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                     },
                     required: ["name", "age"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

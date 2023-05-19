@@ -17,31 +17,26 @@ export const test_application_ajv_SetAlias = _test_application("ajv")(
                     type: "object",
                     properties: {
                         booleans: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         numbers: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         strings: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         arrays: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
                         },
                         objects: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             $ref: "#/components/schemas/Set",
@@ -54,7 +49,6 @@ export const test_application_ajv_SetAlias = _test_application("ajv")(
                         "arrays",
                         "objects",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 Set: {

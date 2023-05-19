@@ -17,34 +17,28 @@ export const test_application_ajv_ArrayAny = _test_application("ajv")(
                     type: "object",
                     properties: {
                         anys: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                         undefindable1: {
-                            description: "",
                             "x-typia-required": false,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
-                                description: "",
                                 "x-typia-required": false,
                                 "x-typia-optional": false,
                             },
                         },
                         undefindable2: {
-                            description: "",
                             "x-typia-required": false,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
-                                description: "",
                                 "x-typia-required": false,
                                 "x-typia-optional": false,
                             },
@@ -52,137 +46,114 @@ export const test_application_ajv_ArrayAny = _test_application("ajv")(
                         nullables1: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "array",
                                     items: {
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         nullables2: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                     type: "array",
                                     items: {
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                         both1: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": false,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": false,
                                     "x-typia-optional": false,
                                     type: "array",
                                     items: {
-                                        description: "",
                                         "x-typia-required": false,
                                         "x-typia-optional": false,
                                     },
                                 },
                             ],
-                            description: "",
                             "x-typia-required": false,
                             "x-typia-optional": false,
                         },
                         both2: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": false,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": false,
                                     "x-typia-optional": false,
                                     type: "array",
                                     items: {
-                                        description: "",
                                         "x-typia-required": false,
                                         "x-typia-optional": false,
                                     },
                                 },
                             ],
-                            description: "",
                             "x-typia-required": false,
                             "x-typia-optional": false,
                         },
                         both3: {
                             oneOf: [
                                 {
-                                    description: "",
                                     "x-typia-required": false,
                                     "x-typia-optional": false,
                                     type: "null",
                                 },
                                 {
-                                    description: "",
                                     "x-typia-required": false,
                                     "x-typia-optional": false,
                                     type: "array",
                                     items: {
-                                        description: "",
                                         "x-typia-required": false,
                                         "x-typia-optional": false,
                                     },
                                 },
                             ],
-                            description: "",
                             "x-typia-required": false,
                             "x-typia-optional": false,
                         },
                         union: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
                             items: {
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                     },
                     required: ["anys", "nullables1", "nullables2", "union"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },

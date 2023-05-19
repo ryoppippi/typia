@@ -42,25 +42,21 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         children: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
@@ -69,51 +65,43 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionImplicit.IDirectory",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionImplicit.ISharedDirectory",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.IImageFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.ITextFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.IZipFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionImplicit.IShortcut",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                 ],
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                     },
                     required: ["id", "name", "path", "children"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionImplicit.ISharedDirectory": {
@@ -122,32 +110,27 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                     type: "object",
                     properties: {
                         access: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                             enum: ["read", "write"],
                         },
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         children: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "array",
@@ -156,51 +139,43 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionImplicit.IDirectory",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionImplicit.ISharedDirectory",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.IImageFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.ITextFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.IZipFile",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                     {
                                         $recursiveRef:
                                             "#/components/schemas/ArrayRecursiveUnionImplicit.IShortcut",
-                                        description: "",
                                         "x-typia-required": true,
                                         "x-typia-optional": false,
                                     },
                                 ],
-                                description: "",
                                 "x-typia-required": true,
                                 "x-typia-optional": false,
                             },
                         },
                     },
                     required: ["access", "id", "name", "path", "children"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionImplicit.IImageFile": {
@@ -208,43 +183,36 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         width: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         height: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         url: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         size: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
@@ -259,7 +227,6 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                         "url",
                         "size",
                     ],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionImplicit.ITextFile": {
@@ -267,38 +234,32 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         size: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         content: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                     },
                     required: ["id", "name", "path", "size", "content"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionImplicit.IZipFile": {
@@ -306,38 +267,32 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         size: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         count: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                     },
                     required: ["id", "name", "path", "size", "count"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
                 "ArrayRecursiveUnionImplicit.IShortcut": {
@@ -346,19 +301,16 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                     type: "object",
                     properties: {
                         id: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "number",
                         },
                         name: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
                         },
                         path: {
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                             type: "string",
@@ -368,50 +320,42 @@ export const test_application_ajv_ArrayRecursiveUnionImplicit =
                                 {
                                     $recursiveRef:
                                         "#/components/schemas/ArrayRecursiveUnionImplicit.IDirectory",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $recursiveRef:
                                         "#/components/schemas/ArrayRecursiveUnionImplicit.ISharedDirectory",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.IImageFile",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.ITextFile",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $ref: "#/components/schemas/ArrayRecursiveUnionImplicit.IZipFile",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                                 {
                                     $recursiveRef:
                                         "#/components/schemas/ArrayRecursiveUnionImplicit.IShortcut",
-                                    description: "",
                                     "x-typia-required": true,
                                     "x-typia-optional": false,
                                 },
                             ],
-                            description: "",
                             "x-typia-required": true,
                             "x-typia-optional": false,
                         },
                     },
                     required: ["id", "name", "path", "target"],
-                    description: "",
                     "x-typia-jsDocTags": [],
                 },
             },
