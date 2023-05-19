@@ -14,7 +14,7 @@ export namespace TsSymbolUtil {
             const text: string = TsNodeUtil.getSourceFile(tsc)(
                 node,
             ).text.substring(range.pos, range.end);
-            return filter(text).join("\n");
+            return transform(text).join("\n");
         };
 
     export const getCommentTags =
@@ -71,7 +71,10 @@ export namespace TsSymbolUtil {
                 .replace(`@${tagName}`, "")
                 .split("\n")
                 .map((str) => trim(str))
-                .filter((str) => !!str.length)
+                .filter(
+                    (str, i, array) =>
+                        (i !== 0 && i !== array.length - 1) || !!str.length,
+                )
                 .join("\n");
             return comment.length
                 ? {
@@ -81,7 +84,7 @@ export namespace TsSymbolUtil {
                 : tag;
         };
 
-    const filter = (text: string): string[] => {
+    const transform = (text: string): string[] => {
         const elements: string[] = text.split("\n");
         const first: number = lastIndexOf(elements)((elem) =>
             elem.trim().startsWith("/**"),
@@ -98,7 +101,10 @@ export namespace TsSymbolUtil {
                     elem = elem.substring(0, elem.lastIndexOf("*/"));
                 return trim(elem);
             })
-            .filter((elem) => elem.length > 0);
+            .filter(
+                (str, i, array) =>
+                    (i !== 0 && i !== array.length - 1) || !!str.length,
+            );
     };
 
     const lastIndexOf =

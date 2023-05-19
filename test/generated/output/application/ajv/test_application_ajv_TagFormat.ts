@@ -18,7 +18,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                     properties: {
                         uuid: {
                             description:
-                                "Universally Unique Identifier.\n@format uuid",
+                                "Universally Unique Identifier.\n\n@format uuid",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -42,7 +42,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                             format: "uuid",
                         },
                         email: {
-                            description: "Email address\n@format email",
+                            description: "Email address\n\n@format email",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -66,7 +66,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                             format: "email",
                         },
                         url: {
-                            description: "URL address.\n@format url",
+                            description: "URL address.\n\n@format url",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -90,7 +90,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                             format: "url",
                         },
                         ipv4: {
-                            description: "IPv4 address.\n@format ipv4",
+                            description: "IPv4 address.\n\n@format ipv4",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -114,7 +114,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                             format: "ipv4",
                         },
                         ipv6: {
-                            description: "IPv6 address.\n@format ipv6",
+                            description: "IPv6 address.\n\n@format ipv6",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -138,7 +138,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                             format: "ipv6",
                         },
                         date: {
-                            description: "Date only.\n@format date",
+                            description: "Date only.\n\n@format date",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -162,7 +162,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                             format: "date",
                         },
                         date_time: {
-                            description: "Date and time.\n@format date-time",
+                            description: "Date and time.\n\n@format date-time",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -187,7 +187,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                         },
                         datetime: {
                             description:
-                                "Date and time with only lowercase characters.\n@format datetime",
+                                "Date and time with only lowercase characters.\n\n@format datetime",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -212,7 +212,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                         },
                         dateTime: {
                             description:
-                                "Date and time with camelCase.\n@format dateTime",
+                                "Date and time with camelCase.\n\n@format dateTime",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -237,7 +237,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                         },
                         custom: {
                             description:
-                                "A custom format string.\n@format my-custom-format",
+                                "A custom format string.\n\n@format my-custom-format",
                             "x-typia-jsDocTags": [
                                 {
                                     name: "format",
@@ -268,7 +268,7 @@ export const test_application_ajv_TagFormat = _test_application("ajv")(
                         "custom",
                     ],
                     description:
-                        "A custom format string.\n@format my-custom-format",
+                        "A custom format string.\n\n@format my-custom-format",
                     "x-typia-jsDocTags": [],
                 },
             },

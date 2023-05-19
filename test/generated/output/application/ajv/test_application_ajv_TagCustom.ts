@@ -18,7 +18,7 @@ export const test_application_ajv_TagCustom = _test_application("ajv")(
                     properties: {
                         id: {
                             description:
-                                "Regular feature supported by typia\n@format uuid",
+                                "Regular feature supported by typia\n\n@format uuid",
                             "x-typia-metaTags": [
                                 {
                                     kind: "format",
@@ -43,7 +43,7 @@ export const test_application_ajv_TagCustom = _test_application("ajv")(
                         },
                         dollar: {
                             description:
-                                'Custom feature composed with "$" + number\n@dollar',
+                                'Custom feature composed with "$" + number\n\n@dollar',
                             "x-typia-jsDocTags": [
                                 {
                                     name: "dollar",
@@ -55,7 +55,7 @@ export const test_application_ajv_TagCustom = _test_application("ajv")(
                         },
                         postfix: {
                             description:
-                                'Custom feature composed with string + "abcd"\n@postfix abcd',
+                                'Custom feature composed with string + "abcd"\n\n@postfix abcd',
                             "x-typia-jsDocTags": [
                                 {
                                     name: "postfix",
@@ -73,7 +73,7 @@ export const test_application_ajv_TagCustom = _test_application("ajv")(
                         },
                         log: {
                             description:
-                                "Custom feature meaning x^y\n@powerOf 10",
+                                "Custom feature meaning x^y\n\n@powerOf 10",
                             "x-typia-jsDocTags": [
                                 {
                                     name: "powerOf",
@@ -91,7 +91,7 @@ export const test_application_ajv_TagCustom = _test_application("ajv")(
                         },
                     },
                     required: ["id", "dollar", "postfix", "log"],
-                    description: "Custom feature meaning x^y\n@powerOf 10",
+                    description: "Custom feature meaning x^y\n\n@powerOf 10",
                     "x-typia-jsDocTags": [],
                 },
             },

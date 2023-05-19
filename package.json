@@ -1,6 +1,6 @@
 {
   "name": "typia",
-  "version": "4.0.0-dev.20230519",
+  "version": "4.0.0-dev.20230519-3",
   "description": "Superfast runtime validators with only one line",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -11,7 +11,7 @@
     "benchmark": "npm run build:benchmark && node measure/benchmark",
     "benchmark:generate": "ts-node benchmark/generate && npm run build:benchmark",
     "test:generate": "npx ts-node src/executable/typia generate --input test/features --output test/generated/output --project test/tsconfig.json",
-    "test:template": "npx tsc && ts-node -P build/tsconfig.json build/test.ts --allowPlugins",
+    "test:template": "npx tsc && ts-node -P build/tsconfig.json build/test.ts",
     "----------------------------------------------": "",
     "build": "rimraf lib && tsc --removeComments --declaration false && tsc --emitDeclarationOnly",
     "build:test": "npx tsc && rimraf bin && tsc -p test/tsconfig.json --allowPlugins",

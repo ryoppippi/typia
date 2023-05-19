@@ -36,7 +36,7 @@ export const test_application_ajv_ObjectJsonTag = _test_application("ajv")(
                         },
                         title: {
                             title: "something",
-                            description: "Titled property.\n@title something",
+                            description: "Titled property.\n\n@title something",
                             "x-typia-jsDocTags": [
                                 {
                                     name: "title",
@@ -55,7 +55,7 @@ export const test_application_ajv_ObjectJsonTag = _test_application("ajv")(
                         complicate_title: {
                             title: "something weirdo with  tag",
                             description:
-                                "Complicate title.\n@title something weirdo with {@link something} tag",
+                                "Complicate title.\n\n@title something weirdo with {@link something} tag",
                             "x-typia-jsDocTags": [
                                 {
                                     name: "title",
@@ -87,7 +87,7 @@ export const test_application_ajv_ObjectJsonTag = _test_application("ajv")(
                         "complicate_title",
                     ],
                     description:
-                        "Complicate title.\n@title something weirdo with {@link something} tag",
+                        "Complicate title.\n\n@title something weirdo with {@link something} tag",
                     "x-typia-jsDocTags": [],
                 },
             },

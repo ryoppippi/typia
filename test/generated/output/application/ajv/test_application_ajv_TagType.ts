@@ -21,7 +21,7 @@ export const test_application_ajv_TagType = _test_application("ajv")(
                     properties: {
                         int: {
                             description:
-                                "Integer type.\nThis is to explain {@link int} value in {@link TagType.Type}.\n@type int\n@example https://example.com",
+                                "Integer type.\n\nThis is to explain {@link int} value in {@link TagType.Type}.\n\n@type int\n@example https://example.com",
                             "x-typia-metaTags": [
                                 {
                                     kind: "type",
@@ -53,7 +53,7 @@ export const test_application_ajv_TagType = _test_application("ajv")(
                             type: "integer",
                         },
                         uint: {
-                            description: "Unsigned integer type.\n@type uint",
+                            description: "Unsigned integer type.\n\n@type uint",
                             "x-typia-metaTags": [
                                 {
                                     kind: "type",
@@ -78,7 +78,7 @@ export const test_application_ajv_TagType = _test_application("ajv")(
                         },
                     },
                     required: ["int", "uint"],
-                    description: "Unsigned integer type.\n@type uint",
+                    description: "Unsigned integer type.\n\n@type uint",
                     "x-typia-jsDocTags": [],
                 },
             },

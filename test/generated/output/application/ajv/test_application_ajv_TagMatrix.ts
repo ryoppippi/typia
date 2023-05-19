@@ -18,7 +18,7 @@ export const test_application_ajv_TagMatrix = _test_application("ajv")(
                     properties: {
                         matrix: {
                             description:
-                                "Doubled array.\n@items 3\n@format uuid",
+                                "Doubled array.\n\n@items 3\n@format uuid",
                             "x-typia-metaTags": [
                                 {
                                     kind: "items",
@@ -54,7 +54,7 @@ export const test_application_ajv_TagMatrix = _test_application("ajv")(
                             type: "array",
                             items: {
                                 description:
-                                    "Doubled array.\n@items 3\n@format uuid",
+                                    "Doubled array.\n\n@items 3\n@format uuid",
                                 "x-typia-metaTags": [
                                     {
                                         kind: "items",
@@ -90,7 +90,7 @@ export const test_application_ajv_TagMatrix = _test_application("ajv")(
                                 type: "array",
                                 items: {
                                     description:
-                                        "Doubled array.\n@items 3\n@format uuid",
+                                        "Doubled array.\n\n@items 3\n@format uuid",
                                     "x-typia-metaTags": [
                                         {
                                             kind: "items",
@@ -130,7 +130,7 @@ export const test_application_ajv_TagMatrix = _test_application("ajv")(
                         },
                     },
                     required: ["matrix"],
-                    description: "Doubled array.\n@items 3\n@format uuid",
+                    description: "Doubled array.\n\n@items 3\n@format uuid",
                     "x-typia-jsDocTags": [],
                 },
             },

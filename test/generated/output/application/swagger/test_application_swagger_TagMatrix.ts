@@ -17,7 +17,7 @@ export const test_application_swagger_TagMatrix = _test_application("swagger")(
                     properties: {
                         matrix: {
                             description:
-                                "Doubled array.\n@items 3\n@format uuid",
+                                "Doubled array.\n\n@items 3\n@format uuid",
                             "x-typia-metaTags": [
                                 {
                                     kind: "items",
@@ -53,7 +53,7 @@ export const test_application_swagger_TagMatrix = _test_application("swagger")(
                             type: "array",
                             items: {
                                 description:
-                                    "Doubled array.\n@items 3\n@format uuid",
+                                    "Doubled array.\n\n@items 3\n@format uuid",
                                 "x-typia-metaTags": [
                                     {
                                         kind: "items",
@@ -89,7 +89,7 @@ export const test_application_swagger_TagMatrix = _test_application("swagger")(
                                 type: "array",
                                 items: {
                                     description:
-                                        "Doubled array.\n@items 3\n@format uuid",
+                                        "Doubled array.\n\n@items 3\n@format uuid",
                                     "x-typia-metaTags": [
                                         {
                                             kind: "items",
@@ -130,7 +130,7 @@ export const test_application_swagger_TagMatrix = _test_application("swagger")(
                     },
                     nullable: false,
                     required: ["matrix"],
-                    description: "Doubled array.\n@items 3\n@format uuid",
+                    description: "Doubled array.\n\n@items 3\n@format uuid",
                     "x-typia-jsDocTags": [],
                 },
             },
