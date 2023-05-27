@@ -23,7 +23,7 @@ const patch = (
     program: ts.Program,
     options?: ITransformOptions,
 ): ts.TransformerFactory<ts.SourceFile> => {
-    const tsc = require("ts");
+    const tsc = require("typescript");
     return FileTransformer.transform({
         tsc,
         program,
