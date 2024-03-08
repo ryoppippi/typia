@@ -8,7 +8,6 @@ import { TransformerError } from "../../TransformerError";
 export namespace ProtobufMessageTransformer {
   export const transform =
     (project: IProject) =>
-    (_modulo: ts.LeftHandSideExpression) =>
     (expression: ts.CallExpression): ts.Expression => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments || !expression.typeArguments[0])

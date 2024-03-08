@@ -5,6 +5,6 @@ import { GenericTransformer } from "../internal/GenericTransformer";
 export namespace IsTransformer {
   export const transform = (equals: boolean) =>
     GenericTransformer.scalar(equals ? "equals" : "is")(
-      (project) => (modulo) => IsProgrammer.write(project)(modulo)(equals),
+      (project) => (importer) => IsProgrammer.write(project)(importer)(equals),
     );
 }

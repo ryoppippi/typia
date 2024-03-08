@@ -9,11 +9,12 @@ import { StringUtil } from "../../utils/StringUtil";
 import { ValidateProgrammer } from "../ValidateProgrammer";
 import { FunctionalValidateFunctionProgrammer } from "./FunctionalValidateFunctionProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalValidateReturnProgrammer {
   export const write =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

@@ -7,11 +7,12 @@ import { IProject } from "../../transformers/IProject";
 import { IsProgrammer } from "../IsProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
 import { FunctionalIsFunctionProgrammer } from "./FunctionalIsFunctionProgrammer";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalIsParametersProgrammer {
   export const write =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

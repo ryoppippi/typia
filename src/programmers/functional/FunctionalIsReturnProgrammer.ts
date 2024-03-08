@@ -9,11 +9,12 @@ import { StringUtil } from "../../utils/StringUtil";
 import { IsProgrammer } from "../IsProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
 import { FunctionalIsFunctionProgrammer } from "./FunctionalIsFunctionProgrammer";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalIsReturnProgrammer {
   export const write =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

@@ -4,16 +4,17 @@ import { RandomProgrammer } from "../../programmers/RandomProgrammer";
 
 import { IProject } from "../IProject";
 import { TransformerError } from "../TransformerError";
+import { ImportProgrammer } from "../../programmers/ImportProgrammer";
 
 export namespace RandomTransformer {
   export const transform =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (expression: ts.CallExpression): ts.Expression => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments?.[0])
         throw new TransformerError({
-          code: `typia.${modulo.getText()}`,
+          code: "typia.random",
           message: "generic argument is not specified.",
         });
 
@@ -23,7 +24,7 @@ export namespace RandomTransformer {
 
       if (type.isTypeParameter())
         throw new TransformerError({
-          code: `typia.${modulo.getText()}`,
+          code: "typia.random",
           message: "non-specified generic argument.",
         });
 
@@ -36,7 +37,7 @@ export namespace RandomTransformer {
             functional: false,
             numeric: false,
           },
-        })(modulo)()(type, node.getFullText().trim()),
+        })(importer)()(type, node.getFullText().trim()),
         undefined,
         expression.arguments.length ? [expression.arguments[0]!] : undefined,
       );

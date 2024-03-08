@@ -4,11 +4,12 @@ import { RandomProgrammer } from "../../programmers/RandomProgrammer";
 
 import { IProject } from "../IProject";
 import { TransformerError } from "../TransformerError";
+import { ImportProgrammer } from "../../programmers/ImportProgrammer";
 
 export namespace CreateRandomTransformer {
   export const transform =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (expression: ts.CallExpression): ts.Expression => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments?.[0])
@@ -35,6 +36,6 @@ export namespace CreateRandomTransformer {
           functional: false,
           numeric: false,
         },
-      })(modulo)(expression.arguments?.[0])(type, node.getFullText().trim());
+      })(importer)(expression.arguments?.[0])(type, node.getFullText().trim());
     };
 }

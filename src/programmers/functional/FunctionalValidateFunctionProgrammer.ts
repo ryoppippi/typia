@@ -6,11 +6,12 @@ import { IProject } from "../../transformers/IProject";
 
 import { FunctionalValidateParametersProgrammer } from "./FunctionalValidateParametersProgrammer";
 import { FunctionalValidateReturnProgrammer } from "./FunctionalValidateReturnProgrammer";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalValidateFunctionProgrammer {
   export const write =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

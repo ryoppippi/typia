@@ -8,21 +8,20 @@ import { IProject } from "../transformers/IProject";
 
 import { CheckerProgrammer } from "./CheckerProgrammer";
 import { IsProgrammer } from "./IsProgrammer";
-import { FunctionImporter } from "./helpers/FunctionImporter";
 import { OptionPredicator } from "./helpers/OptionPredicator";
 import { check_object } from "./internal/check_object";
+import { ImportProgrammer } from "./ImportProgrammer";
 
 export namespace AssertProgrammer {
   export const write =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (props: boolean | { equals: boolean; guard: boolean }) =>
     (type: ts.Type, name?: string, init?: ts.Expression) => {
       // TO SUPPORT LEGACY FEATURE
       if (typeof props === "boolean") props = { equals: props, guard: false };
 
-      const importer: FunctionImporter = new FunctionImporter(modulo.getText());
-      const is: ts.ArrowFunction = IsProgrammer.write(project)(modulo, true)(
+      const is: ts.ArrowFunction = IsProgrammer.write(project)(importer)(
         props.equals,
       )(type, name ?? TypeFactory.getFullName(project.checker)(type));
       const assert: ts.ArrowFunction = CheckerProgrammer.write(project)({
@@ -142,7 +141,7 @@ export namespace AssertProgrammer {
   const combiner =
     (equals: boolean) =>
     (project: IProject) =>
-    (importer: FunctionImporter): CheckerProgrammer.IConfig.Combiner =>
+    (importer: ImportProgrammer): CheckerProgrammer.IConfig.Combiner =>
     (explore: CheckerProgrammer.IExplore) => {
       if (explore.tracable === false)
         return IsProgrammer.configure({
@@ -206,7 +205,7 @@ export namespace AssertProgrammer {
     };
 
   const assert_object =
-    (equals: boolean) => (project: IProject) => (importer: FunctionImporter) =>
+    (equals: boolean) => (project: IProject) => (importer: ImportProgrammer) =>
       check_object({
         equals,
         assert: true,
@@ -237,7 +236,7 @@ export namespace AssertProgrammer {
   const joiner =
     (equals: boolean) =>
     (project: IProject) =>
-    (importer: FunctionImporter): CheckerProgrammer.IConfig.IJoiner => ({
+    (importer: ImportProgrammer): CheckerProgrammer.IConfig.IJoiner => ({
       object: assert_object(equals)(project)(importer),
       array: (input, arrow) =>
         ts.factory.createCallExpression(
@@ -271,28 +270,35 @@ export namespace AssertProgrammer {
     });
 
   const create_guard_call =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (exceptionable?: ts.Expression) =>
     (
       path: ts.Expression,
       expected: string,
       value: ts.Expression,
     ): ts.Expression =>
-      ts.factory.createCallExpression(importer.use("guard"), undefined, [
-        exceptionable ?? ts.factory.createIdentifier("_exceptionable"),
-        ts.factory.createObjectLiteralExpression(
-          [
-            ts.factory.createPropertyAssignment("path", path),
-            ts.factory.createPropertyAssignment(
-              "expected",
-              ts.factory.createStringLiteral(expected),
-            ),
-            ts.factory.createPropertyAssignment("value", value),
-          ],
-          true,
-        ),
-        Guardian.identifier(),
-      ]);
+      ts.factory.createCallExpression(
+        importer.instance({
+          library: "typia/lib/internal/$guard",
+          name: "$guard,",
+        }),
+        undefined,
+        [
+          exceptionable ?? ts.factory.createIdentifier("_exceptionable"),
+          ts.factory.createObjectLiteralExpression(
+            [
+              ts.factory.createPropertyAssignment("path", path),
+              ts.factory.createPropertyAssignment(
+                "expected",
+                ts.factory.createStringLiteral(expected),
+              ),
+              ts.factory.createPropertyAssignment("value", value),
+            ],
+            true,
+          ),
+          Guardian.identifier(),
+        ],
+      );
 
   export namespace Guardian {
     export const identifier = () => ts.factory.createIdentifier("errorFactory");

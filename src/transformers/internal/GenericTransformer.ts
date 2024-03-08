@@ -2,6 +2,7 @@ import ts from "typescript";
 
 import { IProject } from "../IProject";
 import { TransformerError } from "../TransformerError";
+import { ImportProgrammer } from "../../programmers/ImportProgrammer";
 
 export namespace GenericTransformer {
   export const scalar =
@@ -10,11 +11,11 @@ export namespace GenericTransformer {
       programmer: (
         project: IProject,
       ) => (
-        modulo: ts.LeftHandSideExpression,
+        importer: ImportProgrammer,
       ) => (type: ts.Type, name: string) => ts.ArrowFunction,
     ) =>
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (expression: ts.CallExpression) => {
       // CHECK PARAMETER
       if (expression.arguments.length === 0)
@@ -44,7 +45,7 @@ export namespace GenericTransformer {
 
       // DO TRANSFORM
       return ts.factory.createCallExpression(
-        programmer(project)(modulo)(
+        programmer(project)(importer)(
           type,
           generic
             ? node.getFullText().trim()
@@ -61,7 +62,7 @@ export namespace GenericTransformer {
       programmer: (
         project: IProject,
       ) => (
-        modulo: ts.LeftHandSideExpression,
+        imorter: ImportProgrammer,
       ) => (
         type: ts.Type,
         name: string,
@@ -69,7 +70,7 @@ export namespace GenericTransformer {
       ) => ts.ArrowFunction,
     ) =>
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (expression: ts.CallExpression) => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments?.[0])
@@ -89,7 +90,7 @@ export namespace GenericTransformer {
         });
 
       // DO TRANSFORM
-      return programmer(project)(modulo)(
+      return programmer(project)(importer)(
         type,
         node.getFullText().trim(),
         expression.arguments[0],

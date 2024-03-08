@@ -7,11 +7,12 @@ import { IProject } from "../../transformers/IProject";
 import { AssertProgrammer } from "../AssertProgrammer";
 import { FunctionalAssertFunctionProgrammer } from "./FunctionalAssertFunctionProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalAssertParametersProgrammer {
   export const write =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

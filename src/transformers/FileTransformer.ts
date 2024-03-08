@@ -5,6 +5,7 @@ import { Singleton } from "../utils/Singleton";
 import { IProject } from "./IProject";
 import { NodeTransformer } from "./NodeTransformer";
 import { TransformerError } from "./TransformerError";
+import { ImportProgrammer } from "../programmers/ImportProgrammer";
 
 export namespace FileTransformer {
   export const transform =
@@ -19,27 +20,35 @@ export namespace FileTransformer {
       };
       checkJsDocParsingMode.get(project, file);
 
-      return ts.visitEachChild(
+      const importer: ImportProgrammer = new ImportProgrammer();
+      file = ts.visitEachChild(
         file,
-        (node) => iterate_node(project)(node),
+        (node) => iterate_node(project)(importer)(node),
         context,
+      );
+      return ts.factory.createSourceFile(
+        [...importer.toStatements(), ...file.statements],
+        file.endOfFileToken as any,
+        file.flags,
       );
     };
 
   const iterate_node =
     (project: IProject) =>
+    (importer: ImportProgrammer) =>
     (node: ts.Node): ts.Node =>
       ts.visitEachChild(
-        try_transform_node(project)(node) ?? node,
-        (child) => iterate_node(project)(child),
+        try_transform_node(project)(importer)(node) ?? node,
+        (child) => iterate_node(project)(importer)(child),
         project.context,
       );
 
   const try_transform_node =
     (project: IProject) =>
+    (importer: ImportProgrammer) =>
     (node: ts.Node): ts.Node | null => {
       try {
-        return NodeTransformer.transform(project)(node);
+        return NodeTransformer.transform(project)(importer)(node);
       } catch (exp) {
         // ONLY ACCEPT TRANSFORMER-ERROR
         if (!isTransformerError(exp)) throw exp;

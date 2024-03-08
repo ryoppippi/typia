@@ -2,6 +2,7 @@ import ts from "typescript";
 import { IProject } from "../../IProject";
 import { TransformerError } from "../../TransformerError";
 import { TypeFactory } from "../../../factories/TypeFactory";
+import { ImportProgrammer } from "../../../programmers/ImportProgrammer";
 
 export namespace FunctionalGenericTransformer {
   export const transform =
@@ -10,7 +11,7 @@ export namespace FunctionalGenericTransformer {
       programmer: (
         project: IProject,
       ) => (
-        modulo: ts.LeftHandSideExpression,
+        importer: ImportProgrammer,
       ) => (
         equals: boolean,
       ) => (
@@ -21,7 +22,7 @@ export namespace FunctionalGenericTransformer {
       equals: boolean;
     }) =>
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (expression: ts.CallExpression) => {
       // CHECK PARAMETER
       if (expression.arguments.length === 0)
@@ -35,18 +36,12 @@ export namespace FunctionalGenericTransformer {
         expression.typeArguments && expression.typeArguments[0]
           ? project.checker.getTypeFromTypeNode(expression.typeArguments[0])
           : project.checker.getTypeAtLocation(expression.arguments[0]!);
-      // if (type. === true)
-      //   throw new TransformerError({
-      //     code: `typia.functional.${props.method}`,
-      //     message: `non-specified generic argument.`,
-      //   });
-      // else
       if (TypeFactory.isFunction(type) === false)
         throw new TransformerError({
           code: `typia.functional.${props.method}`,
           message: `input value is not a function.`,
         });
-      return props.programmer(project)(modulo)(props.equals)(
+      return props.programmer(project)(importer)(props.equals)(
         expression.arguments[0]!,
         type.symbol!.declarations![0] as ts.FunctionDeclaration,
         expression.arguments[1],

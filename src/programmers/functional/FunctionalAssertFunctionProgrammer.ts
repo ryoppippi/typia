@@ -10,11 +10,12 @@ import { StringUtil } from "../../utils/StringUtil";
 import { AssertProgrammer } from "../AssertProgrammer";
 import { FunctionalAssertParametersProgrammer } from "./FunctionalAssertParametersProgrammer";
 import { FunctionAssertReturnProgrammer } from "./FunctionalAssertReturnProgrammer";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalAssertFunctionProgrammer {
   export const write =
     (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,
