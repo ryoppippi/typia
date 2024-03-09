@@ -5,13 +5,13 @@ import { JsonMetadataFactory } from "../../factories/JsonMetadataFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { ValidateProgrammer } from "../ValidateProgrammer";
 
 export namespace JsonValidateParseProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (type: ts.Type, name?: string): ts.ArrowFunction => {
       JsonMetadataFactory.analyze(`typia.json.${modulo.getText()}`)(

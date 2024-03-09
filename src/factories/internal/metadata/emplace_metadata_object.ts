@@ -9,20 +9,19 @@ import { Writable } from "../../../typings/Writable";
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
 import { CommentFactory } from "../../CommentFactory";
-import { MetadataCollection } from "../../MetadataCollection";
 import { MetadataFactory } from "../../MetadataFactory";
 import { MetadataHelper } from "./MetadataHelper";
 import { explore_metadata } from "./explore_metadata";
 import { iterate_metadata_coalesce } from "./iterate_metadata_coalesce";
 
+/**
+ * @internal
+ */
 export const emplace_metadata_object =
-  (checker: ts.TypeChecker) =>
-  (options: MetadataFactory.IOptions) =>
-  (collection: MetadataCollection) =>
-  (errors: MetadataFactory.IError[]) =>
+  (ctx: MetadataFactory.IContext) =>
   (parent: ts.Type, nullable: boolean): MetadataObject => {
     // EMPLACE OBJECT
-    const [obj, newbie] = collection.emplace(checker, parent);
+    const [obj, newbie] = ctx.collection.emplace(ctx.checker, parent);
     ArrayUtil.add(obj.nullables, nullable, (elem) => elem === nullable);
 
     if (newbie === false) return obj;
@@ -74,7 +73,7 @@ export const emplace_metadata_object =
     for (const prop of parent.getApparentProperties()) {
       // CHECK INTERNAL TAG
       if (
-        (prop.getJsDocTags(checker) ?? []).find(
+        (prop.getJsDocTags(ctx.checker) ?? []).find(
           (tag) => tag.name === "internal",
         ) !== undefined
       )
@@ -86,17 +85,15 @@ export const emplace_metadata_object =
           | ts.PropertyDeclaration
           | undefined;
         const type: ts.Type | undefined = node
-          ? checker.getTypeOfSymbolAtLocation(prop, node)
-          : checker.getTypeOfPropertyOfType(parent, prop.name);
+          ? ctx.checker.getTypeOfSymbolAtLocation(prop, node)
+          : ctx.checker.getTypeOfPropertyOfType(parent, prop.name);
         return [node, type];
       })();
       if ((node && pred(node) === false) || type === undefined) continue;
 
       // GET EXACT TYPE
       const key: Metadata = MetadataHelper.literal_to_metadata(prop.name);
-      const value: Metadata = explore_metadata(checker)(options)(collection)(
-        errors,
-      )(type, {
+      const value: Metadata = explore_metadata(ctx)(type, {
         top: false,
         object: obj,
         property: prop.name,
@@ -111,10 +108,10 @@ export const emplace_metadata_object =
     //----
     // DYNAMIC PROPERTIES
     //----
-    for (const index of checker.getIndexInfosOfType(parent)) {
+    for (const index of ctx.checker.getIndexInfosOfType(parent)) {
       // GET EXACT TYPE
       const analyzer = (type: ts.Type) => (property: {} | null) =>
-        explore_metadata(checker)(options)(collection)(errors)(type, {
+        explore_metadata(ctx)(type, {
           top: false,
           object: obj,
           property,
@@ -138,7 +135,7 @@ export const emplace_metadata_object =
           ).length !==
         key.size()
       )
-        errors.push({
+        ctx.errors.push({
           name: key.getName(),
           explore: {
             top: false,
@@ -154,7 +151,7 @@ export const emplace_metadata_object =
       // INSERT WITH REQUIRED CONFIGURATION
       insert(key)(value)(
         index.declaration?.parent
-          ? checker.getSymbolAtLocation(index.declaration.parent)
+          ? ctx.checker.getSymbolAtLocation(index.declaration.parent)
           : undefined,
         (doc) => doc.name !== "default",
       );

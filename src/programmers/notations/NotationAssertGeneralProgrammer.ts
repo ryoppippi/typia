@@ -4,7 +4,7 @@ import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { AssertProgrammer } from "../AssertProgrammer";
 import { NotationGeneralProgrammer } from "./NotationGeneralProgrammer";
@@ -12,7 +12,7 @@ import { NotationGeneralProgrammer } from "./NotationGeneralProgrammer";
 export namespace NotationAssertGeneralProgrammer {
   export const write =
     (rename: (str: string) => string) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (type: ts.Type, name?: string, init?: ts.Expression) =>
       ts.factory.createArrowFunction(

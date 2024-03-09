@@ -11,7 +11,7 @@ import { MetadataArrayType } from "../../schemas/metadata/MetadataArrayType";
 import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { MetadataProperty } from "../../schemas/metadata/MetadataProperty";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { TransformerError } from "../../transformers/TransformerError";
 
 import { Atomic } from "../../typings/Atomic";
@@ -20,12 +20,13 @@ import { Escaper } from "../../utils/Escaper";
 
 import { FunctionImporter } from "../helpers/FunctionImporter";
 import { HttpMetadataUtil } from "../helpers/HttpMetadataUtil";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace HttpQueryProgrammer {
   export const INPUT_TYPE = "string | URLSearchParams";
 
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (type: ts.Type, name?: string): ts.ArrowFunction => {
       // GET OBJECT TYPE
@@ -131,7 +132,7 @@ export namespace HttpQueryProgrammer {
   };
 
   const decode_object =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (object: MetadataObject): ts.Statement[] => {
       const input: ts.Identifier = ts.factory.createIdentifier("input");
       const output: ts.Identifier = ts.factory.createIdentifier("output");
@@ -143,7 +144,7 @@ export namespace HttpQueryProgrammer {
             ts.factory.createToken(ts.SyntaxKind.EqualsToken),
             ts.factory.createAsExpression(
               ts.factory.createCallExpression(
-                importer.use("params"),
+                importer.internal("$query"),
                 undefined,
                 [input],
               ),
@@ -227,12 +228,12 @@ export namespace HttpQueryProgrammer {
     };
 
   const decode_value =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (type: Atomic.Literal) =>
     (onlyUndefindable: boolean) =>
     (value: ts.Expression) => {
       const call = ts.factory.createCallExpression(
-        importer.use(type),
+        importer.internal(`$query_${type}`),
         undefined,
         [value],
       );
@@ -246,15 +247,19 @@ export namespace HttpQueryProgrammer {
     };
 
   const decode_array =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (value: Metadata) =>
     (expression: ts.Expression): ts.Expression =>
       value.nullable || value.isRequired() === false
-        ? ts.factory.createCallExpression(importer.use("array"), undefined, [
-            expression,
-            value.nullable
-              ? ts.factory.createNull()
-              : ts.factory.createIdentifier("undefined"),
-          ])
+        ? ts.factory.createCallExpression(
+            importer.internal("$query_array"),
+            undefined,
+            [
+              expression,
+              value.nullable
+                ? ts.factory.createNull()
+                : ts.factory.createIdentifier("undefined"),
+            ],
+          )
         : expression;
 }

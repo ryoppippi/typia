@@ -5,12 +5,12 @@ import { TemplateFactory } from "../../factories/TemplateFactory";
 
 import { stringify_dynamic_properties } from "../internal/stringify_dynamic_properties";
 import { stringify_regular_properties } from "../internal/stringify_regular_properties";
-import { FunctionImporter } from "./FunctionImporter";
 import { IExpressionEntry } from "./IExpressionEntry";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace StringifyJoiner {
   export const object =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (
       _input: ts.Expression,
       entries: IExpressionEntry<ts.Expression>[],
@@ -45,9 +45,11 @@ export namespace StringifyJoiner {
         (regular.length === 0 && dynamic.length)
           ? expressions
           : [
-              ts.factory.createCallExpression(importer.use("tail"), undefined, [
-                TemplateFactory.generate(expressions),
-              ]),
+              ts.factory.createCallExpression(
+                importer.internal("$json_stringify_tail"),
+                undefined,
+                [TemplateFactory.generate(expressions)],
+              ),
             ];
 
       // RETURNS WITH OBJECT BRACKET

@@ -6,7 +6,7 @@ import { MetadataFactory } from "../../factories/MetadataFactory";
 
 import { Metadata } from "../../schemas/metadata/Metadata";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { TransformerError } from "../../transformers/TransformerError";
 
 import { Atomic } from "../../typings/Atomic";
@@ -14,7 +14,7 @@ import { Atomic } from "../../typings/Atomic";
 import { ArrayUtil } from "../../utils/ArrayUtil";
 
 export namespace MiscLiteralsProgrammer {
-  export const write = (project: IProject) => (type: ts.Type) => {
+  export const write = (project: ITypiaProject) => (type: ts.Type) => {
     const result = MetadataFactory.analyze(
       project.checker,
       project.context,

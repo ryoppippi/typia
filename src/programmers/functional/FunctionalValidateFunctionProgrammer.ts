@@ -2,7 +2,7 @@ import ts from "typescript";
 
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { FunctionalValidateParametersProgrammer } from "./FunctionalValidateParametersProgrammer";
 import { FunctionalValidateReturnProgrammer } from "./FunctionalValidateReturnProgrammer";
@@ -10,7 +10,7 @@ import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalValidateFunctionProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (

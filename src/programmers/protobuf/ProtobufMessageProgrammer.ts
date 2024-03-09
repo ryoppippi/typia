@@ -8,7 +8,7 @@ import { MetadataAtomic } from "../../schemas/metadata/MetadataAtomic";
 import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { MetadataProperty } from "../../schemas/metadata/MetadataProperty";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { MapUtil } from "../../utils/MapUtil";
 import { NameEncoder } from "../../utils/NameEncoder";
@@ -16,7 +16,7 @@ import { NameEncoder } from "../../utils/NameEncoder";
 import { ProtobufUtil } from "../helpers/ProtobufUtil";
 
 export namespace ProtobufMessageProgrammer {
-  export const write = (project: IProject) => (type: ts.Type) => {
+  export const write = (project: ITypiaProject) => (type: ts.Type) => {
     // PARSE TARGET TYPE
     const collection: MetadataCollection = new MetadataCollection();
     ProtobufFactory.metadata("message")(project.checker, project.context)(

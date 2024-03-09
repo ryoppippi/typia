@@ -2,12 +2,12 @@ import ts from "typescript";
 
 import { MiscLiteralsProgrammer } from "../../../programmers/misc/MiscLiteralsProgrammer";
 
-import { IProject } from "../../IProject";
+import { ITypiaProject } from "../../ITypiaProject";
 import { TransformerError } from "../../TransformerError";
 
 export namespace MiscLiteralsTransformer {
   export const transform =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (expression: ts.CallExpression): ts.Expression => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments?.[0])

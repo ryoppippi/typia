@@ -2,7 +2,6 @@ import ts from "typescript";
 
 import { Metadata } from "../../../schemas/metadata/Metadata";
 
-import { MetadataCollection } from "../../MetadataCollection";
 import { MetadataFactory } from "../../MetadataFactory";
 import { TypeFactory } from "../../TypeFactory";
 import { iterate_metadata_alias } from "./iterate_metadata_alias";
@@ -21,14 +20,11 @@ import { iterate_metadata_tuple } from "./iterate_metadata_tuple";
 import { iterate_metadata_union } from "./iterate_metadata_union";
 
 export const iterate_metadata =
-  (checker: ts.TypeChecker) =>
-  (options: MetadataFactory.IOptions) =>
-  (collection: MetadataCollection) =>
-  (errors: MetadataFactory.IError[]) =>
+  (ctx: MetadataFactory.IContext) =>
   (meta: Metadata, type: ts.Type, explore: MetadataFactory.IExplore): void => {
     if (type.isTypeParameter() === true) {
-      errors.push({
-        name: TypeFactory.getFullName(checker)(type),
+      ctx.errors.push({
+        name: TypeFactory.getFullName(ctx.checker)(type),
         explore: { ...explore },
         messages: ["non-specified generic argument found."],
       });
@@ -37,58 +33,22 @@ export const iterate_metadata =
     // CHECK SPECIAL CASES
     else if (
       (explore.aliased !== true &&
-        iterate_metadata_alias(checker)(options)(collection)(errors)(
-          meta,
-          type,
-          explore,
-        )) ||
-      iterate_metadata_intersection(checker)(options)(collection)(errors)(
-        meta,
-        type,
-        explore,
-      ) ||
-      iterate_metadata_union(checker)(options)(collection)(errors)(
-        meta,
-        type,
-        explore,
-      ) ||
-      iterate_metadata_escape(checker)(options)(collection)(errors)(
-        meta,
-        type,
-        explore,
-      )
+        iterate_metadata_alias(ctx)(meta, type, explore)) ||
+      iterate_metadata_intersection(ctx)(meta, type, explore) ||
+      iterate_metadata_union(ctx)(meta, type, explore) ||
+      iterate_metadata_escape(ctx)(meta, type, explore)
     )
       return;
 
     // ITERATE CASES
     iterate_metadata_coalesce(meta, type) ||
-      iterate_metadata_constant(checker)(options)(meta, type) ||
-      iterate_metadata_template(checker)(options)(collection)(errors)(
-        meta,
-        type,
-        explore,
-      ) ||
+      iterate_metadata_constant(ctx)(meta, type) ||
+      iterate_metadata_template(ctx)(meta, type, explore) ||
       iterate_metadata_atomic(meta, type) ||
-      iterate_metadata_tuple(checker)(options)(collection)(errors)(
-        meta,
-        type as ts.TupleType,
-        explore,
-      ) ||
-      iterate_metadata_array(checker)(options)(collection)(errors)(
-        meta,
-        type,
-        explore,
-      ) ||
-      iterate_metadata_native(checker)(meta, type) ||
-      iterate_metadata_map(checker)(options)(collection)(errors)(
-        meta,
-        type,
-        explore,
-      ) ||
-      iterate_metadata_set(checker)(options)(collection)(errors)(
-        meta,
-        type,
-        explore,
-      ) ||
-      iterate_metadata_object(checker)(options)(collection)(errors)(meta, type);
+      iterate_metadata_tuple(ctx)(meta, type as ts.TupleType, explore) ||
+      iterate_metadata_array(ctx)(meta, type, explore) ||
+      iterate_metadata_native(ctx)(meta, type) ||
+      iterate_metadata_map(ctx)(meta, type, explore) ||
+      iterate_metadata_set(ctx)(meta, type, explore) ||
+      iterate_metadata_object(ctx)(meta, type);
   };

@@ -5,11 +5,9 @@ import { MetadataAtomic } from "../../../schemas/metadata/MetadataAtomic";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
-const same = (type: ts.Type | null) => {
-  if (type === null) return () => false;
-  return (flag: ts.TypeFlags) => (type.getFlags() & flag) !== 0;
-};
-
+/**
+ * @internal
+ */
 export const iterate_metadata_atomic = (
   meta: Metadata,
   type: ts.Type,
@@ -32,6 +30,17 @@ export const iterate_metadata_atomic = (
   return ATOMICS.some((info) => check(info));
 };
 
+/**
+ * @internal
+ */
+const same = (type: ts.Type | null) => {
+  if (type === null) return () => false;
+  return (flag: ts.TypeFlags) => (type.getFlags() & flag) !== 0;
+};
+
+/**
+ * @internal
+ */
 const ATOMICS: IAtomicInfo[] = [
   {
     name: "boolean",
@@ -55,6 +64,9 @@ const ATOMICS: IAtomicInfo[] = [
   },
 ];
 
+/**
+ * @internal
+ */
 interface IAtomicInfo {
   name: "boolean" | "number" | "bigint" | "string";
   atomic: ts.TypeFlags;

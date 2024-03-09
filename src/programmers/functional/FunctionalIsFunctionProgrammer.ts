@@ -1,6 +1,6 @@
 import ts from "typescript";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { FunctionalIsParametersProgrammer } from "./FunctionalIsParametersProgrammer";
 import { FunctionalIsReturnProgrammer } from "./FunctionalIsReturnProgrammer";
@@ -8,7 +8,7 @@ import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalIsFunctionProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (

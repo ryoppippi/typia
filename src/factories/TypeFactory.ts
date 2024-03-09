@@ -19,8 +19,7 @@ export namespace TypeFactory {
 
   export const getReturnType =
     (checker: ts.TypeChecker) =>
-    (type: ts.Type) =>
-    (name: string): ts.Type | null => {
+    (type: ts.Type, name: string): ts.Type | null => {
       // FIND TO-JSON METHOD
       const symbol: ts.Symbol | undefined = type.getProperty(name);
       if (!symbol) return null;

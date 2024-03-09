@@ -1,6 +1,6 @@
 import ts from "typescript";
 
-import { IProject } from "../IProject";
+import { ITypiaProject } from "../ITypiaProject";
 import { TransformerError } from "../TransformerError";
 import { ImportProgrammer } from "../../programmers/ImportProgrammer";
 
@@ -9,12 +9,12 @@ export namespace GenericTransformer {
     (method: string) =>
     (
       programmer: (
-        project: IProject,
+        project: ITypiaProject,
       ) => (
         importer: ImportProgrammer,
       ) => (type: ts.Type, name: string) => ts.ArrowFunction,
     ) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (expression: ts.CallExpression) => {
       // CHECK PARAMETER
@@ -60,7 +60,7 @@ export namespace GenericTransformer {
     (method: string) =>
     (
       programmer: (
-        project: IProject,
+        project: ITypiaProject,
       ) => (
         imorter: ImportProgrammer,
       ) => (
@@ -69,7 +69,7 @@ export namespace GenericTransformer {
         init?: ts.Expression,
       ) => ts.ArrowFunction,
     ) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (expression: ts.CallExpression) => {
       // CHECK GENERIC ARGUMENT EXISTENCE

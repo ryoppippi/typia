@@ -4,7 +4,7 @@ import { ExpressionFactory } from "../../factories/ExpressionFactory";
 
 import { MetadataAtomic } from "../../schemas/metadata/MetadataAtomic";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { ICheckEntry } from "../helpers/ICheckEntry";
 import { OptionPredicator } from "../helpers/OptionPredicator";
@@ -13,7 +13,7 @@ import { OptionPredicator } from "../helpers/OptionPredicator";
  * @internal
  */
 export const check_number =
-  (project: IProject, numeric: boolean) =>
+  (project: ITypiaProject, numeric: boolean) =>
   (atomic: MetadataAtomic) =>
   (input: ts.Expression): ICheckEntry => {
     const base = ts.factory.createStrictEquality(
@@ -56,7 +56,7 @@ export const check_number =
  * @internal
  */
 const check_numeric_type_tags =
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (atomic: MetadataAtomic) =>
   (addition: ts.Expression | null) =>
   (input: ts.Expression): ICheckEntry.ICondition[][] =>

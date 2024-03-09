@@ -2,18 +2,18 @@ import ts from "typescript";
 
 import { Metadata } from "../../schemas/metadata/Metadata";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
-import { FunctionImporter } from "../helpers/FunctionImporter";
 import { ICheckEntry } from "../helpers/ICheckEntry";
 import { check_bigint } from "./check_bigint";
 import { check_number } from "./check_number";
 import { check_string } from "./check_string";
 import { check_template } from "./check_template";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export const check_dynamic_key =
-  (project: IProject) =>
-  (importer: FunctionImporter) =>
+  (project: ITypiaProject) =>
+  (importer: ImportProgrammer) =>
   (input: ts.Expression, metadata: Metadata): ts.Expression => {
     // IF PURE STRING EXISTS, THEN SKIP VALIDATION
     if (
@@ -66,7 +66,7 @@ export const check_dynamic_key =
         conditions.push(
           ts.factory.createLogicalAnd(
             ts.factory.createCallExpression(
-              importer.use("is_bigint_string"),
+              importer.internal("$is_bigint_string"),
               undefined,
               [input],
             ),
@@ -127,7 +127,7 @@ export const check_dynamic_key =
       else if (native === "BigInt")
         conditions.push(
           ts.factory.createCallExpression(
-            importer.use("is_bigint_string"),
+            importer.internal("$is_bigint_string"),
             undefined,
             [input],
           ),

@@ -2,53 +2,51 @@ import ts from "typescript";
 
 import { Singleton } from "../utils/Singleton";
 
-import { IProject } from "./IProject";
+import { ITypiaProject } from "./ITypiaProject";
 import { NodeTransformer } from "./NodeTransformer";
 import { TransformerError } from "./TransformerError";
 import { ImportProgrammer } from "../programmers/ImportProgrammer";
+import { ITypiaContext } from "./ITypiaContext";
 
 export namespace FileTransformer {
   export const transform =
-    (environments: Omit<IProject, "context">) =>
+    (project: ITypiaProject) =>
     (context: ts.TransformationContext) =>
     (file: ts.SourceFile): ts.SourceFile => {
       if (file.isDeclarationFile) return file;
-
-      const project: IProject = {
-        ...environments,
-        context,
-      };
       checkJsDocParsingMode.get(project, file);
 
-      const importer: ImportProgrammer = new ImportProgrammer();
+      const props: ITypiaContext = {
+        ...project,
+        context,
+        importer: new ImportProgrammer(),
+      };
       file = ts.visitEachChild(
         file,
-        (node) => iterate_node(project)(importer)(node),
+        (node) => iterate_node(props)(node),
         context,
       );
       return ts.factory.createSourceFile(
-        [...importer.toStatements(), ...file.statements],
+        [...props.importer.toStatements(), ...file.statements],
         file.endOfFileToken as any,
         file.flags,
       );
     };
 
   const iterate_node =
-    (project: IProject) =>
-    (importer: ImportProgrammer) =>
+    (props: ITypiaContext) =>
     (node: ts.Node): ts.Node =>
       ts.visitEachChild(
-        try_transform_node(project)(importer)(node) ?? node,
-        (child) => iterate_node(project)(importer)(child),
-        project.context,
+        try_transform_node(props)(node) ?? node,
+        (child) => iterate_node(props)(child),
+        props.context,
       );
 
   const try_transform_node =
-    (project: IProject) =>
-    (importer: ImportProgrammer) =>
+    (props: ITypiaContext) =>
     (node: ts.Node): ts.Node | null => {
       try {
-        return NodeTransformer.transform(project)(importer)(node);
+        return NodeTransformer.transform(props)(node);
       } catch (exp) {
         // ONLY ACCEPT TRANSFORMER-ERROR
         if (!isTransformerError(exp)) throw exp;
@@ -60,7 +58,7 @@ export namespace FileTransformer {
           message: exp.message,
           code: `(${exp.code})` as any,
         });
-        project.extras.addDiagnostic(diagnostic);
+        props.extras.addDiagnostic(diagnostic);
         return null;
       }
     };
@@ -74,7 +72,7 @@ const isTransformerError = (error: any): error is TransformerError =>
   typeof error.message === "string";
 
 const checkJsDocParsingMode = new Singleton(
-  (project: IProject, file: ts.SourceFile) => {
+  (project: ITypiaProject, file: ts.SourceFile) => {
     if (
       typeof file.jsDocParsingMode === "number" &&
       file.jsDocParsingMode !== 0

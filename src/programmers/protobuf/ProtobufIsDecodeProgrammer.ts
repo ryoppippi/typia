@@ -4,14 +4,14 @@ import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { IsProgrammer } from "../IsProgrammer";
 import { ProtobufDecodeProgrammer } from "./ProtobufDecodeProgrammer";
 
 export namespace ProtobufIsDecodeProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (type: ts.Type, name?: string) =>
       ts.factory.createArrowFunction(

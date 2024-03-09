@@ -4,7 +4,7 @@ import { ExpressionFactory } from "../../factories/ExpressionFactory";
 
 import { MetadataAtomic } from "../../schemas/metadata/MetadataAtomic";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { ICheckEntry } from "../helpers/ICheckEntry";
 
@@ -12,7 +12,7 @@ import { ICheckEntry } from "../helpers/ICheckEntry";
  * @internal
  */
 export const check_string =
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (atomic: MetadataAtomic) =>
   (input: ts.Expression): ICheckEntry => {
     const conditions: ICheckEntry.ICondition[][] =
@@ -31,7 +31,7 @@ export const check_string =
  * @internal
  */
 const check_string_type_tags =
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (atomic: MetadataAtomic) =>
   (input: ts.Expression): ICheckEntry.ICondition[][] =>
     atomic.tags

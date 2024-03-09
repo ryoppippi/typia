@@ -14,7 +14,7 @@ import { MetadataAtomic } from "../../schemas/metadata/MetadataAtomic";
 import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { MetadataProperty } from "../../schemas/metadata/MetadataProperty";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { ProtobufAtomic } from "../../typings/ProtobufAtomic";
 
@@ -25,13 +25,13 @@ import { ProtobufUtil } from "../helpers/ProtobufUtil";
 import { ProtobufWire } from "../helpers/ProtobufWire";
 import { UnionPredicator } from "../helpers/UnionPredicator";
 import { decode_union_object } from "../internal/decode_union_object";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace ProtobufEncodeProgrammer {
   export const write =
-    (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (project: ITypiaProject) =>
+    (importer: ImportProgrammer) =>
     (type: ts.Type, name?: string): ts.ArrowFunction => {
-      const importer = new FunctionImporter(modulo.getText());
       const collection = new MetadataCollection();
       const meta: Metadata = ProtobufFactory.metadata(modulo.getText())(
         project.checker,
@@ -54,12 +54,18 @@ export namespace ProtobufEncodeProgrammer {
           write_encoder(project)(importer)(collection)(meta),
         ),
         callEncoder("sizer")(
-          ts.factory.createNewExpression(importer.use("Sizer"), undefined, []),
+          ts.factory.createNewExpression(
+            importer.internal("$ProtobufSizer"),
+            undefined,
+            [],
+          ),
         ),
         callEncoder("writer")(
-          ts.factory.createNewExpression(importer.use("Writer"), undefined, [
-            ts.factory.createIdentifier("sizer"),
-          ]),
+          ts.factory.createNewExpression(
+            importer.internal("$ProtobufWriter"),
+            undefined,
+            [ts.factory.createIdentifier("sizer")],
+          ),
         ),
         ts.factory.createReturnStatement(
           ts.factory.createCallExpression(
@@ -91,7 +97,7 @@ export namespace ProtobufEncodeProgrammer {
     };
 
   const write_encoder =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (collection: MetadataCollection) =>
     (meta: Metadata): ts.ArrowFunction => {
@@ -147,7 +153,7 @@ export namespace ProtobufEncodeProgrammer {
     };
 
   const write_object_function =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (
       input: ts.Expression,
@@ -188,7 +194,7 @@ export namespace ProtobufEncodeProgrammer {
         DECODERS
     ----------------------------------------------------------- */
   const decode =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (index: number | null) =>
     (
@@ -366,7 +372,7 @@ export namespace ProtobufEncodeProgrammer {
       );
 
   const decode_map =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (index: number) =>
     (
@@ -417,7 +423,7 @@ export namespace ProtobufEncodeProgrammer {
     };
 
   const decode_object =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (index: number | null) =>
     (
@@ -485,7 +491,7 @@ export namespace ProtobufEncodeProgrammer {
     };
 
   const decode_array =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (index: number) =>
     (
@@ -691,7 +697,7 @@ export namespace ProtobufEncodeProgrammer {
         EXPLORERS
     ----------------------------------------------------------- */
   const explore_objects =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (level: number) =>
     (index: number | null) =>
@@ -787,12 +793,12 @@ export namespace ProtobufEncodeProgrammer {
   const PREFIX = "$pe";
 
   const create_throw_error =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (expected: string) =>
     (value: ts.Expression) =>
       ts.factory.createExpressionStatement(
         ts.factory.createCallExpression(
-          importer.use("throws"),
+          importer.internal("$throws"),
           [],
           [
             ts.factory.createObjectLiteralExpression(

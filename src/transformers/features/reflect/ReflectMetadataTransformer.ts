@@ -7,12 +7,12 @@ import { MetadataFactory } from "../../../factories/MetadataFactory";
 import { IMetadataApplication } from "../../../schemas/metadata/IMetadataApplication";
 import { Metadata } from "../../../schemas/metadata/Metadata";
 
-import { IProject } from "../../IProject";
+import { ITypiaProject } from "../../ITypiaProject";
 import { TransformerError } from "../../TransformerError";
 
 export namespace ReflectMetadataTransformer {
   export const transform =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (expression: ts.CallExpression): ts.Expression => {
       if (!expression.typeArguments?.length)
         throw new TransformerError({

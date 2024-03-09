@@ -1,4 +1,6 @@
-export type TagBase<Props extends TagBase.IProps<any, any, any, any, any>> = {
+export type TagBase<
+  Props extends TagBase.IProps<any, any, any, any, any, any>,
+> = {
   /**
    * This is a dummy property for compilation.
    *
@@ -17,6 +19,7 @@ export namespace TagBase {
           [key in Target]?: string;
         },
     Exclusive extends boolean | string[],
+    Schema extends object,
   > {
     /**
      * Target type.
@@ -64,5 +67,15 @@ export namespace TagBase {
      * @default false
      */
     exclusive?: Exclusive | string[];
+
+    /**
+     * JSON schema customizer.
+     *
+     * If this property is configured, it would be merged into the generated
+     * JSON schema. For example, if you connfigure this property type as
+     * `{ default: "hello" }`, then the generated JSON schema would be
+     * `{ default: "hello", ... }`.
+     */
+    schema?: Schema;
   }
 }

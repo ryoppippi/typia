@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { IProject } from "../../IProject";
+import { ITypiaProject } from "../../ITypiaProject";
 import { TransformerError } from "../../TransformerError";
 import { TypeFactory } from "../../../factories/TypeFactory";
 import { ImportProgrammer } from "../../../programmers/ImportProgrammer";
@@ -9,7 +9,7 @@ export namespace FunctionalGenericTransformer {
     (props: {
       method: string;
       programmer: (
-        project: IProject,
+        project: ITypiaProject,
       ) => (
         importer: ImportProgrammer,
       ) => (
@@ -21,7 +21,7 @@ export namespace FunctionalGenericTransformer {
       ) => ts.Expression;
       equals: boolean;
     }) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (expression: ts.CallExpression) => {
       // CHECK PARAMETER

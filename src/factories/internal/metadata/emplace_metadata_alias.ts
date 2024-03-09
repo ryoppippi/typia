@@ -5,23 +5,22 @@ import { MetadataAlias } from "../../../schemas/metadata/MetadataAlias";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
-import { MetadataCollection } from "../../MetadataCollection";
 import { MetadataFactory } from "../../MetadataFactory";
 import { explore_metadata } from "./explore_metadata";
 
+/**
+ * @internal
+ */
 export const emplace_metadata_alias =
-  (checker: ts.TypeChecker) =>
-  (options: MetadataFactory.IOptions) =>
-  (collection: MetadataCollection) =>
-  (errors: MetadataFactory.IError[]) =>
+  (ctx: MetadataFactory.IContext) =>
   (
     type: ts.Type,
     nullable: boolean,
     explore: MetadataFactory.IExplore,
   ): MetadataAlias => {
     // CHECK EXISTENCE
-    const [alias, newbie, closure] = collection.emplaceAlias(
-      checker,
+    const [alias, newbie, closure] = ctx.collection.emplaceAlias(
+      ctx.checker,
       type,
       type.aliasSymbol!,
     );
@@ -29,9 +28,7 @@ export const emplace_metadata_alias =
     if (newbie === false) return alias;
 
     // CONSTRUCT VALUE TYPE
-    const value: Metadata = explore_metadata(checker)(options)(collection)(
-      errors,
-    )(type, {
+    const value: Metadata = explore_metadata(ctx)(type, {
       ...explore,
       escaped: false,
       aliased: true,

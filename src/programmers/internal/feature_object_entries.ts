@@ -7,7 +7,7 @@ import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { Escaper } from "../../utils/Escaper";
 
 import { FeatureProgrammer } from "../FeatureProgrammer";
-import { FunctionImporter } from "../helpers/FunctionImporter";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 /**
  * @internal
@@ -19,7 +19,7 @@ export const feature_object_entries =
       "decoder" | "path" | "trace"
     >,
   ) =>
-  (importer: FunctionImporter) =>
+  (importer: ImportProgrammer) =>
   (obj: MetadataObject) =>
   (input: ts.Expression, from: "object" | "top" | "array" = "object") =>
     obj.properties.map((prop) => {
@@ -49,8 +49,8 @@ export const feature_object_entries =
             ? sole !== null
               ? IdentifierFactory.postfix(sole)
               : (() => {
-                  importer.use("join");
-                  return `$join(key)`;
+                  importer.internal("$json_stringify_join");
+                  return `__$json_stringify_join(key)`;
                 })()
             : "",
         }),

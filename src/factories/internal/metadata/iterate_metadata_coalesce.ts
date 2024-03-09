@@ -6,6 +6,9 @@ import { Writable } from "../../../typings/Writable";
 
 import { TypeFactory } from "../../TypeFactory";
 
+/**
+ * @internal
+ */
 export const iterate_metadata_coalesce = (
   meta: Metadata,
   type: ts.Type,

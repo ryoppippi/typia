@@ -14,7 +14,7 @@ import { MetadataObject } from "../schemas/metadata/MetadataObject";
 import { MetadataTuple } from "../schemas/metadata/MetadataTuple";
 import { MetadataTupleType } from "../schemas/metadata/MetadataTupleType";
 
-import { IProject } from "../transformers/IProject";
+import { ITypiaProject } from "../transformers/ITypiaProject";
 import { TransformerError } from "../transformers/TransformerError";
 
 import { FeatureProgrammer } from "./FeatureProgrammer";
@@ -96,25 +96,31 @@ export namespace CheckerProgrammer {
         WRITERS
     ----------------------------------------------------------- */
   export const write =
-    (project: IProject) => (config: IConfig) => (importer: FunctionImporter) =>
+    (project: ITypiaProject) =>
+    (config: IConfig) =>
+    (importer: FunctionImporter) =>
       FeatureProgrammer.write(project)(configure(project)(config)(importer))(
         importer,
       );
 
   export const write_object_functions =
-    (project: IProject) => (config: IConfig) => (importer: FunctionImporter) =>
+    (project: ITypiaProject) =>
+    (config: IConfig) =>
+    (importer: FunctionImporter) =>
       FeatureProgrammer.write_object_functions(
         configure(project)(config)(importer),
       )(importer);
 
   export const write_union_functions =
-    (project: IProject) => (config: IConfig) => (importer: FunctionImporter) =>
+    (project: ITypiaProject) =>
+    (config: IConfig) =>
+    (importer: FunctionImporter) =>
       FeatureProgrammer.write_union_functions(
         configure(project)({ ...config, numeric: false })(importer),
       );
 
   export const write_array_functions =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
@@ -150,7 +156,7 @@ export namespace CheckerProgrammer {
         );
 
   export const write_tuple_functions =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
@@ -183,7 +189,7 @@ export namespace CheckerProgrammer {
         );
 
   const configure =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter): FeatureProgrammer.IConfig => ({
       types: {
@@ -275,7 +281,7 @@ export namespace CheckerProgrammer {
    * @internal
    */
   export const decode =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -610,7 +616,7 @@ export namespace CheckerProgrammer {
     };
 
   const decode_array =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (input: ts.Expression, array: MetadataArray, explore: IExplore) => {
@@ -643,7 +649,7 @@ export namespace CheckerProgrammer {
     };
 
   const decode_array_inline =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -667,7 +673,7 @@ export namespace CheckerProgrammer {
     };
 
   const decode_tuple =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -702,7 +708,7 @@ export namespace CheckerProgrammer {
     };
 
   const decode_tuple_inline =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -803,7 +809,7 @@ export namespace CheckerProgrammer {
     };
 
   const decode_escaped =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (input: ts.Expression, meta: Metadata, explore: IExplore): ts.Expression =>
@@ -836,7 +842,7 @@ export namespace CheckerProgrammer {
         UNION TYPE EXPLORERS
     ----------------------------------------------------------- */
   const explore_sets =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -860,7 +866,7 @@ export namespace CheckerProgrammer {
       );
 
   const explore_maps =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -904,7 +910,7 @@ export namespace CheckerProgrammer {
       );
 
   const explore_tuples =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -926,7 +932,7 @@ export namespace CheckerProgrammer {
       )(input, tuples, explore);
 
   const explore_arrays =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -948,7 +954,7 @@ export namespace CheckerProgrammer {
       )(input, arrays, explore);
 
   const explore_arrays_and_tuples =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (

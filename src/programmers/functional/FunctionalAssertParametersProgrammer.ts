@@ -2,7 +2,7 @@ import ts from "typescript";
 
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { AssertProgrammer } from "../AssertProgrammer";
 import { FunctionalAssertFunctionProgrammer } from "./FunctionalAssertFunctionProgrammer";
@@ -11,7 +11,7 @@ import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalAssertParametersProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
@@ -56,7 +56,7 @@ export namespace FunctionalAssertParametersProgrammer {
     };
 
   export const argumentExpressions =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (equals: boolean) =>
     (

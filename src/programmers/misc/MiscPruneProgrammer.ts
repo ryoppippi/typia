@@ -12,7 +12,7 @@ import { MetadataArray } from "../../schemas/metadata/MetadataArray";
 import { MetadataTuple } from "../../schemas/metadata/MetadataTuple";
 import { MetadataTupleType } from "../../schemas/metadata/MetadataTupleType";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { TransformerError } from "../../transformers/TransformerError";
 
 import { FeatureProgrammer } from "../FeatureProgrammer";
@@ -22,10 +22,11 @@ import { PruneJoiner } from "../helpers/PruneJoiner";
 import { UnionExplorer } from "../helpers/UnionExplorer";
 import { decode_union_object } from "../internal/decode_union_object";
 import { wrap_metadata_rest_tuple } from "../internal/wrap_metadata_rest_tuple";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace MiscPruneProgrammer {
   export const write =
-    (project: IProject) => (modulo: ts.LeftHandSideExpression) => {
+    (project: ITypiaProject) => (modulo: ts.LeftHandSideExpression) => {
       const importer: FunctionImporter = new FunctionImporter(modulo.getText());
       return FeatureProgrammer.write(project)({
         ...configure(project)(importer),
@@ -74,7 +75,7 @@ export namespace MiscPruneProgrammer {
         );
 
   const write_tuple_functions =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
@@ -110,7 +111,7 @@ export namespace MiscPruneProgrammer {
         DECODERS
     ----------------------------------------------------------- */
   const decode =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -257,7 +258,7 @@ export namespace MiscPruneProgrammer {
       );
 
   const decode_tuple =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -283,7 +284,7 @@ export namespace MiscPruneProgrammer {
           );
 
   const decode_tuple_inline =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -354,7 +355,7 @@ export namespace MiscPruneProgrammer {
     };
 
   const explore_arrays =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -445,7 +446,7 @@ export namespace MiscPruneProgrammer {
   const PREFIX = "$p";
 
   const configure =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter): FeatureProgrammer.IConfig => {
       const config: FeatureProgrammer.IConfig = {
         types: {
@@ -499,12 +500,12 @@ export namespace MiscPruneProgrammer {
     };
 
   const create_throw_error =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (expected: string) =>
     (value: ts.Expression) =>
       ts.factory.createExpressionStatement(
         ts.factory.createCallExpression(
-          importer.use("throws"),
+          importer.internal("$throws"),
           [],
           [
             ts.factory.createObjectLiteralExpression(

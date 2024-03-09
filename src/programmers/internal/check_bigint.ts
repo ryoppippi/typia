@@ -4,7 +4,7 @@ import { ExpressionFactory } from "../../factories/ExpressionFactory";
 
 import { MetadataAtomic } from "../../schemas/metadata/MetadataAtomic";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { ICheckEntry } from "../helpers/ICheckEntry";
 
@@ -12,7 +12,7 @@ import { ICheckEntry } from "../helpers/ICheckEntry";
  * @internal
  */
 export const check_bigint =
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (atomic: MetadataAtomic) =>
   (input: ts.Expression): ICheckEntry => {
     const conditions: ICheckEntry.ICondition[][] =
@@ -32,7 +32,7 @@ export const check_bigint =
  * @internal
  */
 const check_bigint_type_tags =
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (atomic: MetadataAtomic) =>
   (input: ts.Expression): ICheckEntry.ICondition[][] =>
     atomic.tags

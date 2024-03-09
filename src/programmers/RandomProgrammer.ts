@@ -16,7 +16,7 @@ import { MetadataObject } from "../schemas/metadata/MetadataObject";
 import { MetadataTuple } from "../schemas/metadata/MetadataTuple";
 import { MetadataTupleType } from "../schemas/metadata/MetadataTupleType";
 
-import { IProject } from "../transformers/IProject";
+import { ITypiaProject } from "../transformers/ITypiaProject";
 import { TransformerError } from "../transformers/TransformerError";
 
 import { Escaper } from "../utils/Escaper";
@@ -29,7 +29,7 @@ import { random_custom } from "./internal/random_custom";
 
 export namespace RandomProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (init?: ts.Expression) => {
       const importer: FunctionImporter = new FunctionImporter(modulo.getText());

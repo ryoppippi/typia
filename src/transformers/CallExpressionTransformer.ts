@@ -14,7 +14,6 @@ import { FunctionalGenericTransformer } from "./features/functional/FunctionalGe
 
 import { NamingConvention } from "../utils/NamingConvention";
 
-import { IProject } from "./IProject";
 import { AssertTransformer } from "./features/AssertTransformer";
 import { CreateAssertTransformer } from "./features/CreateAssertTransformer";
 import { CreateIsTransformer } from "./features/CreateIsTransformer";
@@ -107,19 +106,18 @@ import { ProtobufMessageTransformer } from "./features/protobuf/ProtobufMessageT
 import { ProtobufValidateDecodeTransformer } from "./features/protobuf/ProtobufValidateDecodeTransformer";
 import { ProtobufValidateEncodeTransformer } from "./features/protobuf/ProtobufValidateEncodeTransformer";
 import { ReflectMetadataTransformer } from "./features/reflect/ReflectMetadataTransformer";
-import { ImportProgrammer } from "../programmers/ImportProgrammer";
+import { ITypiaContext } from "./ITypiaContext";
 
 export namespace CallExpressionTransformer {
   export const transform =
-    (project: IProject) =>
-    (importer: ImportProgrammer) =>
+    (p: ITypiaContext) =>
     (expression: ts.CallExpression): ts.Expression | null => {
       //----
       // VALIDATIONS
       //----
       // SIGNATURE DECLARATION
       const declaration: ts.Declaration | undefined =
-        project.checker.getResolvedSignature(expression)?.declaration;
+        p.checker.getResolvedSignature(expression)?.declaration;
       if (!declaration) return expression;
 
       // FILE PATH
@@ -133,15 +131,14 @@ export namespace CallExpressionTransformer {
       //----
       // FUNCTION NAME
       const module: string = location.split(path.sep).at(-1)!.split(".")[0]!;
-      const { name } = project.checker.getTypeAtLocation(declaration).symbol;
+      const { name } = p.checker.getTypeAtLocation(declaration).symbol;
 
       // FIND TRANSFORMER
       const functor: (() => Task) | undefined = FUNCTORS[module]?.[name];
       if (functor === undefined) return expression;
 
       // RETURNS WITH TRANSFORMATION
-      const result: ts.Expression | null =
-        functor()(project)(importer)(expression);
+      const result: ts.Expression | null = functor()(p)(expression);
       return result ?? expression;
     };
 
@@ -154,9 +151,7 @@ export namespace CallExpressionTransformer {
 }
 
 type Task = (
-  project: IProject,
-) => (
-  importer: ImportProgrammer,
+  props: ITypiaContext,
 ) => (expression: ts.CallExpression) => ts.Expression | null;
 
 const FUNCTORS: Record<string, Record<string, () => Task>> = {

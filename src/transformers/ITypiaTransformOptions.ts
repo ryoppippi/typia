@@ -1,4 +1,4 @@
-export interface ITransformOptions {
+export interface ITypiaTransformOptions {
   /**
    * Whether to validate finite number or not.
    *

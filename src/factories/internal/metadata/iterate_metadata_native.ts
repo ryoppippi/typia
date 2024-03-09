@@ -5,9 +5,10 @@ import { Metadata } from "../../../schemas/metadata/Metadata";
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
 import { TypeFactory } from "../../TypeFactory";
+import { MetadataFactory } from "../../MetadataFactory";
 
 export const iterate_metadata_native =
-  (checker: ts.TypeChecker) =>
+  ({ checker }: MetadataFactory.IContext) =>
   (meta: Metadata, type: ts.Type): boolean => {
     const validator = validate(checker)(type);
     const name: string = TypeFactory.getFullName(checker)(
@@ -35,7 +36,7 @@ export const iterate_metadata_native =
 const validate =
   (checker: ts.TypeChecker) => (type: ts.Type) => (info: IClassInfo) =>
     (info.methods ?? []).every((method) => {
-      const returnType = TypeFactory.getReturnType(checker)(type)(method.name);
+      const returnType = TypeFactory.getReturnType(checker)(type, method.name);
       return (
         returnType !== null &&
         checker.typeToString(returnType) === method.return

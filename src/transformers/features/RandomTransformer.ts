@@ -2,13 +2,13 @@ import ts from "typescript";
 
 import { RandomProgrammer } from "../../programmers/RandomProgrammer";
 
-import { IProject } from "../IProject";
+import { ITypiaProject } from "../ITypiaProject";
 import { TransformerError } from "../TransformerError";
 import { ImportProgrammer } from "../../programmers/ImportProgrammer";
 
 export namespace RandomTransformer {
   export const transform =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (expression: ts.CallExpression): ts.Expression => {
       // CHECK GENERIC ARGUMENT EXISTENCE

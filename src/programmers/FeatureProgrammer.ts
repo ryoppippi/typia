@@ -10,7 +10,7 @@ import { Metadata } from "../schemas/metadata/Metadata";
 import { MetadataArray } from "../schemas/metadata/MetadataArray";
 import { MetadataObject } from "../schemas/metadata/MetadataObject";
 
-import { IProject } from "../transformers/IProject";
+import { ITypiaProject } from "../transformers/ITypiaProject";
 
 import { CheckerProgrammer } from "./CheckerProgrammer";
 import { FunctionImporter } from "./helpers/FunctionImporter";
@@ -46,7 +46,7 @@ export namespace FeatureProgrammer {
      * Initializer of metadata.
      */
     initializer: (
-      project: IProject,
+      project: ITypiaProject,
     ) => (
       importer: FunctionImporter,
     ) => (type: ts.Type) => [MetadataCollection, Metadata];
@@ -199,7 +199,7 @@ export namespace FeatureProgrammer {
         GENERATORS
     ----------------------------------------------------------- */
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter) =>
     (type: ts.Type, name?: string) => {

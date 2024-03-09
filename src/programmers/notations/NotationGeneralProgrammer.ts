@@ -12,7 +12,7 @@ import { MetadataArray } from "../../schemas/metadata/MetadataArray";
 import { MetadataTuple } from "../../schemas/metadata/MetadataTuple";
 import { MetadataTupleType } from "../../schemas/metadata/MetadataTupleType";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { TransformerError } from "../../transformers/TransformerError";
 
 import { StringUtil } from "../../utils/StringUtil";
@@ -24,6 +24,7 @@ import { NotationJoiner } from "../helpers/NotationJoiner";
 import { UnionExplorer } from "../helpers/UnionExplorer";
 import { decode_union_object } from "../internal/decode_union_object";
 import { wrap_metadata_rest_tuple } from "../internal/wrap_metadata_rest_tuple";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace NotationGeneralProgrammer {
   export const returnType =
@@ -32,7 +33,7 @@ export namespace NotationGeneralProgrammer {
 
   export const write =
     (rename: (str: string) => string) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) => {
       const importer: FunctionImporter = new FunctionImporter(modulo.getText());
       return FeatureProgrammer.write(project)({
@@ -82,7 +83,7 @@ export namespace NotationGeneralProgrammer {
         );
 
   const write_tuple_functions =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
@@ -118,9 +119,9 @@ export namespace NotationGeneralProgrammer {
         DECODERS
     ----------------------------------------------------------- */
   const decode =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (
       input: ts.Expression,
       meta: Metadata,
@@ -135,9 +136,11 @@ export namespace NotationGeneralProgrammer {
             !!t.type.elements.length && t.type.elements.every((e) => e.any),
         )
       )
-        return ts.factory.createCallExpression(importer.use("any"), undefined, [
-          input,
-        ]);
+        return ts.factory.createCallExpression(
+          importer.internal("$clone"),
+          undefined,
+          [input],
+        );
 
       interface IUnion {
         type: string;
@@ -301,7 +304,7 @@ export namespace NotationGeneralProgrammer {
       );
 
   const decode_tuple =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -327,7 +330,7 @@ export namespace NotationGeneralProgrammer {
           );
 
   const decode_tuple_inline =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -389,7 +392,7 @@ export namespace NotationGeneralProgrammer {
         EXPLORERS FOR UNION TYPES
     ----------------------------------------------------------- */
   const explore_sets =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -420,7 +423,7 @@ export namespace NotationGeneralProgrammer {
       );
 
   const explore_maps =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -483,7 +486,7 @@ export namespace NotationGeneralProgrammer {
     };
 
   const explore_arrays =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -564,7 +567,7 @@ export namespace NotationGeneralProgrammer {
 
   const configure =
     (rename: (str: string) => string) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter): FeatureProgrammer.IConfig => {
       const config: FeatureProgrammer.IConfig = {
         types: {
@@ -623,12 +626,12 @@ export namespace NotationGeneralProgrammer {
     };
 
   const create_throw_error =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (expected: string) =>
     (value: ts.Expression) =>
       ts.factory.createExpressionStatement(
         ts.factory.createCallExpression(
-          importer.use("throws"),
+          importer.internal("$throws"),
           [],
           [
             ts.factory.createObjectLiteralExpression(

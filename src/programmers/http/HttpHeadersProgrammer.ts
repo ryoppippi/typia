@@ -12,7 +12,7 @@ import { MetadataArrayType } from "../../schemas/metadata/MetadataArrayType";
 import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { MetadataProperty } from "../../schemas/metadata/MetadataProperty";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { TransformerError } from "../../transformers/TransformerError";
 
 import { Atomic } from "../../typings/Atomic";
@@ -22,12 +22,13 @@ import { MapUtil } from "../../utils/MapUtil";
 
 import { FunctionImporter } from "../helpers/FunctionImporter";
 import { HttpMetadataUtil } from "../helpers/HttpMetadataUtil";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace HttpHeadersProgrammer {
   export const INPUT_TYPE = "Record<string, string | string[] | undefined>";
 
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (type: ts.Type, name?: string): ts.ArrowFunction => {
       // GET OBJECT TYPE
@@ -246,17 +247,19 @@ export namespace HttpHeadersProgrammer {
     };
 
   const decode_value =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (type: Atomic.Literal) =>
     (value: ts.Expression) =>
       type === "string"
         ? value
-        : ts.factory.createCallExpression(importer.use(type), undefined, [
-            value,
-          ]);
+        : ts.factory.createCallExpression(
+            importer.internal(`$httpHeaders_${type}`),
+            undefined,
+            [value],
+          );
 
   const decode_array =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (type: Atomic.Literal) =>
     (key: string) =>
     (value: Metadata) =>
@@ -278,7 +281,7 @@ export namespace HttpHeadersProgrammer {
         ),
         undefined,
         undefined,
-        [importer.use(type)],
+        [importer.internal(`$httpParams_${type}`)],
       );
       return ts.factory.createConditionalExpression(
         ExpressionFactory.isArray(accessor),
@@ -286,7 +289,7 @@ export namespace HttpHeadersProgrammer {
         ts.factory.createCallExpression(
           IdentifierFactory.access(accessor)("map"),
           undefined,
-          [importer.use(type)],
+          [importer.internal(`$httpHeaders_${type}`)],
         ),
         undefined,
         value.isRequired() === false

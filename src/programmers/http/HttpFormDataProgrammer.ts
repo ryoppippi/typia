@@ -11,7 +11,7 @@ import { MetadataArrayType } from "../../schemas/metadata/MetadataArrayType";
 import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { MetadataProperty } from "../../schemas/metadata/MetadataProperty";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { TransformerError } from "../../transformers/TransformerError";
 
 import { Atomic } from "../../typings/Atomic";
@@ -20,10 +20,11 @@ import { Escaper } from "../../utils/Escaper";
 
 import { FunctionImporter } from "../helpers/FunctionImporter";
 import { HttpMetadataUtil } from "../helpers/HttpMetadataUtil";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace HttpFormDataProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (type: ts.Type, name?: string): ts.ArrowFunction => {
       // GET OBJECT TYPE
@@ -222,12 +223,12 @@ export namespace HttpFormDataProgrammer {
     };
 
   const decode_value =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (type: Atomic.Literal | "blob" | "file") =>
     (onlyUndefindable: boolean) =>
     (value: ts.Expression) => {
       const call = ts.factory.createCallExpression(
-        importer.use(type),
+        importer.internal(`$formData_${type}`),
         undefined,
         [value],
       );
@@ -241,15 +242,19 @@ export namespace HttpFormDataProgrammer {
     };
 
   const decode_array =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (value: Metadata) =>
     (expression: ts.Expression): ts.Expression =>
       value.nullable || value.isRequired() === false
-        ? ts.factory.createCallExpression(importer.use("array"), undefined, [
-            expression,
-            value.nullable
-              ? ts.factory.createNull()
-              : ts.factory.createIdentifier("undefined"),
-          ])
+        ? ts.factory.createCallExpression(
+            importer.internal("$formData_array"),
+            undefined,
+            [
+              expression,
+              value.nullable
+                ? ts.factory.createNull()
+                : ts.factory.createIdentifier("undefined"),
+            ],
+          )
         : expression;
 }

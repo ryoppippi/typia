@@ -5,7 +5,7 @@ import { IdentifierFactory } from "../factories/IdentifierFactory";
 import { StatementFactory } from "../factories/StatementFactory";
 import { TypeFactory } from "../factories/TypeFactory";
 
-import { IProject } from "../transformers/IProject";
+import { ITypiaProject } from "../transformers/ITypiaProject";
 
 import { CheckerProgrammer } from "./CheckerProgrammer";
 import { IsProgrammer } from "./IsProgrammer";
@@ -13,10 +13,11 @@ import { FunctionImporter } from "./helpers/FunctionImporter";
 import { OptionPredicator } from "./helpers/OptionPredicator";
 import { check_everything } from "./internal/check_everything";
 import { check_object } from "./internal/check_object";
+import { ImportProgrammer } from "./ImportProgrammer";
 
 export namespace ValidateProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (equals: boolean) =>
     (type: ts.Type, name?: string) => {
@@ -163,7 +164,7 @@ export namespace ValidateProgrammer {
 
 const combine =
   (equals: boolean) =>
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (importer: FunctionImporter): CheckerProgrammer.IConfig.Combiner =>
   (explore: CheckerProgrammer.IExplore) => {
     if (explore.tracable === false)
@@ -204,7 +205,9 @@ const combine =
   };
 
 const validate_object =
-  (equals: boolean) => (project: IProject) => (importer: FunctionImporter) =>
+  (equals: boolean) =>
+  (project: ITypiaProject) =>
+  (importer: ImportProgrammer) =>
     check_object({
       equals,
       undefined: true,
@@ -215,9 +218,11 @@ const validate_object =
         create_report_call()(
           ts.factory.createAdd(
             ts.factory.createIdentifier("_path"),
-            ts.factory.createCallExpression(importer.use("join"), undefined, [
-              ts.factory.createIdentifier("key"),
-            ]),
+            ts.factory.createCallExpression(
+              importer.internal("$access_expression"),
+              undefined,
+              [ts.factory.createIdentifier("key")],
+            ),
           ),
           "undefined",
           value,
@@ -234,7 +239,7 @@ const validate_object =
 
 const joiner =
   (equals: boolean) =>
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (importer: FunctionImporter): CheckerProgrammer.IConfig.IJoiner => ({
     object: validate_object(equals)(project)(importer),
     array: (input, arrow) =>

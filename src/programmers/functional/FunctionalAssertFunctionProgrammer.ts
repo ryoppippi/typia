@@ -3,7 +3,7 @@ import ts from "typescript";
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { StringUtil } from "../../utils/StringUtil";
 
@@ -14,7 +14,7 @@ import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalAssertFunctionProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (

@@ -10,10 +10,10 @@ export class ImportProgrammer {
     return ts.factory.createIdentifier(asset.default);
   }
 
-  public allStart(props: ImportProgrammer.IProps): ts.Identifier {
+  public namespace(props: ImportProgrammer.IProps): ts.Identifier {
     const asset: Asset = this.take(props);
-    asset.allStart ??= alias(props.name);
-    return ts.factory.createIdentifier(asset.allStart);
+    asset.namespace ??= alias(props.name);
+    return ts.factory.createIdentifier(asset.namespace);
   }
 
   public instance(props: ImportProgrammer.IProps): ts.Identifier {
@@ -22,10 +22,14 @@ export class ImportProgrammer {
     return ts.factory.createIdentifier(alias(props.name));
   }
 
+  public internal(name: string): ts.Identifier {
+    return this.instance({ library: `typia/lib/internal/${name}`, name });
+  }
+
   public toStatements(): ts.ImportDeclaration[] {
     const statements: ts.ImportDeclaration[] = [];
     for (const asset of this.assets_.values()) {
-      if (asset.allStart !== null)
+      if (asset.namespace !== null)
         statements.push(
           ts.factory.createImportDeclaration(
             undefined,
@@ -33,7 +37,7 @@ export class ImportProgrammer {
               false,
               undefined,
               ts.factory.createNamespaceImport(
-                ts.factory.createIdentifier(asset.allStart),
+                ts.factory.createIdentifier(asset.namespace),
               ),
             ),
             ts.factory.createStringLiteral(asset.library),
@@ -72,7 +76,7 @@ export class ImportProgrammer {
     return MapUtil.take(this.assets_)(props.library, () => ({
       library: props.library,
       default: null,
-      allStart: null,
+      namespace: null,
       instances: new Set(),
     }));
   }
@@ -86,7 +90,7 @@ export namespace ImportProgrammer {
 interface Asset {
   library: string;
   default: string | null;
-  allStart: string | null;
+  namespace: string | null;
   instances: Set<string>;
 }
 

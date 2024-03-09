@@ -3,6 +3,9 @@ import { MetadataAtomic } from "../../../schemas/metadata/MetadataAtomic";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
+/**
+ * @internal
+ */
 export const emend_metadata_atomics = (meta: Metadata) => {
   // ATOMICS
   for (const a of meta.atomics) {
@@ -39,6 +42,9 @@ export const emend_metadata_atomics = (meta: Metadata) => {
   }
 };
 
+/**
+ * @internal
+ */
 const is_not_pure = (atomic: MetadataAtomic): boolean =>
   atomic.tags.length !== 0 &&
   atomic.tags.every(

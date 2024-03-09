@@ -4,7 +4,7 @@ import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { StringUtil } from "../../utils/StringUtil";
 
@@ -15,7 +15,7 @@ import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalValidateParametersProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
@@ -72,7 +72,7 @@ export namespace FunctionalValidateParametersProgrammer {
     };
 
   export const writeStatements =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (equals: boolean) =>
     (declaration: ts.FunctionDeclaration): ts.Statement[] => {

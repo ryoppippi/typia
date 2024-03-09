@@ -8,17 +8,18 @@ import { TypeFactory } from "../../factories/TypeFactory";
 
 import { Metadata } from "../../schemas/metadata/Metadata";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { TransformerError } from "../../transformers/TransformerError";
 
 import { AssertProgrammer } from "../AssertProgrammer";
 import { FunctionImporter } from "../helpers/FunctionImporter";
 import { HttpMetadataUtil } from "../helpers/HttpMetadataUtil";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace HttpParameterProgrammer {
   export const write =
-    (project: IProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (project: ITypiaProject) =>
+    (importer: ImportProgrammer) =>
     (type: ts.Type, name?: string): ts.ArrowFunction => {
       const result = MetadataFactory.analyze(
         project.checker,
@@ -33,7 +34,6 @@ export namespace HttpParameterProgrammer {
         throw TransformerError.from(modulo.getText())(result.errors);
 
       const atomic = [...HttpMetadataUtil.atomics(result.data)][0]!;
-      const importer: FunctionImporter = new FunctionImporter(modulo.getText());
       const block: ts.Statement[] = [
         StatementFactory.constant(
           "assert",
@@ -46,9 +46,11 @@ export namespace HttpParameterProgrammer {
         ),
         StatementFactory.constant(
           "value",
-          ts.factory.createCallExpression(importer.use(atomic), undefined, [
-            ts.factory.createIdentifier("input"),
-          ]),
+          ts.factory.createCallExpression(
+            importer.internal(`$httpParam_${atomic}`),
+            undefined,
+            [ts.factory.createIdentifier("input")],
+          ),
         ),
         ts.factory.createReturnStatement(
           ts.factory.createCallExpression(

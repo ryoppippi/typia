@@ -4,21 +4,22 @@ import { ExpressionFactory } from "../../factories/ExpressionFactory";
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { FunctionImporter } from "../helpers/FunctionImporter";
 import { IExpressionEntry } from "../helpers/IExpressionEntry";
 import { check_dynamic_key } from "./check_dynamic_key";
 import { check_everything } from "./check_everything";
 import { check_object } from "./check_object";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 /**
  * @internal
  */
 export const check_dynamic_properties =
   (props: check_object.IProps) =>
-  (project: IProject) =>
-  (importer: FunctionImporter) =>
+  (project: ITypiaProject) =>
+  (importer: ImportProgrammer) =>
   (
     input: ts.Expression,
     regular: IExpressionEntry<ts.Expression>[],
@@ -41,7 +42,7 @@ export const check_dynamic_properties =
               length,
             )
           : ts.factory.createCallExpression(
-              importer.use("is_between"),
+              importer.internal("$is_between"),
               [],
               [
                 length,
@@ -101,7 +102,7 @@ export const check_dynamic_properties =
 
 const check_dynamic_property =
   (props: check_object.IProps) =>
-  (project: IProject) =>
+  (project: ITypiaProject) =>
   (importer: FunctionImporter) =>
   (
     input: ts.Expression,

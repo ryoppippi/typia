@@ -7,7 +7,7 @@ import { MetadataFactory } from "./MetadataFactory";
 
 export namespace MetadataTypeTagFactory {
   export const analyze =
-    (errors: MetadataFactory.IError[]) =>
+    ({ errors }: MetadataFactory.IContext) =>
     (type: "boolean" | "bigint" | "number" | "string" | "array") =>
     (
       objects: MetadataObject[],

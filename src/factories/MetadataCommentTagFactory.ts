@@ -5,7 +5,6 @@ import { Metadata } from "../schemas/metadata/Metadata";
 
 import { Writable } from "../typings/Writable";
 
-import { FormatCheatSheet } from "../tags/internal/FormatCheatSheet";
 import { MetadataFactory } from "./MetadataFactory";
 import { MetadataTypeTagFactory } from "./MetadataTypeTagFactory";
 
@@ -17,8 +16,8 @@ import { MetadataTypeTagFactory } from "./MetadataTypeTagFactory";
 export namespace MetadataCommentTagFactory {
   export const analyze =
     (errors: MetadataFactory.IError[]) =>
-    (metadata: Metadata) =>
     (
+      metadata: Metadata,
       commentList: ts.JSDocTagInfo[],
       explore: MetadataFactory.IExplore,
     ): void => {

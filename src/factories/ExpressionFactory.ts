@@ -1,6 +1,7 @@
 import ts from "typescript";
 
 import { RandomGenerator } from "../utils/RandomGenerator";
+import { ImportProgrammer } from "../programmers/ImportProgrammer";
 
 export namespace ExpressionFactory {
   export const number = (value: number) =>
@@ -118,7 +119,11 @@ export namespace ExpressionFactory {
       printer.printNode(ts.EmitHint.Expression, input, input.getSourceFile());
 
   export const transpile =
-    (context: ts.TransformationContext) => (script: string) => {
+    (props: {
+      context: ts.TransformationContext;
+      importer: ImportProgrammer;
+    }) =>
+    (script: string) => {
       const file: ts.SourceFile = ts.createSourceFile(
         `${RandomGenerator.uuid()}.ts`,
         script,
@@ -138,10 +143,32 @@ export namespace ExpressionFactory {
       return (input: ts.Expression): ts.Expression => {
         const visitor = (node: ts.Node): ts.Node => {
           if (ts.isIdentifier(node) && node.text === "$input") return input;
+          else if (
+            ts.isCallExpression(node) &&
+            ts.isIdentifier(node.expression) &&
+            node.arguments.length === 2 &&
+            ts.isStringLiteral(node.arguments[0]!) &&
+            ts.isStringLiteral(node.arguments[1]!)
+          )
+            if (node.expression.text === "$importInstance")
+              return props.importer.instance({
+                library: node.arguments[0].getText(),
+                name: node.arguments[1].getText(),
+              });
+            else if (node.expression.text === "$importNamespace")
+              return props.importer.namespace({
+                library: node.arguments[0].getText(),
+                name: node.arguments[1].getText(),
+              });
+            else if (node.expression.text === "$importDefault")
+              return props.importer.default({
+                library: node.arguments[0].getText(),
+                name: node.arguments[1].getText(),
+              });
           return ts.visitEachChild(
             (ts.factory as any).cloneNode(node),
             visitor,
-            context,
+            props.context,
           );
         };
         return visitor(statement.expression) as ts.Expression;

@@ -2,7 +2,7 @@ import ts from "typescript";
 
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { IsProgrammer } from "../IsProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
@@ -11,7 +11,7 @@ import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace FunctionalIsParametersProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (equals: boolean) =>
     (
@@ -48,7 +48,7 @@ export namespace FunctionalIsParametersProgrammer {
     };
 
   export const writeStatements =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression) =>
     (equals: boolean) =>
     (declaration: ts.FunctionDeclaration): ts.Statement[] =>

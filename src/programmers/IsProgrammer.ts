@@ -8,7 +8,7 @@ import { ValueFactory } from "../factories/ValueFactory";
 
 import { MetadataObject } from "../schemas/metadata/MetadataObject";
 
-import { IProject } from "../transformers/IProject";
+import { ITypiaProject } from "../transformers/ITypiaProject";
 
 import { CheckerProgrammer } from "./CheckerProgrammer";
 import { FunctionImporter } from "./helpers/FunctionImporter";
@@ -21,7 +21,7 @@ import { feature_object_entries } from "./internal/feature_object_entries";
 export namespace IsProgrammer {
   export const configure =
     (options?: Partial<CONFIG.IOptions>) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter): CheckerProgrammer.IConfig => ({
       prefix: "$i",
       equals: !!options?.object,
@@ -98,7 +98,7 @@ export namespace IsProgrammer {
         WRITERS
     ----------------------------------------------------------- */
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (modulo: ts.LeftHandSideExpression, disable?: boolean) =>
     (equals: boolean) => {
       const importer: FunctionImporter =
@@ -171,7 +171,7 @@ export namespace IsProgrammer {
     };
 
   export const write_function_statements =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (collection: MetadataCollection) => {
       const config = configure()(project)(importer);
@@ -203,11 +203,14 @@ export namespace IsProgrammer {
   /* -----------------------------------------------------------
         DECODERS
     ----------------------------------------------------------- */
-  export const decode = (project: IProject) => (importer: FunctionImporter) =>
-    CheckerProgrammer.decode(project)(configure()(project)(importer))(importer);
+  export const decode =
+    (project: ITypiaProject) => (importer: FunctionImporter) =>
+      CheckerProgrammer.decode(project)(configure()(project)(importer))(
+        importer,
+      );
 
   export const decode_object =
-    (project: IProject) => (importer: FunctionImporter) =>
+    (project: ITypiaProject) => (importer: FunctionImporter) =>
       CheckerProgrammer.decode_object(configure()(project)(importer))(importer);
 
   export const decode_to_json =

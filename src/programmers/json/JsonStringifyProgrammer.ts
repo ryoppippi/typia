@@ -15,7 +15,7 @@ import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { MetadataTuple } from "../../schemas/metadata/MetadataTuple";
 import { MetadataTupleType } from "../../schemas/metadata/MetadataTupleType";
 
-import { IProject } from "../../transformers/IProject";
+import { ITypiaProject } from "../../transformers/ITypiaProject";
 
 import { Atomic } from "../../typings/Atomic";
 
@@ -34,13 +34,14 @@ import { check_native } from "../internal/check_native";
 import { decode_union_object } from "../internal/decode_union_object";
 import { feature_object_entries } from "../internal/feature_object_entries";
 import { wrap_metadata_rest_tuple } from "../internal/wrap_metadata_rest_tuple";
+import { ImportProgrammer } from "../ImportProgrammer";
 
 export namespace JsonStringifyProgrammer {
   /* -----------------------------------------------------------
     WRITER
   ----------------------------------------------------------- */
   export const write =
-    (project: IProject) => (modulo: ts.LeftHandSideExpression) => {
+    (project: ITypiaProject) => (modulo: ts.LeftHandSideExpression) => {
       const importer: FunctionImporter = new FunctionImporter(modulo.getText());
       const config: FeatureProgrammer.IConfig = configure(project)(importer);
 
@@ -91,7 +92,7 @@ export namespace JsonStringifyProgrammer {
         );
 
   const write_tuple_functions =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
@@ -127,7 +128,7 @@ export namespace JsonStringifyProgrammer {
     DECODERS
   ----------------------------------------------------------- */
   const decode =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -495,7 +496,7 @@ export namespace JsonStringifyProgrammer {
       );
 
   const decode_tuple =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -521,9 +522,9 @@ export namespace JsonStringifyProgrammer {
           );
 
   const decode_tuple_inline =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (
       input: ts.Expression,
       tuple: MetadataTupleType,
@@ -562,7 +563,7 @@ export namespace JsonStringifyProgrammer {
           },
         );
         return ts.factory.createCallExpression(
-          importer.use("rest"),
+          importer.internal("$json_stringify_rest"),
           undefined,
           [code],
         );
@@ -571,8 +572,8 @@ export namespace JsonStringifyProgrammer {
     };
 
   const decode_atomic =
-    (project: IProject) =>
-    (importer: FunctionImporter) =>
+    (project: ITypiaProject) =>
+    (importer: ImportProgrammer) =>
     (
       input: ts.Expression,
       type: string,
@@ -580,13 +581,13 @@ export namespace JsonStringifyProgrammer {
     ) => {
       if (type === "string")
         return ts.factory.createCallExpression(
-          importer.use("string"),
+          importer.internal("$json_stringify_string"),
           undefined,
           [input],
         );
       else if (type === "number" && OptionPredicator.numeric(project.options))
         input = ts.factory.createCallExpression(
-          importer.use("number"),
+          importer.internal("$json_stringify_number"),
           undefined,
           [input],
         );
@@ -601,7 +602,7 @@ export namespace JsonStringifyProgrammer {
     };
 
   const decode_constant_string =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter) =>
     (
       input: ts.Expression,
@@ -618,7 +619,7 @@ export namespace JsonStringifyProgrammer {
     };
 
   const decode_to_json =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -664,7 +665,7 @@ export namespace JsonStringifyProgrammer {
           );
 
   const explore_arrays =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (config: FeatureProgrammer.IConfig) =>
     (importer: FunctionImporter) =>
     (
@@ -822,7 +823,7 @@ export namespace JsonStringifyProgrammer {
   const PREFIX = "$s";
 
   const configure =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: FunctionImporter): FeatureProgrammer.IConfig => {
       const config: FeatureProgrammer.IConfig = {
         types: {
@@ -866,12 +867,12 @@ export namespace JsonStringifyProgrammer {
       )(type);
 
   const create_throw_error =
-    (importer: FunctionImporter) =>
+    (importer: ImportProgrammer) =>
     (expected: string) =>
     (value: ts.Expression) =>
       ts.factory.createExpressionStatement(
         ts.factory.createCallExpression(
-          importer.use("throws"),
+          importer.internal("$throws"),
           [],
           [
             ts.factory.createObjectLiteralExpression(

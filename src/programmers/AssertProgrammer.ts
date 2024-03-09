@@ -4,7 +4,7 @@ import { IdentifierFactory } from "../factories/IdentifierFactory";
 import { StatementFactory } from "../factories/StatementFactory";
 import { TypeFactory } from "../factories/TypeFactory";
 
-import { IProject } from "../transformers/IProject";
+import { ITypiaProject } from "../transformers/ITypiaProject";
 
 import { CheckerProgrammer } from "./CheckerProgrammer";
 import { IsProgrammer } from "./IsProgrammer";
@@ -14,7 +14,7 @@ import { ImportProgrammer } from "./ImportProgrammer";
 
 export namespace AssertProgrammer {
   export const write =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer) =>
     (props: boolean | { equals: boolean; guard: boolean }) =>
     (type: ts.Type, name?: string, init?: ts.Expression) => {
@@ -140,7 +140,7 @@ export namespace AssertProgrammer {
 
   const combiner =
     (equals: boolean) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer): CheckerProgrammer.IConfig.Combiner =>
     (explore: CheckerProgrammer.IExplore) => {
       if (explore.tracable === false)
@@ -205,7 +205,9 @@ export namespace AssertProgrammer {
     };
 
   const assert_object =
-    (equals: boolean) => (project: IProject) => (importer: ImportProgrammer) =>
+    (equals: boolean) =>
+    (project: ITypiaProject) =>
+    (importer: ImportProgrammer) =>
       check_object({
         equals,
         assert: true,
@@ -216,9 +218,14 @@ export namespace AssertProgrammer {
           create_guard_call(importer)()(
             ts.factory.createAdd(
               ts.factory.createIdentifier("_path"),
-              ts.factory.createCallExpression(importer.use("join"), undefined, [
-                ts.factory.createIdentifier("key"),
-              ]),
+              ts.factory.createCallExpression(
+                importer.instance({
+                  library: "typia/lib/internal/$access_expression",
+                  name: "$access_expression",
+                }),
+                undefined,
+                [ts.factory.createIdentifier("key")],
+              ),
             ),
             "undefined",
             value,
@@ -235,7 +242,7 @@ export namespace AssertProgrammer {
 
   const joiner =
     (equals: boolean) =>
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (importer: ImportProgrammer): CheckerProgrammer.IConfig.IJoiner => ({
       object: assert_object(equals)(project)(importer),
       array: (input, arrow) =>

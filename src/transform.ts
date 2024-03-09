@@ -1,13 +1,13 @@
 import ts from "typescript";
 
 import { FileTransformer } from "./transformers/FileTransformer";
-import { IProject } from "./transformers/IProject";
-import { ITransformOptions } from "./transformers/ITransformOptions";
+import { ITypiaProject } from "./transformers/ITypiaProject";
+import { ITypiaTransformOptions } from "./transformers/ITypiaTransformOptions";
 
 export const transform = (
   program: ts.Program,
-  options: ITransformOptions | undefined,
-  extras: IProject["extras"],
+  options: ITypiaTransformOptions | undefined,
+  extras: ITypiaProject["extras"],
 ): ts.TransformerFactory<ts.SourceFile> => {
   const compilerOptions: ts.CompilerOptions = program.getCompilerOptions();
   const strict: boolean =

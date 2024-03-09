@@ -2,12 +2,12 @@ import ts from "typescript";
 
 import { ProtobufMessageProgrammer } from "../../../programmers/protobuf/ProtobufMessageProgrammer";
 
-import { IProject } from "../../IProject";
+import { ITypiaProject } from "../../ITypiaProject";
 import { TransformerError } from "../../TransformerError";
 
 export namespace ProtobufMessageTransformer {
   export const transform =
-    (project: IProject) =>
+    (project: ITypiaProject) =>
     (expression: ts.CallExpression): ts.Expression => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments || !expression.typeArguments[0])

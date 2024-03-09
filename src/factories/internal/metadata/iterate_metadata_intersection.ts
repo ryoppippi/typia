@@ -15,10 +15,7 @@ import { iterate_metadata } from "./iterate_metadata";
 import { iterate_metadata_array } from "./iterate_metadata_array";
 
 export const iterate_metadata_intersection =
-  (checker: ts.TypeChecker) =>
-  (options: MetadataFactory.IOptions) =>
-  (collection: MetadataCollection) =>
-  (errors: MetadataFactory.IError[]) =>
+  (ctx: MetadataFactory.IContext) =>
   (
     meta: Metadata,
     type: ts.Type,
@@ -29,8 +26,8 @@ export const iterate_metadata_intersection =
       type.types.every(
         (child) =>
           (child.getFlags() & ts.TypeFlags.Object) !== 0 &&
-          !checker.isArrayType(child) &&
-          !checker.isTupleType(child),
+          !ctx.checker.isArrayType(child) &&
+          !ctx.checker.isTupleType(child),
       )
     )
       return false;
@@ -41,10 +38,15 @@ export const iterate_metadata_intersection =
     const children: Metadata[] = [
       ...new Map(
         type.types.map((t) => {
-          const m: Metadata = explore_metadata(checker)({
-            ...options,
-            absorb: true,
-          })(fakeCollection)(fakeErrors)(t, {
+          const m: Metadata = explore_metadata({
+            ...ctx,
+            options: {
+              ...ctx.options,
+              absorb: true,
+            },
+            collection: fakeCollection,
+            errors: fakeErrors,
+          })(t, {
             ...explore,
             aliased: false,
           });
@@ -53,17 +55,13 @@ export const iterate_metadata_intersection =
       ).values(),
     ];
     if (fakeErrors.length) {
-      errors.push(...fakeErrors);
+      ctx.errors.push(...fakeErrors);
       return true;
     }
 
     // ONLY ONE CHILD AFTER REMOVING DUPLICATES
     if (children.length === 1) {
-      iterate_metadata(checker)(options)(collection)(errors)(
-        meta,
-        type.types[0]!,
-        explore,
-      );
+      iterate_metadata(ctx)(meta, type.types[0]!, explore);
       return true;
     } else if (children.every((c) => c.objects.length === c.size()))
       return false;
@@ -134,7 +132,7 @@ export const iterate_metadata_intersection =
       atomics.size + arrays.size > 1 ||
       individuals.length + objects.length + constants.length !== children.length
     ) {
-      errors.push({
+      ctx.errors.push({
         name: children.map((c) => c.getName()).join(" & "),
         explore: { ...explore },
         messages: ["nonsensible intersection"],
@@ -196,7 +194,7 @@ export const iterate_metadata_intersection =
     else if (target === "array") {
       const name: string = arrays.values().next().value;
       if (!meta.arrays.some((a) => a.type.name === name)) {
-        iterate_metadata_array(checker)(options)(collection)(errors)(
+        iterate_metadata_array(ctx)(
           meta,
           type.types[individuals.find((i) => i[0].arrays.length === 1)![1]]!,
           {
@@ -210,7 +208,7 @@ export const iterate_metadata_intersection =
 
     // ASSIGN TAGS
     if (objects.length) {
-      const tags: IMetadataTypeTag[] = MetadataTypeTagFactory.analyze(errors)(
+      const tags: IMetadataTypeTag[] = MetadataTypeTagFactory.analyze(ctx)(
         target,
       )(objects.map((om) => om.objects).flat(), explore);
       if (tags.length)

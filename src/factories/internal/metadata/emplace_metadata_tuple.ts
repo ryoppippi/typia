@@ -7,34 +7,34 @@ import { Writable } from "../../../typings/Writable";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
-import { MetadataCollection } from "../../MetadataCollection";
 import { MetadataFactory } from "../../MetadataFactory";
 import { explore_metadata } from "./explore_metadata";
 
+/**
+ * @internal
+ */
 export const emplace_metadata_tuple =
-  (checker: ts.TypeChecker) =>
-  (options: MetadataFactory.IOptions) =>
-  (collection: MetadataCollection) =>
-  (errors: MetadataFactory.IError[]) =>
+  (ctx: MetadataFactory.IContext) =>
   (
     type: ts.TupleType,
     nullable: boolean,
     explore: MetadataFactory.IExplore,
   ): MetadataTupleType => {
     // CHECK EXISTENCE
-    const [tuple, newbie, closure] = collection.emplaceTuple(checker, type);
+    const [tuple, newbie, closure] = ctx.collection.emplaceTuple(
+      ctx.checker,
+      type,
+    );
     ArrayUtil.add(tuple.nullables, nullable);
     if (newbie === false) return tuple;
 
     // CONSTRUCT ELEMENT TYPES
     const flagList: readonly ts.ElementFlags[] =
       type.elementFlags ?? (type.target as ts.TupleType)?.elementFlags ?? [];
-    const elements: Metadata[] = checker
+    const elements: Metadata[] = ctx.checker
       .getTypeArguments(type as ts.TypeReference)
       .map((elem, i) => {
-        const child: Metadata = explore_metadata(checker)(options)(collection)(
-          errors,
-        )(elem, {
+        const child: Metadata = explore_metadata(ctx)(elem, {
           ...explore,
           nested: tuple,
           aliased: false,

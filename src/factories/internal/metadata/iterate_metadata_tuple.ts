@@ -6,25 +6,23 @@ import { MetadataTupleType } from "../../../schemas/metadata/MetadataTupleType";
 
 import { ArrayUtil } from "../../../utils/ArrayUtil";
 
-import { MetadataCollection } from "../../MetadataCollection";
 import { MetadataFactory } from "../../MetadataFactory";
 import { emplace_metadata_tuple } from "./emplace_metadata_tuple";
 
 export const iterate_metadata_tuple =
-  (checker: ts.TypeChecker) =>
-  (options: MetadataFactory.IOptions) =>
-  (collection: MetadataCollection) =>
-  (errors: MetadataFactory.IError[]) =>
+  (ctx: MetadataFactory.IContext) =>
   (
     meta: Metadata,
     type: ts.TupleType,
     explore: MetadataFactory.IExplore,
   ): boolean => {
-    if (!checker.isTupleType(type)) return false;
+    if (!ctx.checker.isTupleType(type)) return false;
 
-    const tupleType: MetadataTupleType = emplace_metadata_tuple(checker)(
-      options,
-    )(collection)(errors)(type, meta.nullable, explore);
+    const tupleType: MetadataTupleType = emplace_metadata_tuple(ctx)(
+      type,
+      meta.nullable,
+      explore,
+    );
     ArrayUtil.add(
       meta.tuples,
       MetadataTuple.create({
