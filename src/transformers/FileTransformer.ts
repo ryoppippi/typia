@@ -18,7 +18,7 @@ export namespace FileTransformer {
 
       const props: ITypiaContext = {
         ...project,
-        context,
+        transform: context,
         importer: new ImportProgrammer(),
       };
       file = ts.visitEachChild(
@@ -39,7 +39,7 @@ export namespace FileTransformer {
       ts.visitEachChild(
         try_transform_node(props)(node) ?? node,
         (child) => iterate_node(props)(child),
-        props.context,
+        props.transform,
       );
 
   const try_transform_node =

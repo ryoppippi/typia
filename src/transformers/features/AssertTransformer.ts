@@ -12,8 +12,5 @@ export namespace AssertTransformer {
         : props.guard
         ? "assertGuard"
         : "assert",
-    )(
-      (project) => (importer) =>
-        AssertProgrammer.write(project)(importer)(props),
-    );
+    )((context) => AssertProgrammer.write(context)(props));
 }

@@ -7,12 +7,11 @@ import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { AssertProgrammer } from "../AssertProgrammer";
 import { FunctionalAssertFunctionProgrammer } from "./FunctionalAssertFunctionProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
-import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace FunctionalAssertParametersProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,
@@ -22,9 +21,8 @@ export namespace FunctionalAssertParametersProgrammer {
       const wrapper = FunctionalAssertFunctionProgrammer.errorFactoryWrapper(
         modulo,
       )(declaration.parameters)(init);
-      const { async } = FunctionalGeneralProgrammer.getReturnType(
-        project.checker,
-      )(declaration);
+      const { async } =
+        FunctionalGeneralProgrammer.getReturnType(context)(declaration);
       return ts.factory.createArrowFunction(
         async
           ? [ts.factory.createModifier(ts.SyntaxKind.AsyncKeyword)]

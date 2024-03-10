@@ -120,7 +120,7 @@ export namespace ExpressionFactory {
 
   export const transpile =
     (props: {
-      context: ts.TransformationContext;
+      transform: ts.TransformationContext;
       importer: ImportProgrammer;
     }) =>
     (script: string) => {
@@ -150,8 +150,8 @@ export namespace ExpressionFactory {
             ts.isStringLiteral(node.arguments[0]!) &&
             ts.isStringLiteral(node.arguments[1]!)
           )
-            if (node.expression.text === "$importInstance")
-              return props.importer.instance({
+            if (node.expression.text === "$importDefault")
+              return props.importer.default({
                 library: node.arguments[0].getText(),
                 name: node.arguments[1].getText(),
               });
@@ -160,15 +160,15 @@ export namespace ExpressionFactory {
                 library: node.arguments[0].getText(),
                 name: node.arguments[1].getText(),
               });
-            else if (node.expression.text === "$importDefault")
-              return props.importer.default({
+            else if (node.expression.text === "$importSpecific")
+              return props.importer.specific({
                 library: node.arguments[0].getText(),
                 name: node.arguments[1].getText(),
               });
           return ts.visitEachChild(
             (ts.factory as any).cloneNode(node),
             visitor,
-            props.context,
+            props.transform,
           );
         };
         return visitor(statement.expression) as ts.Expression;

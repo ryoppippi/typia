@@ -1,5 +1,5 @@
 const call = <T extends string>(name: T) =>
-  `$importInstance("typia/lib/internal/$is_format_${name}", "$is_format_${name}")($input)` as const;
+  `$importSpecific("typia/lib/internal/$is_format_${name}", "$is_format_${name}")($input)` as const;
 
 export const FormatCheatSheet = {
   // SPECIAL CHARACTERS

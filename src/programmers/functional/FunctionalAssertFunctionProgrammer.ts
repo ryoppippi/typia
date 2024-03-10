@@ -3,19 +3,16 @@ import ts from "typescript";
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { ITypiaProject } from "../../transformers/ITypiaProject";
-
 import { StringUtil } from "../../utils/StringUtil";
 
 import { AssertProgrammer } from "../AssertProgrammer";
 import { FunctionalAssertParametersProgrammer } from "./FunctionalAssertParametersProgrammer";
 import { FunctionAssertReturnProgrammer } from "./FunctionalAssertReturnProgrammer";
-import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace FunctionalAssertFunctionProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,
@@ -24,8 +21,8 @@ export namespace FunctionalAssertFunctionProgrammer {
     ): ts.ArrowFunction => {
       const wrapper = errorFactoryWrapper(modulo)(declaration.parameters)(init);
       const { async, returns } = FunctionAssertReturnProgrammer.returnStatement(
-        project,
-      )(modulo)(equals)(expression, declaration, wrapper.name);
+        context,
+      )(equals)(expression, declaration, wrapper.name);
       return ts.factory.createArrowFunction(
         async
           ? [ts.factory.createModifier(ts.SyntaxKind.AsyncKeyword)]

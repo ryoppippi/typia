@@ -4,16 +4,14 @@ import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { ITypiaProject } from "../../transformers/ITypiaProject";
-
 import { ValidateProgrammer } from "../ValidateProgrammer";
 import { NotationGeneralProgrammer } from "./NotationGeneralProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace NotationValidateGeneralProgrammer {
   export const write =
     (rename: (str: string) => string) =>
-    (project: ITypiaProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (context: ITypiaContext) =>
     (type: ts.Type, name?: string) =>
       ts.factory.createArrowFunction(
         undefined,
@@ -21,7 +19,7 @@ export namespace NotationValidateGeneralProgrammer {
         [IdentifierFactory.parameter("input", TypeFactory.keyword("any"))],
         ts.factory.createTypeReferenceNode(
           `typia.IValidation<${NotationGeneralProgrammer.returnType(rename)(
-            name ?? TypeFactory.getFullName(project.checker)(type),
+            name ?? TypeFactory.getFullName(context.checker)(type),
           )}>`,
         ),
         undefined,
@@ -29,24 +27,24 @@ export namespace NotationValidateGeneralProgrammer {
           StatementFactory.constant(
             "validate",
             ValidateProgrammer.write({
-              ...project,
+              ...context,
               options: {
-                ...project.options,
+                ...context.options,
                 functional: false,
                 numeric: true,
               },
-            })(modulo)(false)(type, name),
+            })(false)(type, name),
           ),
           StatementFactory.constant(
             "general",
             NotationGeneralProgrammer.write(rename)({
-              ...project,
+              ...context,
               options: {
-                ...project.options,
+                ...context.options,
                 functional: false,
                 numeric: false,
               },
-            })(modulo)(type, name),
+            })(type, name),
           ),
           StatementFactory.constant(
             "output",

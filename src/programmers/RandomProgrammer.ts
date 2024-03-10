@@ -16,98 +16,90 @@ import { MetadataObject } from "../schemas/metadata/MetadataObject";
 import { MetadataTuple } from "../schemas/metadata/MetadataTuple";
 import { MetadataTupleType } from "../schemas/metadata/MetadataTupleType";
 
-import { ITypiaProject } from "../transformers/ITypiaProject";
 import { TransformerError } from "../transformers/TransformerError";
 
 import { Escaper } from "../utils/Escaper";
 
-import { Format } from "../tags";
 import { FunctionImporter } from "./helpers/FunctionImporter";
 import { RandomJoiner } from "./helpers/RandomJoiner";
 import { RandomRanger } from "./helpers/RandomRanger";
 import { random_custom } from "./internal/random_custom";
+import { ITypiaContext } from "../transformers/ITypiaContext";
 
 export namespace RandomProgrammer {
-  export const write =
-    (project: ITypiaProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
-    (init?: ts.Expression) => {
-      const importer: FunctionImporter = new FunctionImporter(modulo.getText());
-      return (type: ts.Type, name?: string) => {
-        // INITIALIZE METADATA
-        const collection: MetadataCollection = new MetadataCollection();
-        const result = MetadataFactory.analyze(
-          project.checker,
-          project.context,
-        )({
-          escape: false,
-          constant: true,
-          absorb: true,
-          validate: (meta) => {
-            const output: string[] = [];
-            if (meta.natives.some((n) => n === "WeakSet"))
-              output.push(`WeakSet is not supported.`);
-            else if (meta.natives.some((n) => n === "WeakMap"))
-              output.push(`WeakMap is not supported.`);
-            return output;
-          },
-        })(collection)(type);
-        if (result.success === false)
-          throw TransformerError.from(`typia.${importer.method}`)(
-            result.errors,
-          );
+  export const write = (context: ITypiaContext) => (init?: ts.Expression) => {
+    return (type: ts.Type, name?: string) => {
+      // INITIALIZE METADATA
+      const collection: MetadataCollection = new MetadataCollection();
+      const result = MetadataFactory.analyze({
+        ...context,
+        collection,
+        escape: false,
+        constant: true,
+        absorb: true,
+        validate: (meta) => {
+          const output: string[] = [];
+          if (meta.natives.some((n) => n === "WeakSet"))
+            output.push(`WeakSet is not supported.`);
+          else if (meta.natives.some((n) => n === "WeakMap"))
+            output.push(`WeakMap is not supported.`);
+          return output;
+        },
+      })(type);
+      if (result.success === false)
+        throw TransformerError.from(`typia.${importer.method}`)(result.errors);
 
-        // GENERATE FUNCTION
-        const functions = {
-          objects: write_object_functions(importer)(collection),
-          arrays: write_array_functions(importer)(collection),
-          tuples: write_tuple_functions(importer)(collection),
-        };
+      // GENERATE FUNCTION
+      const functions = {
+        objects: write_object_functions(importer)(collection),
+        arrays: write_array_functions(importer)(collection),
+        tuples: write_tuple_functions(importer)(collection),
+      };
 
-        const output: ts.Expression = decode(importer)({
-          function: false,
-          recursive: false,
-        })(result.data);
+      const output: ts.Expression = decode(importer)({
+        function: false,
+        recursive: false,
+      })(result.data);
 
-        return ts.factory.createArrowFunction(
+      return ts.factory.createArrowFunction(
+        undefined,
+        undefined,
+        [
+          IdentifierFactory.parameter(
+            "generator",
+            ts.factory.createTypeReferenceNode(
+              "Partial<typia.IRandomGenerator>",
+            ),
+            init ?? ts.factory.createToken(ts.SyntaxKind.QuestionToken),
+          ),
+        ],
+        ts.factory.createImportTypeNode(
+          ts.factory.createLiteralTypeNode(
+            ts.factory.createStringLiteral("typia"),
+          ),
           undefined,
-          undefined,
+          ts.factory.createIdentifier("Resolved"),
           [
-            IdentifierFactory.parameter(
-              "generator",
-              ts.factory.createTypeReferenceNode(
-                "Partial<typia.IRandomGenerator>",
-              ),
-              init ?? ts.factory.createToken(ts.SyntaxKind.QuestionToken),
+            ts.factory.createTypeReferenceNode(
+              name ?? TypeFactory.getFullName(project.checker)(type),
             ),
           ],
-          ts.factory.createImportTypeNode(
-            ts.factory.createLiteralTypeNode(
-              ts.factory.createStringLiteral("typia"),
-            ),
-            undefined,
-            ts.factory.createIdentifier("Resolved"),
-            [
-              ts.factory.createTypeReferenceNode(
-                name ?? TypeFactory.getFullName(project.checker)(type),
-              ),
-            ],
-            false,
-          ),
-          undefined,
-          ts.factory.createBlock(
-            [
-              ...importer.declare(modulo),
-              ...functions.objects,
-              ...functions.arrays,
-              ...functions.tuples,
-              ts.factory.createReturnStatement(output),
-            ],
-            true,
-          ),
-        );
-      };
+          false,
+        ),
+        undefined,
+        ts.factory.createBlock(
+          [
+            ...importer.declare(modulo),
+            ...functions.objects,
+            ...functions.arrays,
+            ...functions.tuples,
+            ts.factory.createReturnStatement(output),
+          ],
+          true,
+        ),
+      );
     };
+  };
 
   const write_object_functions =
     (importer: FunctionImporter) =>

@@ -8,8 +8,5 @@ export namespace NotationValidateGeneralTransformer {
   export const transform = (rename: (str: string) => string) =>
     GenericTransformer.scalar(
       `notations.validate${StringUtil.capitalize(rename.name)}`,
-    )(
-      (project) => (modulo) =>
-        NotationValidateGeneralProgrammer.write(rename)(project)(modulo),
-    );
+    )((context) => NotationValidateGeneralProgrammer.write(rename)(context));
 }

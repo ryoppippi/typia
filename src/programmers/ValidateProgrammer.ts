@@ -14,11 +14,11 @@ import { OptionPredicator } from "./helpers/OptionPredicator";
 import { check_everything } from "./internal/check_everything";
 import { check_object } from "./internal/check_object";
 import { ImportProgrammer } from "./ImportProgrammer";
+import { ITypiaContext } from "../transformers/ITypiaContext";
 
 export namespace ValidateProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (context: ITypiaContext) =>
     (equals: boolean) =>
     (type: ts.Type, name?: string) => {
       const importer: FunctionImporter = new FunctionImporter(modulo.getText());

@@ -10,11 +10,11 @@ import { IsProgrammer } from "../IsProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
 import { FunctionalIsFunctionProgrammer } from "./FunctionalIsFunctionProgrammer";
 import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace FunctionalIsReturnProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

@@ -17,6 +17,7 @@ import { OptionPredicator } from "./helpers/OptionPredicator";
 import { disable_function_importer_declare } from "./helpers/disable_function_importer_declare";
 import { check_object } from "./internal/check_object";
 import { feature_object_entries } from "./internal/feature_object_entries";
+import { ITypiaContext } from "../transformers/ITypiaContext";
 
 export namespace IsProgrammer {
   export const configure =
@@ -97,78 +98,64 @@ export namespace IsProgrammer {
   /* -----------------------------------------------------------
         WRITERS
     ----------------------------------------------------------- */
-  export const write =
-    (project: ITypiaProject) =>
-    (modulo: ts.LeftHandSideExpression, disable?: boolean) =>
-    (equals: boolean) => {
-      const importer: FunctionImporter =
-        disable === <any>{}
-          ? disable_function_importer_declare(
-              new FunctionImporter(modulo.getText()),
-            )
-          : new FunctionImporter(modulo.getText());
+  export const write = (context: ITypiaContext) => (equals: boolean) => {
+    // CONFIGURATION
+    const config: CheckerProgrammer.IConfig = {
+      ...configure({
+        object: check_object({
+          equals,
+          undefined: OptionPredicator.undefined(context.options),
+          assert: true,
+          reduce: ts.factory.createLogicalAnd,
+          positive: ts.factory.createTrue(),
+          superfluous: () => ts.factory.createFalse(),
+        })(context),
+        numeric: OptionPredicator.numeric(context.options),
+      })(context),
+      trace: equals,
+    };
 
-      // CONFIGURATION
-      const config: CheckerProgrammer.IConfig = {
-        ...configure({
-          object: check_object({
-            equals,
-            undefined: OptionPredicator.undefined(project.options),
-            assert: true,
-            reduce: ts.factory.createLogicalAnd,
-            positive: ts.factory.createTrue(),
-            superfluous: () => ts.factory.createFalse(),
-          })(project)(importer),
-          numeric: OptionPredicator.numeric(project.options),
-        })(project)(importer),
-        trace: equals,
-        addition: () => importer.declare(modulo),
-      };
-
-      config.decoder = () => (input, target, explore) => {
+    config.decoder = () => (input, target, explore) => {
+      if (
+        target.size() === 1 &&
+        target.objects.length === 1 &&
+        target.isRequired() === true &&
+        target.nullable === false
+      ) {
+        // ONLY WHEN OBJECT WITH SOME ATOMIC PROPERTIES
+        const obj: MetadataObject = target.objects[0]!;
         if (
-          target.size() === 1 &&
-          target.objects.length === 1 &&
-          target.isRequired() === true &&
-          target.nullable === false
-        ) {
-          // ONLY WHEN OBJECT WITH SOME ATOMIC PROPERTIES
-          const obj: MetadataObject = target.objects[0]!;
-          if (
-            obj._Is_simple(explore.from === "top" ? 0 : 1) &&
-            (equals === false ||
-              OptionPredicator.undefined(project.options) === false)
-          )
-            return ts.factory.createLogicalAnd(
-              ExpressionFactory.isObject({
-                checkNull: true,
-                checkArray: false,
-              })(input),
-              config.joiner.object(
+          obj._Is_simple(explore.from === "top" ? 0 : 1) &&
+          (equals === false ||
+            OptionPredicator.undefined(project.options) === false)
+        )
+          return ts.factory.createLogicalAnd(
+            ExpressionFactory.isObject({
+              checkNull: true,
+              checkArray: false,
+            })(input),
+            config.joiner.object(
+              ts.factory.createAsExpression(input, TypeFactory.keyword("any")),
+              feature_object_entries(config as any)(importer)(obj)(
                 ts.factory.createAsExpression(
                   input,
                   TypeFactory.keyword("any"),
                 ),
-                feature_object_entries(config as any)(importer)(obj)(
-                  ts.factory.createAsExpression(
-                    input,
-                    TypeFactory.keyword("any"),
-                  ),
-                  "top",
-                ),
+                "top",
               ),
-            );
-        }
-        return CheckerProgrammer.decode(project)(config)(importer)(
-          input,
-          target,
-          explore,
-        );
-      };
-
-      // GENERATE CHECKER
-      return CheckerProgrammer.write(project)(config)(importer);
+            ),
+          );
+      }
+      return CheckerProgrammer.decode(project)(config)(importer)(
+        input,
+        target,
+        explore,
+      );
     };
+
+    // GENERATE CHECKER
+    return CheckerProgrammer.write(project)(config)(importer);
+  };
 
   export const write_function_statements =
     (project: ITypiaProject) =>

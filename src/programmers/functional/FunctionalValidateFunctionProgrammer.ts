@@ -7,11 +7,11 @@ import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { FunctionalValidateParametersProgrammer } from "./FunctionalValidateParametersProgrammer";
 import { FunctionalValidateReturnProgrammer } from "./FunctionalValidateReturnProgrammer";
 import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace FunctionalValidateFunctionProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

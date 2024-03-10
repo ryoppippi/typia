@@ -1,17 +1,14 @@
 import ts from "typescript";
-import { ITypiaProject } from "../../ITypiaProject";
 import { TransformerError } from "../../TransformerError";
 import { TypeFactory } from "../../../factories/TypeFactory";
-import { ImportProgrammer } from "../../../programmers/ImportProgrammer";
+import { ITypiaContext } from "../../ITypiaContext";
 
 export namespace FunctionalGenericTransformer {
   export const transform =
     (props: {
       method: string;
       programmer: (
-        project: ITypiaProject,
-      ) => (
-        importer: ImportProgrammer,
+        context: ITypiaContext,
       ) => (
         equals: boolean,
       ) => (
@@ -21,8 +18,7 @@ export namespace FunctionalGenericTransformer {
       ) => ts.Expression;
       equals: boolean;
     }) =>
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (expression: ts.CallExpression) => {
       // CHECK PARAMETER
       if (expression.arguments.length === 0)
@@ -34,14 +30,14 @@ export namespace FunctionalGenericTransformer {
       // GET TYPE INFO
       const type: ts.Type =
         expression.typeArguments && expression.typeArguments[0]
-          ? project.checker.getTypeFromTypeNode(expression.typeArguments[0])
-          : project.checker.getTypeAtLocation(expression.arguments[0]!);
+          ? context.checker.getTypeFromTypeNode(expression.typeArguments[0])
+          : context.checker.getTypeAtLocation(expression.arguments[0]!);
       if (TypeFactory.isFunction(type) === false)
         throw new TransformerError({
           code: `typia.functional.${props.method}`,
           message: `input value is not a function.`,
         });
-      return props.programmer(project)(importer)(props.equals)(
+      return props.programmer(context)(props.equals)(
         expression.arguments[0]!,
         type.symbol!.declarations![0] as ts.FunctionDeclaration,
         expression.arguments[1],

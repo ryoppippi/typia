@@ -12,11 +12,11 @@ import { ValidateProgrammer } from "../ValidateProgrammer";
 import { FunctionalValidateFunctionProgrammer } from "./FunctionalValidateFunctionProgrammer";
 import { FunctionalGeneralProgrammer } from "./internal/FunctionalGeneralProgrammer";
 import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace FunctionalValidateParametersProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

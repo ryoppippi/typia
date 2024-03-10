@@ -11,20 +11,21 @@ import { IsProgrammer } from "./IsProgrammer";
 import { OptionPredicator } from "./helpers/OptionPredicator";
 import { check_object } from "./internal/check_object";
 import { ImportProgrammer } from "./ImportProgrammer";
+import { ITypiaContext } from "../transformers/ITypiaContext";
 
 export namespace AssertProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (props: boolean | { equals: boolean; guard: boolean }) =>
     (type: ts.Type, name?: string, init?: ts.Expression) => {
       // TO SUPPORT LEGACY FEATURE
       if (typeof props === "boolean") props = { equals: props, guard: false };
 
-      const is: ts.ArrowFunction = IsProgrammer.write(project)(importer)(
-        props.equals,
-      )(type, name ?? TypeFactory.getFullName(project.checker)(type));
-      const assert: ts.ArrowFunction = CheckerProgrammer.write(project)({
+      const is: ts.ArrowFunction = IsProgrammer.write(context)(props.equals)(
+        type,
+        name ?? TypeFactory.getFullName(context.checker)(type),
+      );
+      const assert: ts.ArrowFunction = CheckerProgrammer.write(context)({
         prefix: "$a",
         path: true,
         trace: true,
@@ -219,7 +220,7 @@ export namespace AssertProgrammer {
             ts.factory.createAdd(
               ts.factory.createIdentifier("_path"),
               ts.factory.createCallExpression(
-                importer.instance({
+                importer.specific({
                   library: "typia/lib/internal/$access_expression",
                   name: "$access_expression",
                 }),
@@ -285,7 +286,7 @@ export namespace AssertProgrammer {
       value: ts.Expression,
     ): ts.Expression =>
       ts.factory.createCallExpression(
-        importer.instance({
+        importer.specific({
           library: "typia/lib/internal/$guard",
           name: "$guard,",
         }),

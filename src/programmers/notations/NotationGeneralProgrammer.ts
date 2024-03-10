@@ -25,6 +25,7 @@ import { UnionExplorer } from "../helpers/UnionExplorer";
 import { decode_union_object } from "../internal/decode_union_object";
 import { wrap_metadata_rest_tuple } from "../internal/wrap_metadata_rest_tuple";
 import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace NotationGeneralProgrammer {
   export const returnType =
@@ -32,9 +33,7 @@ export namespace NotationGeneralProgrammer {
       `typia.${StringUtil.capitalize(rename.name)}Case<${type}>`;
 
   export const write =
-    (rename: (str: string) => string) =>
-    (project: ITypiaProject) =>
-    (modulo: ts.LeftHandSideExpression) => {
+    (rename: (str: string) => string) => (context: ITypiaContext) => {
       const importer: FunctionImporter = new FunctionImporter(modulo.getText());
       return FeatureProgrammer.write(project)({
         ...configure(rename)(project)(importer),

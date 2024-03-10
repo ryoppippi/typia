@@ -22,7 +22,7 @@ export namespace MetadataFactory {
     checker: ts.TypeChecker;
     options: IOptions;
     collection: MetadataCollection;
-    context?: ts.TransformationContext;
+    transform?: ts.TransformationContext;
     importer?: ImportProgrammer;
   }
   export interface IOptions {
@@ -132,9 +132,9 @@ export namespace MetadataFactory {
     (visitor: IValidationVisitor) =>
     (meta: Metadata, explore: IExplore) => {
       const result: string[] = [];
-      if (props.context !== undefined && props.importer !== undefined) {
+      if (props.transform !== undefined && props.importer !== undefined) {
         const r = {
-          context: props.context,
+          context: props.transform,
           importer: props.importer,
         };
         for (const atomic of meta.atomics)

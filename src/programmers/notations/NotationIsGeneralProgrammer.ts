@@ -4,16 +4,14 @@ import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 import { TypeFactory } from "../../factories/TypeFactory";
 
-import { ITypiaProject } from "../../transformers/ITypiaProject";
-
 import { IsProgrammer } from "../IsProgrammer";
 import { NotationGeneralProgrammer } from "./NotationGeneralProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace NotationIsGeneralProgrammer {
   export const write =
     (rename: (str: string) => string) =>
-    (project: ITypiaProject) =>
-    (modulo: ts.LeftHandSideExpression) =>
+    (context: ITypiaContext) =>
     (type: ts.Type, name?: string) =>
       ts.factory.createArrowFunction(
         undefined,
@@ -22,7 +20,7 @@ export namespace NotationIsGeneralProgrammer {
         ts.factory.createUnionTypeNode([
           ts.factory.createTypeReferenceNode(
             NotationGeneralProgrammer.returnType(rename)(
-              name ?? TypeFactory.getFullName(project.checker)(type),
+              name ?? TypeFactory.getFullName(context.checker)(type),
             ),
           ),
           ts.factory.createLiteralTypeNode(ts.factory.createNull()),
@@ -31,18 +29,18 @@ export namespace NotationIsGeneralProgrammer {
         ts.factory.createBlock([
           StatementFactory.constant(
             "is",
-            IsProgrammer.write(project)(modulo)(false)(type, name),
+            IsProgrammer.write(context)(false)(type, name),
           ),
           StatementFactory.constant(
             "general",
             NotationGeneralProgrammer.write(rename)({
-              ...project,
+              ...context,
               options: {
-                ...project.options,
+                ...context.options,
                 functional: false,
                 numeric: false,
               },
-            })(modulo)(type, name),
+            })(type, name),
           ),
           ts.factory.createIfStatement(
             ts.factory.createPrefixUnaryExpression(

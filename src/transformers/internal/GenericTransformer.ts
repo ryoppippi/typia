@@ -1,21 +1,17 @@
 import ts from "typescript";
 
-import { ITypiaProject } from "../ITypiaProject";
 import { TransformerError } from "../TransformerError";
-import { ImportProgrammer } from "../../programmers/ImportProgrammer";
+import { ITypiaContext } from "../ITypiaContext";
 
 export namespace GenericTransformer {
   export const scalar =
     (method: string) =>
     (
       programmer: (
-        project: ITypiaProject,
-      ) => (
-        importer: ImportProgrammer,
+        context: ITypiaContext,
       ) => (type: ts.Type, name: string) => ts.ArrowFunction,
     ) =>
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (expression: ts.CallExpression) => {
       // CHECK PARAMETER
       if (expression.arguments.length === 0)
@@ -28,12 +24,12 @@ export namespace GenericTransformer {
       const [type, node, generic]: [ts.Type, ts.Node, boolean] =
         expression.typeArguments && expression.typeArguments[0]
           ? [
-              project.checker.getTypeFromTypeNode(expression.typeArguments[0]),
+              context.checker.getTypeFromTypeNode(expression.typeArguments[0]),
               expression.typeArguments[0],
               true,
             ]
           : [
-              project.checker.getTypeAtLocation(expression.arguments[0]!),
+              context.checker.getTypeAtLocation(expression.arguments[0]!),
               expression.arguments[0]!,
               false,
             ];
@@ -45,11 +41,11 @@ export namespace GenericTransformer {
 
       // DO TRANSFORM
       return ts.factory.createCallExpression(
-        programmer(project)(importer)(
+        programmer(context)(
           type,
           generic
             ? node.getFullText().trim()
-            : name(project.checker)(type)(node),
+            : name(context.checker)(type)(node),
         ),
         undefined,
         expression.arguments,
@@ -60,17 +56,14 @@ export namespace GenericTransformer {
     (method: string) =>
     (
       programmer: (
-        project: ITypiaProject,
-      ) => (
-        imorter: ImportProgrammer,
+        context: ITypiaContext,
       ) => (
         type: ts.Type,
         name: string,
         init?: ts.Expression,
       ) => ts.ArrowFunction,
     ) =>
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (expression: ts.CallExpression) => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments?.[0])
@@ -81,7 +74,7 @@ export namespace GenericTransformer {
 
       // GET TYPE INFO
       const node: ts.TypeNode = expression.typeArguments[0];
-      const type: ts.Type = project.checker.getTypeFromTypeNode(node);
+      const type: ts.Type = context.checker.getTypeFromTypeNode(node);
 
       if (type.isTypeParameter())
         throw new TransformerError({
@@ -90,7 +83,7 @@ export namespace GenericTransformer {
         });
 
       // DO TRANSFORM
-      return programmer(project)(importer)(
+      return programmer(context)(
         type,
         node.getFullText().trim(),
         expression.arguments[0],

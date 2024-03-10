@@ -2,14 +2,12 @@ import ts from "typescript";
 
 import { RandomProgrammer } from "../../programmers/RandomProgrammer";
 
-import { ITypiaProject } from "../ITypiaProject";
 import { TransformerError } from "../TransformerError";
-import { ImportProgrammer } from "../../programmers/ImportProgrammer";
+import { ITypiaContext } from "../ITypiaContext";
 
 export namespace RandomTransformer {
   export const transform =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (expression: ts.CallExpression): ts.Expression => {
       // CHECK GENERIC ARGUMENT EXISTENCE
       if (!expression.typeArguments?.[0])
@@ -20,7 +18,7 @@ export namespace RandomTransformer {
 
       // GET TYPE INFO
       const node: ts.TypeNode = expression.typeArguments[0];
-      const type: ts.Type = project.checker.getTypeFromTypeNode(node);
+      const type: ts.Type = context.checker.getTypeFromTypeNode(node);
 
       if (type.isTypeParameter())
         throw new TransformerError({
@@ -31,13 +29,13 @@ export namespace RandomTransformer {
       // DO TRANSFORM
       return ts.factory.createCallExpression(
         RandomProgrammer.write({
-          ...project,
+          ...context,
           options: {
-            ...project.options,
+            ...context.options,
             functional: false,
             numeric: false,
           },
-        })(importer)()(type, node.getFullText().trim()),
+        })(type, node.getFullText().trim()),
         undefined,
         expression.arguments.length ? [expression.arguments[0]!] : undefined,
       );

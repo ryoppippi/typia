@@ -16,14 +16,14 @@ export class ImportProgrammer {
     return ts.factory.createIdentifier(asset.namespace);
   }
 
-  public instance(props: ImportProgrammer.IProps): ts.Identifier {
+  public specific(props: ImportProgrammer.IProps): ts.Identifier {
     const asset: Asset = this.take(props);
     asset.instances.add(props.name);
     return ts.factory.createIdentifier(alias(props.name));
   }
 
   public internal(name: string): ts.Identifier {
-    return this.instance({ library: `typia/lib/internal/${name}`, name });
+    return this.specific({ library: `typia/lib/internal/${name}`, name });
   }
 
   public toStatements(): ts.ImportDeclaration[] {

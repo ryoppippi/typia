@@ -5,11 +5,11 @@ import { ITypiaProject } from "../../transformers/ITypiaProject";
 import { FunctionalIsParametersProgrammer } from "./FunctionalIsParametersProgrammer";
 import { FunctionalIsReturnProgrammer } from "./FunctionalIsReturnProgrammer";
 import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace FunctionalIsFunctionProgrammer {
   export const write =
-    (project: ITypiaProject) =>
-    (importer: ImportProgrammer) =>
+    (context: ITypiaContext) =>
     (equals: boolean) =>
     (
       expression: ts.Expression,

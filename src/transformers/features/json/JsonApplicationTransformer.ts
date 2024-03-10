@@ -11,12 +11,12 @@ import { JsonApplicationProgrammer } from "../../../programmers/json/JsonApplica
 
 import { ValidationPipe } from "../../../typings/ValidationPipe";
 
-import { ITypiaProject } from "../../ITypiaProject";
 import { TransformerError } from "../../TransformerError";
+import { ITypiaContext } from "../../ITypiaContext";
 
 export namespace JsonApplicationTransformer {
   export const transform =
-    (project: ITypiaProject) =>
+    (ctx: ITypiaContext) =>
     (expression: ts.CallExpression): ts.Expression => {
       if (!expression.typeArguments?.length)
         throw new TransformerError({
@@ -35,7 +35,7 @@ export namespace JsonApplicationTransformer {
 
       // GET TYPES
       const types: ts.Type[] = top.elements.map((child) =>
-        project.checker.getTypeFromTypeNode(child as ts.TypeNode),
+        ctx.checker.getTypeFromTypeNode(child as ts.TypeNode),
       );
       if (types.some((t) => t.isTypeParameter()))
         throw new TransformerError({
@@ -45,14 +45,14 @@ export namespace JsonApplicationTransformer {
 
       // ADDITIONAL PARAMETERS
       const purpose: "swagger" | "ajv" = get_parameter<"swagger" | "ajv">({
-        checker: project.checker,
+        checker: ctx.checker,
         name: "Purpose",
         is: (str) => str === "swagger" || str === "ajv",
         cast: (str) => str as "swagger" | "ajv",
         default: () => "swagger",
       })(expression.typeArguments[1]);
       const surplus: boolean = get_parameter<boolean>({
-        checker: project.checker,
+        checker: ctx.checker,
         name: "Surplus",
         is: (str) => str === "true" || str === "false",
         cast: (str) => str === "true",
@@ -69,8 +69,8 @@ export namespace JsonApplicationTransformer {
       const results: ValidationPipe<Metadata, MetadataFactory.IError>[] =
         types.map((type) =>
           MetadataFactory.analyze(
-            project.checker,
-            project.context,
+            ctx.checker,
+            ctx.context,
           )({
             escape: true,
             constant: true,

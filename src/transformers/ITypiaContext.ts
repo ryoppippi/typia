@@ -3,6 +3,6 @@ import { ITypiaProject } from "./ITypiaProject";
 import { ImportProgrammer } from "../programmers/ImportProgrammer";
 
 export interface ITypiaContext extends ITypiaProject {
-  context: ts.TransformationContext;
+  transform: ts.TransformationContext;
   importer: ImportProgrammer;
 }
