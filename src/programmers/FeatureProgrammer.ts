@@ -10,7 +10,7 @@ import { Metadata } from "../schemas/metadata/Metadata";
 import { MetadataArray } from "../schemas/metadata/MetadataArray";
 import { MetadataObject } from "../schemas/metadata/MetadataObject";
 
-import { ITypiaProject } from "../transformers/ITypiaProject";
+import { ITypiaContext } from "../transformers/ITypiaContext";
 
 import { CheckerProgrammer } from "./CheckerProgrammer";
 import { FunctionImporter } from "./helpers/FunctionImporter";
@@ -46,9 +46,7 @@ export namespace FeatureProgrammer {
      * Initializer of metadata.
      */
     initializer: (
-      project: ITypiaProject,
-    ) => (
-      importer: FunctionImporter,
+      ctx: ITypiaContext,
     ) => (type: ts.Type) => [MetadataCollection, Metadata];
 
     /**
@@ -199,11 +197,10 @@ export namespace FeatureProgrammer {
         GENERATORS
     ----------------------------------------------------------- */
   export const write =
-    (project: ITypiaProject) =>
+    (ctx: ITypiaContext) =>
     (config: IConfig) =>
-    (importer: FunctionImporter) =>
     (type: ts.Type, name?: string) => {
-      const [collection, meta] = config.initializer(project)(importer)(type);
+      const [collection, meta] = config.initializer(ctx)(type);
 
       // ITERATE OVER ALL METADATA
       const output: ts.ConciseBody = config.decoder()(
@@ -220,8 +217,7 @@ export namespace FeatureProgrammer {
       // RETURNS THE OPTIMAL ARROW FUNCTION
       const functions = {
         objects: (
-          config.generator.objects?.() ??
-          write_object_functions(config)(importer)
+          config.generator.objects?.() ?? write_object_functions(config)
         )(collection),
         unions: (config.generator.unions?.() ?? write_union_functions(config))(
           collection,
@@ -265,7 +261,7 @@ export namespace FeatureProgrammer {
 
   export const write_object_functions =
     (config: IConfig) =>
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (collection: MetadataCollection) =>
       collection
         .objects()
@@ -282,7 +278,7 @@ export namespace FeatureProgrammer {
               undefined,
               config.objector.joiner(
                 ts.factory.createIdentifier("input"),
-                feature_object_entries(config)(importer)(obj)(
+                feature_object_entries(config)(ctx)(obj)(
                   ts.factory.createIdentifier("input"),
                 ),
                 obj,

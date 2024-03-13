@@ -12,7 +12,7 @@ export namespace RandomRanger {
   }
 
   export const length =
-    (coalesce: (method: string) => ts.Expression) =>
+    (coalesce: (p: { name: string; default: string }) => ts.Expression) =>
     (defs: IDefaults) =>
     (acc: length.IAccessors) =>
     (tags: IMetadataTypeTag[]): ts.Expression | undefined => {
@@ -34,10 +34,17 @@ export namespace RandomRanger {
       props.maximum ??= defs.maximum;
       if (props.maximum < props.minimum) (props.maximum as number) += defs.gap;
 
-      return ts.factory.createCallExpression(coalesce("integer"), undefined, [
-        ExpressionFactory.number(props.minimum),
-        ExpressionFactory.number(props.maximum),
-      ]);
+      return ts.factory.createCallExpression(
+        coalesce({
+          name: "integer",
+          default: "$random_integer",
+        }),
+        undefined,
+        [
+          ExpressionFactory.number(props.minimum),
+          ExpressionFactory.number(props.maximum),
+        ],
+      );
     };
   export namespace length {
     export interface IAccessors {

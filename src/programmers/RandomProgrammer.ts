@@ -20,23 +20,26 @@ import { TransformerError } from "../transformers/TransformerError";
 
 import { Escaper } from "../utils/Escaper";
 
-import { FunctionImporter } from "./helpers/FunctionImporter";
 import { RandomJoiner } from "./helpers/RandomJoiner";
 import { RandomRanger } from "./helpers/RandomRanger";
 import { random_custom } from "./internal/random_custom";
 import { ITypiaContext } from "../transformers/ITypiaContext";
+import { FormatCheatSheet } from "../tags/internal/FormatCheatSheet";
+import { ImportProgrammer } from "./ImportProgrammer";
 
 export namespace RandomProgrammer {
-  export const write = (context: ITypiaContext) => (init?: ts.Expression) => {
+  export const write = (ctx: ITypiaContext) => (init?: ts.Expression) => {
     return (type: ts.Type, name?: string) => {
       // INITIALIZE METADATA
       const collection: MetadataCollection = new MetadataCollection();
       const result = MetadataFactory.analyze({
-        ...context,
+        checker: ctx.checker,
+        options: {
+          escape: false,
+          constant: true,
+          absorb: true,
+        },
         collection,
-        escape: false,
-        constant: true,
-        absorb: true,
         validate: (meta) => {
           const output: string[] = [];
           if (meta.natives.some((n) => n === "WeakSet"))
@@ -47,16 +50,16 @@ export namespace RandomProgrammer {
         },
       })(type);
       if (result.success === false)
-        throw TransformerError.from(`typia.${importer.method}`)(result.errors);
+        throw TransformerError.from("typia.random")(result.errors);
 
       // GENERATE FUNCTION
       const functions = {
-        objects: write_object_functions(importer)(collection),
-        arrays: write_array_functions(importer)(collection),
-        tuples: write_tuple_functions(importer)(collection),
+        objects: write_object_functions(ctx)(collection),
+        arrays: write_array_functions(ctx)(collection),
+        tuples: write_tuple_functions(ctx)(collection),
       };
 
-      const output: ts.Expression = decode(importer)({
+      const output: ts.Expression = decode(ctx)({
         function: false,
         recursive: false,
       })(result.data);
@@ -81,7 +84,7 @@ export namespace RandomProgrammer {
           ts.factory.createIdentifier("Resolved"),
           [
             ts.factory.createTypeReferenceNode(
-              name ?? TypeFactory.getFullName(project.checker)(type),
+              name ?? TypeFactory.getFullName(ctx.checker)(type),
             ),
           ],
           false,
@@ -89,7 +92,6 @@ export namespace RandomProgrammer {
         undefined,
         ts.factory.createBlock(
           [
-            ...importer.declare(modulo),
             ...functions.objects,
             ...functions.arrays,
             ...functions.tuples,
@@ -102,7 +104,7 @@ export namespace RandomProgrammer {
   };
 
   const write_object_functions =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
       collection.objects().map((obj, i) =>
         StatementFactory.constant(
@@ -124,8 +126,8 @@ export namespace RandomProgrammer {
             ],
             TypeFactory.keyword("any"),
             undefined,
-            RandomJoiner.object(COALESCE(importer))(
-              decode(importer)({
+            RandomJoiner.object(coalesce(ctx.importer))(
+              decode(ctx)({
                 recursive: obj.recursive,
                 function: true,
               }),
@@ -135,7 +137,7 @@ export namespace RandomProgrammer {
       );
 
   const write_array_functions =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
       collection
         .arrays()
@@ -164,8 +166,8 @@ export namespace RandomProgrammer {
               ],
               TypeFactory.keyword("any"),
               undefined,
-              RandomJoiner.array(COALESCE(importer))(
-                decode(importer)({
+              RandomJoiner.array(coalesce(ctx.importer))(
+                decode(ctx)({
                   recursive: true,
                   function: true,
                 }),
@@ -178,7 +180,7 @@ export namespace RandomProgrammer {
         );
 
   const write_tuple_functions =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (collection: MetadataCollection): ts.VariableStatement[] =>
       collection
         .tuples()
@@ -204,7 +206,7 @@ export namespace RandomProgrammer {
               TypeFactory.keyword("any"),
               undefined,
               RandomJoiner.tuple(
-                decode(importer)({
+                decode(ctx)({
                   function: true,
                   recursive: true,
                 }),
@@ -217,7 +219,7 @@ export namespace RandomProgrammer {
         DECODERS
     ----------------------------------------------------------- */
   const decode =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (explore: IExplore) =>
     (meta: Metadata): ts.Expression => {
       const expressions: ts.Expression[] = [];
@@ -236,59 +238,64 @@ export namespace RandomProgrammer {
 
       // ATOMIC VARIABLES
       for (const template of meta.templates)
-        expressions.push(decode_template(importer)(explore)(template));
+        expressions.push(decode_template(ctx)(explore)(template));
       for (const atomic of meta.atomics)
-        if (atomic.type === "boolean")
-          expressions.push(decode_boolean(importer));
+        if (atomic.type === "boolean") expressions.push(decode_boolean(ctx));
         else if (atomic.type === "number")
-          expressions.push(...decode_number(importer)(atomic));
+          expressions.push(...decode_number(ctx)(atomic));
         else if (atomic.type === "string")
-          expressions.push(...decode_string(importer)(atomic));
+          expressions.push(...decode_string(ctx)(atomic));
         else if (atomic.type === "bigint")
-          expressions.push(...decode_bigint(importer)(atomic));
+          expressions.push(...decode_bigint(ctx)(atomic));
 
       // INSTANCE TYPES
       if (meta.escaped)
-        expressions.push(decode(importer)(explore)(meta.escaped.returns));
+        expressions.push(decode(ctx)(explore)(meta.escaped.returns));
       for (const array of meta.arrays)
-        expressions.push(...decode_array(importer)(explore)(array));
+        expressions.push(...decode_array(ctx)(explore)(array));
       for (const tuple of meta.tuples)
-        expressions.push(decode_tuple(importer)(explore)(tuple));
-      for (const o of meta.objects)
-        expressions.push(decode_object(importer)(explore)(o));
+        expressions.push(decode_tuple(ctx)(explore)(tuple));
+      for (const o of meta.objects) expressions.push(decode_object(explore)(o));
       for (const native of meta.natives)
-        expressions.push(decode_native(importer)(native));
+        expressions.push(decode_native(ctx)(native));
       for (const set of meta.sets)
-        expressions.push(decode_set(importer)(explore)(set));
+        expressions.push(decode_set(ctx)(explore)(set));
       for (const map of meta.maps)
-        expressions.push(decode_map(importer)(explore)(map));
+        expressions.push(decode_map(ctx)(explore)(map));
 
       // PICK UP A TYPE
       if (expressions.length === 1) return expressions[0]!;
       return ts.factory.createCallExpression(
-        ts.factory.createCallExpression(importer.use("pick"), undefined, [
-          ts.factory.createArrayLiteralExpression(
-            expressions.map((expr) =>
-              ts.factory.createArrowFunction(
-                undefined,
-                undefined,
-                [],
-                undefined,
-                undefined,
-                expr,
+        ts.factory.createCallExpression(
+          ctx.importer.internal("$random_pick"),
+          undefined,
+          [
+            ts.factory.createArrayLiteralExpression(
+              expressions.map((expr) =>
+                ts.factory.createArrowFunction(
+                  undefined,
+                  undefined,
+                  [],
+                  undefined,
+                  undefined,
+                  expr,
+                ),
               ),
+              true,
             ),
-            true,
-          ),
-        ]),
+          ],
+        ),
         undefined,
         undefined,
       );
     };
 
-  const decode_boolean = (importer: FunctionImporter) =>
+  const decode_boolean = (ctx: ITypiaContext) =>
     ts.factory.createCallExpression(
-      COALESCE(importer)("boolean"),
+      coalesce(ctx.importer)({
+        name: "boolean",
+        default: "$random_boolean",
+      }),
       undefined,
       undefined,
     );
@@ -303,15 +310,13 @@ export namespace RandomProgrammer {
       : ExpressionFactory.bigint(Number(value));
 
   const decode_template =
-    (importer: FunctionImporter) =>
-    (explore: IExplore) =>
-    (template: Metadata[]) =>
+    (ctx: ITypiaContext) => (explore: IExplore) => (template: Metadata[]) =>
       TemplateFactory.generate(
-        template.map((meta) => decode(importer)(explore)(meta)),
+        template.map((meta) => decode(ctx)(explore)(meta)),
       );
 
   const decode_number =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (atomic: MetadataAtomic): ts.Expression[] =>
       (atomic.tags.length ? atomic.tags : [[]]).map((tags) => {
         const type = tags.find(
@@ -327,15 +332,21 @@ export namespace RandomProgrammer {
           ? "uint"
           : "double";
         const multiply = tags.find((t) => t.kind === "multipleOf");
-        return random_custom(COALESCE(importer))("number")(tags)(
+        return random_custom("number")(tags)(
           RandomRanger.number({
             type,
             transform: (value) => ExpressionFactory.number(value),
             setter: (args) =>
               ts.factory.createCallExpression(
                 type !== "double" || multiply !== undefined
-                  ? COALESCE(importer)("integer")
-                  : COALESCE(importer)("number"),
+                  ? coalesce(ctx.importer)({
+                      name: "integer",
+                      default: "$random_integer",
+                    })
+                  : coalesce(ctx.importer)({
+                      name: "number",
+                      default: "$random_number",
+                    }),
                 undefined,
                 args.map((val) => ExpressionFactory.number(val)),
               ),
@@ -348,10 +359,10 @@ export namespace RandomProgrammer {
       });
 
   const decode_bigint =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (atomic: MetadataAtomic): ts.Expression[] =>
       (atomic.tags.length ? atomic.tags : [[]]).map((tags) =>
-        random_custom(COALESCE(importer))("bigint")(tags)(
+        random_custom("bigint")(tags)(
           RandomRanger.number({
             type: tags.find(
               (t) =>
@@ -363,7 +374,10 @@ export namespace RandomProgrammer {
             transform: (value) => ExpressionFactory.bigint(value),
             setter: (args) =>
               ts.factory.createCallExpression(
-                COALESCE(importer)("bigint"),
+                coalesce(ctx.importer)({
+                  name: "bigint",
+                  default: "$random_bigint",
+                }),
                 undefined,
                 args.map((value) => ExpressionFactory.bigint(value)),
               ),
@@ -376,26 +390,32 @@ export namespace RandomProgrammer {
       );
 
   const decode_string =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (atomic: MetadataAtomic): ts.Expression[] =>
       (atomic.tags.length ? atomic.tags : [[]]).map((tags) =>
-        random_custom(COALESCE(importer))("string")(tags)(
+        random_custom("string")(tags)(
           (() => {
             for (const t of tags)
               if (t.kind === "format")
                 return ts.factory.createCallExpression(
-                  COALESCE(importer)(emendFormat(t.value)),
+                  coalesce(ctx.importer)({
+                    name: emendFormat(t.value),
+                    default: `$random_format_${t.value}`,
+                  }),
                   undefined,
                   undefined,
                 );
               else if (t.kind === "pattern")
                 return ts.factory.createCallExpression(
-                  COALESCE(importer)("pattern"),
+                  coalesce(ctx.importer)({
+                    name: "pattern",
+                    default: "$random_pattern",
+                  }),
                   undefined,
                   [ts.factory.createIdentifier(`/${t.value}/`)],
                 );
 
-            const tail = RandomRanger.length(COALESCE(importer))({
+            const tail = RandomRanger.length(coalesce(ctx.importer))({
               minimum: 5,
               maximum: 25,
               gap: 5,
@@ -404,7 +424,10 @@ export namespace RandomProgrammer {
               maximum: "maxLength",
             })(tags);
             return ts.factory.createCallExpression(
-              COALESCE(importer)("string"),
+              coalesce(ctx.importer)({
+                name: "string",
+                default: "$random_string",
+              }),
               undefined,
               tail ? [tail] : undefined,
             );
@@ -413,13 +436,13 @@ export namespace RandomProgrammer {
       );
 
   const decode_array =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (explore: IExplore) =>
     (array: MetadataArray): ts.Expression[] => {
       const lengths: Array<ts.Expression | undefined> = (
         array.tags.length ? array.tags : [[]]
       ).map((tags) =>
-        RandomRanger.length(COALESCE(importer))({
+        RandomRanger.length(coalesce(ctx.importer))({
           minimum: 0,
           maximum: 3,
           gap: 3,
@@ -431,12 +454,14 @@ export namespace RandomProgrammer {
       if (array.type.recursive)
         return lengths.map((len) =>
           ts.factory.createCallExpression(
-            ts.factory.createIdentifier(
-              importer.useLocal(PREFIX.array(array.type.index!)),
-            ),
+            ts.factory.createIdentifier(PREFIX.array(array.type.index!)),
             undefined,
             [
-              len ?? COALESCE(importer)("length"),
+              len ??
+                coalesce(ctx.importer)({
+                  name: "length",
+                  default: "$random_length",
+                }),
               ts.factory.createTrue(),
               explore.recursive
                 ? ts.factory.createAdd(
@@ -448,8 +473,8 @@ export namespace RandomProgrammer {
           ),
         );
       return lengths.map((len) => {
-        const expr: ts.Expression = RandomJoiner.array(COALESCE(importer))(
-          decode(importer)(explore),
+        const expr: ts.Expression = RandomJoiner.array(coalesce(ctx.importer))(
+          decode(ctx)(explore),
         )(explore)(len)(array.type.value);
         return explore.recursive
           ? ts.factory.createConditionalExpression(
@@ -470,14 +495,12 @@ export namespace RandomProgrammer {
     };
 
   const decode_tuple =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (explore: IExplore) =>
     (tuple: MetadataTuple): ts.Expression =>
       tuple.type.recursive
         ? ts.factory.createCallExpression(
-            ts.factory.createIdentifier(
-              importer.useLocal(PREFIX.tuple(tuple.type.index!)),
-            ),
+            ts.factory.createIdentifier(PREFIX.tuple(tuple.type.index!)),
             undefined,
             [
               ts.factory.createTrue(),
@@ -489,46 +512,41 @@ export namespace RandomProgrammer {
                 : ExpressionFactory.number(0),
             ],
           )
-        : RandomJoiner.tuple(decode(importer)(explore))(tuple.type.elements);
+        : RandomJoiner.tuple(decode(ctx)(explore))(tuple.type.elements);
 
-  const decode_object =
-    (importer: FunctionImporter) =>
-    (explore: IExplore) =>
-    (object: MetadataObject) =>
-      ts.factory.createCallExpression(
-        ts.factory.createIdentifier(
-          importer.useLocal(PREFIX.object(object.index)),
-        ),
-        undefined,
-        explore.function
-          ? [
-              explore.recursive
-                ? ts.factory.createTrue()
-                : ts.factory.createIdentifier("_recursive"),
-              ts.factory.createConditionalExpression(
-                ts.factory.createIdentifier("_recursive"),
-                undefined,
-                ts.factory.createAdd(
-                  ExpressionFactory.number(1),
-                  ts.factory.createIdentifier("_depth"),
-                ),
-                undefined,
+  const decode_object = (explore: IExplore) => (object: MetadataObject) =>
+    ts.factory.createCallExpression(
+      ts.factory.createIdentifier(PREFIX.object(object.index)),
+      undefined,
+      explore.function
+        ? [
+            explore.recursive
+              ? ts.factory.createTrue()
+              : ts.factory.createIdentifier("_recursive"),
+            ts.factory.createConditionalExpression(
+              ts.factory.createIdentifier("_recursive"),
+              undefined,
+              ts.factory.createAdd(
+                ExpressionFactory.number(1),
                 ts.factory.createIdentifier("_depth"),
               ),
-            ]
-          : undefined,
-      );
+              undefined,
+              ts.factory.createIdentifier("_depth"),
+            ),
+          ]
+        : undefined,
+    );
 
   /* -----------------------------------------------------------
         NATIVE CLASSES
     ----------------------------------------------------------- */
   const decode_set =
-    (importer: FunctionImporter) => (explore: IExplore) => (meta: Metadata) =>
+    (ctx: ITypiaContext) => (explore: IExplore) => (meta: Metadata) =>
       ts.factory.createNewExpression(
         ts.factory.createIdentifier("Set"),
         undefined,
         [
-          decode_array(importer)(explore)(
+          decode_array(ctx)(explore)(
             MetadataArray.create({
               tags: [],
               type: MetadataArrayType.create({
@@ -544,14 +562,12 @@ export namespace RandomProgrammer {
       );
 
   const decode_map =
-    (importer: FunctionImporter) =>
-    (explore: IExplore) =>
-    (map: Metadata.Entry) =>
+    (ctx: ITypiaContext) => (explore: IExplore) => (map: Metadata.Entry) =>
       ts.factory.createNewExpression(
         ts.factory.createIdentifier("Map"),
         undefined,
         [
-          decode_array(importer)(explore)(
+          decode_array(ctx)(explore)(
             MetadataArray.create({
               tags: [],
               type: MetadataArrayType.create({
@@ -585,24 +601,24 @@ export namespace RandomProgrammer {
       );
 
   const decode_native =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (type: string): ts.Expression => {
-      if (type === "Boolean") return decode_boolean(importer);
+      if (type === "Boolean") return decode_boolean(ctx);
       else if (type === "Number")
-        return decode_number(importer)(
+        return decode_number(ctx)(
           MetadataAtomic.create({
             type: "number",
             tags: [],
           }),
         )[0]!;
       else if (type === "String")
-        return decode_string(importer)(
+        return decode_string(ctx)(
           MetadataAtomic.create({
             type: "string",
             tags: [],
           }),
         )[0]!;
-      else if (type === "Date") return decode_native_date(importer);
+      else if (type === "Date") return decode_native_date(ctx);
       else if (
         type === "Uint8Array" ||
         type === "Uint8ClampedArray" ||
@@ -616,12 +632,12 @@ export namespace RandomProgrammer {
         type === "Float32Array" ||
         type === "Float64Array"
       )
-        return decode_native_byte_array(importer)(type);
+        return decode_native_byte_array(ctx)(type);
       else if (type === "ArrayBuffer" || type === "SharedArrayBuffer")
-        return decode_native_array_buffer(importer)(type);
-      else if (type === "DataView") return decode_native_data_view(importer);
-      else if (type === "Blob") return decode_native_blob(importer);
-      else if (type === "File") return decode_native_file(importer);
+        return decode_native_array_buffer(ctx)(type);
+      else if (type === "DataView") return decode_native_data_view(ctx);
+      else if (type === "Blob") return decode_native_blob(ctx);
+      else if (type === "File") return decode_native_file(ctx);
       else
         return ts.factory.createNewExpression(
           ts.factory.createIdentifier(type),
@@ -630,13 +646,16 @@ export namespace RandomProgrammer {
         );
     };
 
-  const decode_native_date = (importer: FunctionImporter) =>
+  const decode_native_date = (ctx: ITypiaContext) =>
     ts.factory.createNewExpression(
       ts.factory.createIdentifier("Date"),
       undefined,
       [
         ts.factory.createCallExpression(
-          COALESCE(importer)("datetime"),
+          coalesce(ctx.importer)({
+            name: "datetime",
+            default: "$random_format_datetime",
+          }),
           undefined,
           [],
         ),
@@ -644,7 +663,7 @@ export namespace RandomProgrammer {
     );
 
   const decode_native_byte_array =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (
       type:
         | "Uint8Array"
@@ -684,7 +703,10 @@ export namespace RandomProgrammer {
         [],
         [
           ts.factory.createCallExpression(
-            COALESCE(importer)("array"),
+            coalesce(ctx.importer)({
+              name: "array",
+              default: "$random_array",
+            }),
             undefined,
             [
               ts.factory.createArrowFunction(
@@ -694,12 +716,12 @@ export namespace RandomProgrammer {
                 TypeFactory.keyword("any"),
                 undefined,
                 ts.factory.createCallExpression(
-                  COALESCE(importer)(
+                  coalesce(ctx.importer)(
                     type === "Float32Array" || type === "Float64Array"
-                      ? "number"
+                      ? { name: "number", default: "$random_number" }
                       : type === "BigInt64Array" || type === "BigUint64Array"
-                      ? "bigint"
-                      : "integer",
+                      ? { name: "bigint", default: "$random_bigint" }
+                      : { name: "integer", default: "$random_integer" },
                   ),
                   undefined,
                   [literal(minimum), literal(maximum)],
@@ -711,31 +733,34 @@ export namespace RandomProgrammer {
       );
     };
 
-  const decode_native_blob = (importer: FunctionImporter) =>
+  const decode_native_blob = (ctx: ITypiaContext) =>
     ts.factory.createNewExpression(
       ts.factory.createIdentifier("Blob"),
       undefined,
       [
         ts.factory.createArrayLiteralExpression(
-          [decode_native_byte_array(importer)("Uint8Array")],
+          [decode_native_byte_array(ctx)("Uint8Array")],
           true,
         ),
       ],
     );
 
-  const decode_native_file = (importer: FunctionImporter) =>
+  const decode_native_file = (ctx: ITypiaContext) =>
     ts.factory.createNewExpression(
       ts.factory.createIdentifier("File"),
       undefined,
       [
         ts.factory.createArrayLiteralExpression(
-          [decode_native_byte_array(importer)("Uint8Array")],
+          [decode_native_byte_array(ctx)("Uint8Array")],
           true,
         ),
         ts.factory.createTemplateExpression(ts.factory.createTemplateHead(""), [
           ts.factory.createTemplateSpan(
             ts.factory.createCallExpression(
-              COALESCE(importer)("string"),
+              coalesce(ctx.importer)({
+                name: "string",
+                default: "$random_string",
+              }),
               undefined,
               [ts.factory.createNumericLiteral(8)],
             ),
@@ -743,7 +768,10 @@ export namespace RandomProgrammer {
           ),
           ts.factory.createTemplateSpan(
             ts.factory.createCallExpression(
-              COALESCE(importer)("string"),
+              coalesce(ctx.importer)({
+                name: "string",
+                default: "$random_string",
+              }),
               undefined,
               [ts.factory.createNumericLiteral(3)],
             ),
@@ -754,19 +782,22 @@ export namespace RandomProgrammer {
     );
 
   const decode_native_array_buffer =
-    (importer: FunctionImporter) =>
+    (ctx: ITypiaContext) =>
     (type: "ArrayBuffer" | "SharedArrayBuffer"): ts.Expression =>
       type === "ArrayBuffer"
-        ? IdentifierFactory.access(
-            decode_native_byte_array(importer)("Uint8Array"),
-          )("buffer")
+        ? IdentifierFactory.access(decode_native_byte_array(ctx)("Uint8Array"))(
+            "buffer",
+          )
         : ExpressionFactory.selfCall(
             ts.factory.createBlock(
               [
                 StatementFactory.constant(
                   "length",
                   ts.factory.createCallExpression(
-                    COALESCE(importer)("integer"),
+                    coalesce(ctx.importer)({
+                      name: "integer",
+                      default: "$random_integer",
+                    }),
                     undefined,
                     [],
                   ),
@@ -795,7 +826,10 @@ export namespace RandomProgrammer {
                     undefined,
                     [
                       ts.factory.createCallExpression(
-                        COALESCE(importer)("array"),
+                        coalesce(ctx.importer)({
+                          name: "array",
+                          default: "$random_array",
+                        }),
                         undefined,
                         [
                           ts.factory.createArrowFunction(
@@ -805,7 +839,10 @@ export namespace RandomProgrammer {
                             TypeFactory.keyword("any"),
                             undefined,
                             ts.factory.createCallExpression(
-                              COALESCE(importer)("integer"),
+                              coalesce(ctx.importer)({
+                                name: "integer",
+                                default: "$random_integer",
+                              }),
                               undefined,
                               [
                                 ExpressionFactory.number(0),
@@ -828,14 +865,14 @@ export namespace RandomProgrammer {
             ),
           );
 
-  const decode_native_data_view = (importer: FunctionImporter) =>
+  const decode_native_data_view = (ctx: ITypiaContext) =>
     ts.factory.createNewExpression(
       ts.factory.createIdentifier("DataView"),
       [],
       [
-        IdentifierFactory.access(
-          decode_native_byte_array(importer)("Uint8Array"),
-        )("buffer"),
+        IdentifierFactory.access(decode_native_byte_array(ctx)("Uint8Array"))(
+          "buffer",
+        ),
       ],
     );
 }
@@ -852,22 +889,23 @@ const PREFIX = {
   tuple: (i: number) => `$rt${i}`,
 };
 
-const COALESCE = (importer: FunctionImporter) => (name: string) =>
-  ExpressionFactory.coalesce(
-    Escaper.variable(name)
-      ? ts.factory.createPropertyAccessChain(
-          ts.factory.createIdentifier("generator"),
-          ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
-          ts.factory.createIdentifier(name),
-        )
-      : ts.factory.createElementAccessChain(
-          ts.factory.createIdentifier("generator"),
-          ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
-          ts.factory.createStringLiteral(name),
-        ),
-  )(IdentifierFactory.access(importer.use("generator"))(name));
+const coalesce =
+  (importer: ImportProgrammer) => (p: { name: string; default: string }) =>
+    ExpressionFactory.coalesce(
+      Escaper.variable(p.name)
+        ? ts.factory.createPropertyAccessChain(
+            ts.factory.createIdentifier("generator"),
+            ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+            ts.factory.createIdentifier(p.name),
+          )
+        : ts.factory.createElementAccessChain(
+            ts.factory.createIdentifier("generator"),
+            ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+            ts.factory.createStringLiteral(p.name),
+          ),
+    )(importer.internal(p.default));
 
-const emendFormat = (key: keyof Format.Validator) =>
+const emendFormat = (key: keyof typeof FormatCheatSheet) =>
   key === "date-time"
     ? "datetime"
     : key

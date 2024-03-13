@@ -14,13 +14,16 @@ export namespace RandomJoiner {
   export type Decoder = (meta: Metadata) => ts.Expression;
 
   export const array =
-    (coalesce: (method: string) => ts.Expression) =>
+    (coalesce: (p: { name: string; default: string }) => ts.Expression) =>
     (decoder: Decoder) =>
     (explore: IExplore) =>
     (length: ts.Expression | undefined) =>
     (item: Metadata): ts.Expression => {
       const generator: ts.Expression = ts.factory.createCallExpression(
-        coalesce("array"),
+        coalesce({
+          name: "array",
+          default: "$random_array",
+        }),
         undefined,
         [
           ts.factory.createArrowFunction(
@@ -54,7 +57,7 @@ export namespace RandomJoiner {
     );
 
   export const object =
-    (coalesce: (method: string) => ts.Expression) =>
+    (coalesce: (p: { name: string; default: string }) => ts.Expression) =>
     (decoder: Decoder) =>
     (obj: MetadataObject): ts.ConciseBody => {
       if (obj.properties.length === 0) return ts.factory.createIdentifier("{}");
@@ -108,30 +111,41 @@ export namespace RandomJoiner {
     };
 
   const dynamicProperty =
-    (coalesce: (method: string) => ts.Expression) =>
+    (coalesce: (p: { name: string; default: string }) => ts.Expression) =>
     (decoder: Decoder) =>
     (p: MetadataProperty) =>
-      ts.factory.createCallExpression(coalesce("array"), undefined, [
-        ts.factory.createArrowFunction(
-          undefined,
-          undefined,
-          [],
-          undefined,
-          undefined,
-          ts.factory.createBinaryExpression(
-            ts.factory.createElementAccessExpression(
-              ts.factory.createIdentifier("output"),
-              decoder(p.key),
+      ts.factory.createCallExpression(
+        coalesce({
+          name: "array",
+          default: "$random_array",
+        }),
+        undefined,
+        [
+          ts.factory.createArrowFunction(
+            undefined,
+            undefined,
+            [],
+            undefined,
+            undefined,
+            ts.factory.createBinaryExpression(
+              ts.factory.createElementAccessExpression(
+                ts.factory.createIdentifier("output"),
+                decoder(p.key),
+              ),
+              ts.factory.createToken(ts.SyntaxKind.EqualsToken),
+              decoder(p.value),
             ),
-            ts.factory.createToken(ts.SyntaxKind.EqualsToken),
-            decoder(p.value),
           ),
-        ),
-        ts.factory.createCallExpression(coalesce("integer"), undefined, [
-          ExpressionFactory.number(0),
-          ExpressionFactory.number(3),
-        ]),
-      ]);
+          ts.factory.createCallExpression(
+            coalesce({
+              name: "integer",
+              default: "$random_integer",
+            }),
+            undefined,
+            [ExpressionFactory.number(0), ExpressionFactory.number(3)],
+          ),
+        ],
+      );
 }
 
 interface IExplore {

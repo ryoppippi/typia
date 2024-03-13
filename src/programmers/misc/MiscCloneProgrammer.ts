@@ -23,17 +23,15 @@ import { UnionExplorer } from "../helpers/UnionExplorer";
 import { decode_union_object } from "../internal/decode_union_object";
 import { wrap_metadata_rest_tuple } from "../internal/wrap_metadata_rest_tuple";
 import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 export namespace MiscCloneProgrammer {
   export const write =
-    (project: ITypiaProject) => (modulo: ts.LeftHandSideExpression) => {
-      const importer: FunctionImporter = new FunctionImporter(modulo.getText());
-      return FeatureProgrammer.write(project)({
-        ...configure(project)(importer),
+    (ctx: ITypiaContext) => (modulo: ts.LeftHandSideExpression) => {
+      return FeatureProgrammer.write(ctx)({
+        ...configure(ctx),
         addition: (collection) => [
-          ...IsProgrammer.write_function_statements(project)(importer)(
-            collection,
-          ),
+          ...IsProgrammer.write_function_statements(ctx)(collection),
           ...importer.declare(modulo),
         ],
       })(importer);

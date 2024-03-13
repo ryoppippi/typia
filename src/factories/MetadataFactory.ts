@@ -24,13 +24,13 @@ export namespace MetadataFactory {
     collection: MetadataCollection;
     transform?: ts.TransformationContext;
     importer?: ImportProgrammer;
+    validate?: Validator;
+    onError?: (node: ts.Node | undefined, message: string) => void;
   }
   export interface IOptions {
     escape: boolean;
     constant: boolean;
     absorb: boolean;
-    validate?: Validator;
-    onError?: (node: ts.Node | undefined, message: string) => void;
   }
   export interface IExplore {
     top: boolean;
@@ -71,8 +71,8 @@ export namespace MetadataFactory {
       iterate_metadata_collection(ctx);
       iterate_metadata_sort(ctx)(meta);
 
-      if (props.options.validate)
-        ctx.errors.push(...validate(props)(props.options.validate)(meta));
+      if (props.validate)
+        ctx.errors.push(...validate(props)(props.validate)(meta));
       return ctx.errors.length
         ? {
             success: false,
@@ -134,7 +134,7 @@ export namespace MetadataFactory {
       const result: string[] = [];
       if (props.transform !== undefined && props.importer !== undefined) {
         const r = {
-          context: props.transform,
+          transform: props.transform,
           importer: props.importer,
         };
         for (const atomic of meta.atomics)
@@ -243,7 +243,7 @@ export namespace MetadataFactory {
       if (visitor.objects.has(object)) return;
       visitor.objects.add(object);
 
-      if (props.options.validate) {
+      if (props.validate) {
         const explore: IExplore = {
           object,
           top: false,
@@ -252,7 +252,7 @@ export namespace MetadataFactory {
           escaped: false,
           aliased: false,
         };
-        const errors: string[] = props.options.validate(
+        const errors: string[] = props.validate(
           Metadata.create({
             ...Metadata.initialize(),
             objects: [object],

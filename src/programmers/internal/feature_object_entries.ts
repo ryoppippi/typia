@@ -7,7 +7,7 @@ import { MetadataObject } from "../../schemas/metadata/MetadataObject";
 import { Escaper } from "../../utils/Escaper";
 
 import { FeatureProgrammer } from "../FeatureProgrammer";
-import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 /**
  * @internal
@@ -19,7 +19,7 @@ export const feature_object_entries =
       "decoder" | "path" | "trace"
     >,
   ) =>
-  (importer: ImportProgrammer) =>
+  (ctx: ITypiaContext) =>
   (obj: MetadataObject) =>
   (input: ts.Expression, from: "object" | "top" | "array" = "object") =>
     obj.properties.map((prop) => {
@@ -48,10 +48,7 @@ export const feature_object_entries =
           postfix: config.trace
             ? sole !== null
               ? IdentifierFactory.postfix(sole)
-              : (() => {
-                  importer.internal("$json_stringify_join");
-                  return `__$json_stringify_join(key)`;
-                })()
+              : ctx.importer.internal("$json_stringify_join").text
             : "",
         }),
       };
