@@ -11,6 +11,6 @@ export type Default<Value extends boolean | bigint | number | string> =
       : "string";
     kind: "default";
     value: Value;
-    exclusive: true;
     schema: { default: Value };
+    exclusive: true;
   }>;

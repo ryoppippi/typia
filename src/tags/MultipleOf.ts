@@ -7,6 +7,7 @@ export type MultipleOf<Value extends number | bigint> = TagBase<{
   validate: `$input % ${Numeric<Value>} === ${Value extends bigint
     ? Numeric<0n>
     : 0}`;
+  schema: { multipleOf: Value };
   exclusive: true;
 }>;
 

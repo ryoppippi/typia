@@ -9,5 +9,6 @@ export type Format<Value extends keyof typeof FormatCheatSheet> = TagBase<{
   kind: "format";
   value: Value;
   validate: (typeof FormatCheatSheet)[Value];
+  schema: { format: Value };
   exclusive: ["format", "pattern"];
 }>;

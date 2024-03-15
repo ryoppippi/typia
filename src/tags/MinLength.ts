@@ -5,5 +5,6 @@ export type MinLength<Value extends number> = TagBase<{
   kind: "minLength";
   value: Value;
   validate: `${Value} <= $input.length`;
+  schema: { minLength: Value };
   exclusive: true;
 }>;

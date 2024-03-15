@@ -5,5 +5,6 @@ export type MaxItems<Value extends number> = TagBase<{
   kind: "maxItems";
   value: Value;
   validate: `$input.length <= ${Value}`;
+  schema: { maxItems: Value };
   exclusive: true;
 }>;
