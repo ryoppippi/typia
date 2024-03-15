@@ -19,16 +19,6 @@ export const iterate_metadata_object =
         (type as any).intrinsicName !== "object"
       )
         return false;
-      // else if (
-      //     type.isIntersection() &&
-      //     !type.types.every(
-      //         (child) =>
-      //             (child.getFlags() & ts.TypeFlags.Object) !== 0 &&
-      //             !checker.isArrayType(child) &&
-      //             !checker.isTupleType(child),
-      //     )
-      // )
-      //     return false;
     }
 
     const obj: MetadataObject = emplace_metadata_object(ctx)(

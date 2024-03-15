@@ -19,7 +19,18 @@ export const iterate_metadata_array =
     type: ts.Type,
     explore: MetadataFactory.IExplore,
   ): boolean => {
-    if (!ctx.checker.isArrayType(type)) return false;
+    if (ctx.checker.isArrayType(type) === false) {
+      const array: ts.Type | null = find_array_extended(ctx.checker)(
+        type, new Map()
+      );
+      if (array !== null)
+        return iterate_metadata_array(ctx)(
+          meta,
+          array,
+          explore,
+        );
+      return false;
+    }
 
     const arrayType: MetadataArrayType = emplace_metadata_array_type(ctx)(
       type,
@@ -35,4 +46,25 @@ export const iterate_metadata_array =
       (elem) => elem.type.name === arrayType.name,
     );
     return true;
+  };
+
+const find_array_extended =
+  (checker: ts.TypeChecker) =>
+  (type: ts.Type , memory: Map<ts.Type, ts.Type | null>): ts.Type | null => {
+    const cached = memory.get(type);
+    if (cached !== undefined) return null;
+
+    memory.set(type, null);
+    const res: ts.Type | null = (() => {
+      if (type.isClassOrInterface() === false) return null;
+      for (const t of type.resolvedBaseTypes ?? [])
+        if (checker.isArrayType(t)) return t;
+        else {
+          const res: ts.Type | null = find_array_extended(checker)(t, memory);
+          if (res !== null) return res;
+        }
+      return null;
+    })();
+    memory.set(type, res);
+    return res;
   };
