@@ -449,7 +449,7 @@ export namespace MiscPruneProgrammer {
     (project: ITypiaProject) =>
     (importer: FunctionImporter): FeatureProgrammer.IConfig => {
       const config: FeatureProgrammer.IConfig = {
-        types: {
+        definition: {
           input: (type, name) =>
             ts.factory.createTypeReferenceNode(
               name ?? TypeFactory.getFullName(project.checker)(type),
@@ -459,7 +459,7 @@ export namespace MiscPruneProgrammer {
         prefix: PREFIX,
         trace: false,
         path: false,
-        initializer,
+        metadata: initializer,
         decoder: () => decode(project)(config)(importer),
         objector: {
           checker: () => IsProgrammer.decode(project)(importer),
@@ -473,7 +473,7 @@ export namespace MiscPruneProgrammer {
           failure: (input, expected) =>
             create_throw_error(importer)(expected)(input),
         },
-        generator: {
+        functor: {
           arrays: () => write_array_functions(config)(importer),
           tuples: () => write_tuple_functions(project)(config)(importer),
         },
@@ -481,7 +481,7 @@ export namespace MiscPruneProgrammer {
       return config;
     };
 
-  const initializer: FeatureProgrammer.IConfig["initializer"] =
+  const initializer: FeatureProgrammer.IConfig["metadata"] =
     (project) => (importer) => (type) => {
       const collection = new MetadataCollection();
       const result = MetadataFactory.analyze(

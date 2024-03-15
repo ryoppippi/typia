@@ -23,7 +23,7 @@ export namespace FeatureProgrammer {
         PARAMETERS
     ----------------------------------------------------------- */
   export interface IConfig<Output extends ts.ConciseBody = ts.ConciseBody> {
-    types: IConfig.ITypes;
+    definition: IConfig.IDefinition;
 
     /**
      * Prefix name of internal functions for specific types.
@@ -45,9 +45,10 @@ export namespace FeatureProgrammer {
     /**
      * Initializer of metadata.
      */
-    initializer: (
-      ctx: ITypiaContext,
-    ) => (type: ts.Type) => [MetadataCollection, Metadata];
+    metadata: (ctx: ITypiaContext) => (type: ts.Type) => {
+      collection: MetadataCollection;
+      metadata: Metadata;
+    };
 
     /**
      * Decoder, station of every types.
@@ -62,10 +63,10 @@ export namespace FeatureProgrammer {
     /**
      * Generator of functions for object types.
      */
-    generator: IConfig.IGenerator;
+    functor: IConfig.IGenerator;
   }
   export namespace IConfig {
-    export interface ITypes {
+    export interface IDefinition {
       input: (type: ts.Type, name?: undefined | string) => ts.TypeNode;
       output: (type: ts.Type, name?: undefined | string) => ts.TypeNode;
     }
@@ -190,50 +191,50 @@ export namespace FeatureProgrammer {
   }
 
   export interface Decoder<T, Output extends ts.ConciseBody = ts.ConciseBody> {
-    (input: ts.Expression, target: T, explore: IExplore): Output;
+    (props: { input: ts.Expression; target: T; explore: IExplore }): Output;
   }
 
   /* -----------------------------------------------------------
         GENERATORS
     ----------------------------------------------------------- */
   export const write =
-    (ctx: ITypiaContext) =>
     (config: IConfig) =>
+    (ctx: ITypiaContext) =>
     (type: ts.Type, name?: string) => {
-      const [collection, meta] = config.initializer(ctx)(type);
+      const { collection, metadata } = config.metadata(ctx)(type);
 
       // ITERATE OVER ALL METADATA
-      const output: ts.ConciseBody = config.decoder()(
-        ValueFactory.INPUT(),
-        meta,
-        {
+      const output: ts.ConciseBody = config.decoder()({
+        input: ValueFactory.INPUT(),
+        target: metadata,
+        explore: {
           tracable: config.path || config.trace,
           source: "top",
           from: "top",
           postfix: '""',
         },
-      );
+      });
 
       // RETURNS THE OPTIMAL ARROW FUNCTION
       const functions = {
-        objects: (
-          config.generator.objects?.() ?? write_object_functions(config)
-        )(collection),
-        unions: (config.generator.unions?.() ?? write_union_functions(config))(
+        objects: (config.functor.objects?.() ?? write_object_functions(config))(
           collection,
         ),
-        arrays: config.generator.arrays()(collection),
-        tuples: config.generator.tuples()(collection),
+        unions: (config.functor.unions?.() ?? write_union_functions(config))(
+          collection,
+        ),
+        arrays: config.functor.arrays()(collection),
+        tuples: config.functor.tuples()(collection),
       };
       const added: ts.Statement[] = (config.addition ?? (() => []))(collection);
 
       return ts.factory.createArrowFunction(
         undefined,
         undefined,
-        parameterDeclarations(config)(config.types.input(type, name))(
+        parameterDeclarations(config)(config.definition.input(type, name))(
           ValueFactory.INPUT(),
         ),
-        config.types.output(type, name),
+        config.definition.output(type, name),
         undefined,
         ts.factory.createBlock(
           [

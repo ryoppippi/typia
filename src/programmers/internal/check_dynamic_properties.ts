@@ -4,111 +4,99 @@ import { ExpressionFactory } from "../../factories/ExpressionFactory";
 import { IdentifierFactory } from "../../factories/IdentifierFactory";
 import { StatementFactory } from "../../factories/StatementFactory";
 
-import { ITypiaProject } from "../../transformers/ITypiaProject";
-
-import { FunctionImporter } from "../helpers/FunctionImporter";
 import { IExpressionEntry } from "../helpers/IExpressionEntry";
 import { check_dynamic_key } from "./check_dynamic_key";
 import { check_everything } from "./check_everything";
 import { check_object } from "./check_object";
-import { ImportProgrammer } from "../ImportProgrammer";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
+
+/**
+ * @internal
+ */
+interface IProps {
+  input: ts.Expression;
+  regular: IExpressionEntry<ts.Expression>[];
+  dynamic: IExpressionEntry<ts.Expression>[];
+}
 
 /**
  * @internal
  */
 export const check_dynamic_properties =
-  (props: check_object.IProps) =>
-  (project: ITypiaProject) =>
-  (importer: ImportProgrammer) =>
-  (
-    input: ts.Expression,
-    regular: IExpressionEntry<ts.Expression>[],
-    dynamic: IExpressionEntry<ts.Expression>[],
-  ): ts.Expression => {
+  (config: check_object.IConfig) =>
+  (ctx: ITypiaContext) =>
+  (p: IProps): ts.Expression => {
     const length = IdentifierFactory.access(
       ts.factory.createCallExpression(
         ts.factory.createIdentifier("Object.keys"),
         undefined,
-        [input],
+        [p.input],
       ),
     )("length");
     const left: ts.Expression | null =
-      props.equals === true && dynamic.length === 0
-        ? props.undefined === true || regular.every((r) => r.meta.isRequired())
+      config.equals === true && p.dynamic.length === 0
+        ? config.undefined === true ||
+          p.regular.every((r) => r.meta.isRequired())
           ? ts.factory.createStrictEquality(
               ExpressionFactory.number(
-                regular.filter((r) => r.meta.isRequired()).length,
+                p.regular.filter((r) => r.meta.isRequired()).length,
               ),
               length,
             )
           : ts.factory.createCallExpression(
-              importer.internal("$is_between"),
+              ctx.importer.internal("$is_between"),
               [],
               [
                 length,
                 ExpressionFactory.number(
-                  regular.filter((r) => r.meta.isRequired()).length,
+                  p.regular.filter((r) => r.meta.isRequired()).length,
                 ),
-                ExpressionFactory.number(regular.length),
+                ExpressionFactory.number(p.regular.length),
               ],
             )
         : null;
     if (
-      props.undefined === false &&
+      config.undefined === false &&
       left !== null &&
-      regular.every((r) => r.meta.isRequired())
+      p.regular.every((r) => r.meta.isRequired())
     )
       return left;
 
-    const criteria = props.entries
-      ? ts.factory.createCallExpression(props.entries, undefined, [
+    const criteria = config.entries
+      ? ts.factory.createCallExpression(config.entries, undefined, [
           ts.factory.createCallExpression(
             ts.factory.createIdentifier("Object.keys"),
             undefined,
-            [input],
+            [p.input],
           ),
-          check_dynamic_property(props)(project)(importer)(
-            input,
-            regular,
-            dynamic,
-          ),
+          check_dynamic_property(config)(ctx)(p),
         ])
       : ts.factory.createCallExpression(
           IdentifierFactory.access(
             ts.factory.createCallExpression(
               ts.factory.createIdentifier("Object.keys"),
               undefined,
-              [input],
+              [p.input],
             ),
-          )(props.assert ? "every" : "map"),
+          )(config.assert ? "every" : "map"),
           undefined,
-          [
-            check_dynamic_property(props)(project)(importer)(
-              input,
-              regular,
-              dynamic,
-            ),
-          ],
+          [check_dynamic_property(config)(ctx)(p)],
         );
-    const right: ts.Expression = (props.halt || ((elem) => elem))(
-      props.assert ? criteria : check_everything(criteria),
+    const right: ts.Expression = (config.halt || ((elem) => elem))(
+      config.assert ? criteria : check_everything(criteria),
     );
     return left
-      ? (props.undefined
+      ? (config.undefined
           ? ts.factory.createLogicalOr
           : ts.factory.createLogicalAnd)(left, right)
       : right;
   };
 
+/**
+ * @internal
+ */
 const check_dynamic_property =
-  (props: check_object.IProps) =>
-  (project: ITypiaProject) =>
-  (importer: FunctionImporter) =>
-  (
-    input: ts.Expression,
-    regular: IExpressionEntry<ts.Expression>[],
-    dynamic: IExpressionEntry<ts.Expression>[],
-  ) => {
+  (config: check_object.IConfig) => (ctx: ITypiaContext) => (p: IProps) => {
     //----
     // IF CONDITIONS
     //----
@@ -127,27 +115,27 @@ const check_dynamic_property =
     const broken = { value: false };
 
     // GATHER CONDITIONS
-    if (regular.length) add(is_regular_property(regular), props.positive);
+    if (p.regular.length) add(is_regular_property(p.regular), config.positive);
     statements.push(
       StatementFactory.constant(
         "value",
-        ts.factory.createElementAccessExpression(input, key),
+        ts.factory.createElementAccessExpression(p.input, key),
       ),
     );
-    if (props.undefined === true)
+    if (config.undefined === true)
       add(
         ts.factory.createStrictEquality(
           ts.factory.createIdentifier("undefined"),
           value,
         ),
-        props.positive,
+        config.positive,
       );
 
-    for (const entry of dynamic) {
-      const condition: ts.Expression = check_dynamic_key(project)(importer)(
-        key,
-        entry.key,
-      );
+    for (const entry of p.dynamic) {
+      const condition: ts.Expression = check_dynamic_key(ctx)({
+        input: key,
+        metadata: entry.key,
+      });
       if (condition.kind === ts.SyntaxKind.TrueKeyword) {
         statements.push(ts.factory.createReturnStatement(entry.expression));
         broken.value = true;
@@ -166,9 +154,9 @@ const check_dynamic_property =
           ? []
           : [
               ts.factory.createReturnStatement(
-                props.equals === true
-                  ? props.superfluous(value)
-                  : props.positive,
+                config.equals === true
+                  ? config.superfluous(value)
+                  : config.positive,
               ),
             ]),
       ],
@@ -186,6 +174,9 @@ const check_dynamic_property =
     );
   };
 
+/**
+ * @internal
+ */
 const is_regular_property = (regular: IExpressionEntry[]) =>
   ts.factory.createCallExpression(
     IdentifierFactory.access(

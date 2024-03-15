@@ -192,7 +192,7 @@ export namespace CheckerProgrammer {
     (project: ITypiaProject) =>
     (config: IConfig) =>
     (importer: FunctionImporter): FeatureProgrammer.IConfig => ({
-      types: {
+      definition: {
         input: () => TypeFactory.keyword("any"),
         output: (type, name) =>
           ts.factory.createTypePredicateNode(
@@ -206,7 +206,7 @@ export namespace CheckerProgrammer {
       trace: config.trace,
       path: config.path,
       prefix: config.prefix,
-      initializer: (project) => (importer) => (type) => {
+      metadata: (project) => (importer) => (type) => {
         const collection: MetadataCollection = new MetadataCollection();
         const result = MetadataFactory.analyze(
           project.checker,
@@ -262,7 +262,7 @@ export namespace CheckerProgrammer {
         full: config.joiner.full,
         type: TypeFactory.keyword("boolean"),
       },
-      generator: {
+      functor: {
         unions: config.numeric
           ? () =>
               FeatureProgrammer.write_union_functions(

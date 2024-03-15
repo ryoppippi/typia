@@ -9,10 +9,10 @@ import { metadata_to_pattern } from "./metadata_to_pattern";
 /**
  * @internal
  */
-export const stringify_dynamic_properties = (
-  dynamic: IExpressionEntry<ts.Expression>[],
-  regular: string[],
-): ts.Expression => {
+export const stringify_dynamic_properties = (p: {
+  dynamic: IExpressionEntry<ts.Expression>[];
+  regular: string[];
+}): ts.Expression => {
   // BASIC STATMEMENT, CHECK UNDEFINED
   const statements: ts.Statement[] = [
     ts.factory.createIfStatement(
@@ -79,13 +79,13 @@ export const stringify_dynamic_properties = (
   };
 
   // WHEN REGULAR PROPERTY EXISTS
-  if (regular.length)
+  if (p.regular.length)
     statements.push(
       ts.factory.createIfStatement(
         ts.factory.createCallExpression(
           IdentifierFactory.access(
             ts.factory.createArrayLiteralExpression(
-              regular.map((key) => ts.factory.createStringLiteral(key)),
+              p.regular.map((key) => ts.factory.createStringLiteral(key)),
             ),
           )("some"),
           undefined,
@@ -109,16 +109,16 @@ export const stringify_dynamic_properties = (
 
   // ONLY STRING TYPED KEY EXISTS
   const simple: boolean =
-    dynamic.length === 1 &&
-    dynamic[0]!.key.size() === 1 &&
-    dynamic[0]!.key.atomics[0]?.type === "string";
+    p.dynamic.length === 1 &&
+    p.dynamic[0]!.key.size() === 1 &&
+    p.dynamic[0]!.key.atomics[0]?.type === "string";
   if (simple === true) {
-    statements.push(stringify(dynamic[0]!));
+    statements.push(stringify(p.dynamic[0]!));
     return output();
   }
 
   // COMPOSITE TEMPLATE LITERAL TYPES
-  for (const entry of dynamic) {
+  for (const entry of p.dynamic) {
     const condition: ts.IfStatement = ts.factory.createIfStatement(
       ts.factory.createCallExpression(
         ts.factory.createIdentifier(

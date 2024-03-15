@@ -1,45 +1,42 @@
 import ts from "typescript";
 
-import { ITypiaProject } from "../../transformers/ITypiaProject";
-
-import { FunctionImporter } from "../helpers/FunctionImporter";
 import { IExpressionEntry } from "../helpers/IExpressionEntry";
 import { check_dynamic_properties } from "./check_dynamic_properties";
 import { check_everything } from "./check_everything";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
 
 /**
  * @internal
  */
 export const check_object =
-  (props: check_object.IProps) =>
-  (project: ITypiaProject) =>
-  (importer: FunctionImporter) =>
-  (input: ts.Expression, entries: IExpressionEntry<ts.Expression>[]) => {
+  (config: check_object.IConfig) =>
+  (ctx: ITypiaContext) =>
+  (p: { input: ts.Expression; entries: IExpressionEntry<ts.Expression>[] }) => {
     // PREPARE ASSETS
-    const regular = entries.filter((entry) => entry.key.isSoleLiteral());
-    const dynamic = entries.filter((entry) => !entry.key.isSoleLiteral());
+    const regular = p.entries.filter((entry) => entry.key.isSoleLiteral());
+    const dynamic = p.entries.filter((entry) => !entry.key.isSoleLiteral());
     const flags: ts.Expression[] = regular.map((entry) => entry.expression);
 
     // REGULAR WITHOUT DYNAMIC PROPERTIES
-    if (props.equals === false && dynamic.length === 0)
-      return regular.length === 0 ? props.positive : reduce(props)(flags);
+    if (config.equals === false && dynamic.length === 0)
+      return regular.length === 0 ? config.positive : reduce(config)(flags);
 
     // CHECK DYNAMIC PROPERTIES
     flags.push(
-      check_dynamic_properties(props)(project)(importer)(
-        input,
+      check_dynamic_properties(config)(ctx)({
+        input: p.input,
         regular,
         dynamic,
-      ),
+      }),
     );
-    return reduce(props)(flags);
+    return reduce(config)(flags);
   };
 
 /**
  * @internal
  */
 export namespace check_object {
-  export interface IProps {
+  export interface IConfig {
     equals: boolean;
     assert: boolean;
     undefined: boolean;
@@ -54,7 +51,8 @@ export namespace check_object {
 /**
  * @internal
  */
-const reduce = (props: check_object.IProps) => (expressions: ts.Expression[]) =>
-  props.assert
-    ? expressions.reduce(props.reduce)
-    : check_everything(ts.factory.createArrayLiteralExpression(expressions));
+const reduce =
+  (config: check_object.IConfig) => (expressions: ts.Expression[]) =>
+    config.assert
+      ? expressions.reduce(config.reduce)
+      : check_everything(ts.factory.createArrayLiteralExpression(expressions));

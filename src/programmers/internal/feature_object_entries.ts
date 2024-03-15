@@ -20,36 +20,43 @@ export const feature_object_entries =
     >,
   ) =>
   (ctx: ITypiaContext) =>
-  (obj: MetadataObject) =>
-  (input: ts.Expression, from: "object" | "top" | "array" = "object") =>
-    obj.properties.map((prop) => {
+  (p: {
+    obj: MetadataObject;
+    input: ts.Expression;
+    from?: "object" | "top" | "array";
+  }) =>
+    p.obj.properties.map((prop) => {
       const sole: string | null = prop.key.getSoleLiteral();
       const propInput =
         sole === null
           ? ts.factory.createIdentifier("value")
           : Escaper.variable(sole)
           ? ts.factory.createPropertyAccessExpression(
-              input,
+              p.input,
               ts.factory.createIdentifier(sole),
             )
           : ts.factory.createElementAccessExpression(
-              input,
+              p.input,
               ts.factory.createStringLiteral(sole),
             );
 
       return {
-        input: propInput,
         key: prop.key,
-        meta: prop.value,
-        expression: config.decoder()(propInput, prop.value, {
-          tracable: config.path || config.trace,
-          source: "function",
-          from,
-          postfix: config.trace
-            ? sole !== null
-              ? IdentifierFactory.postfix(sole)
-              : ctx.importer.internal("$json_stringify_join").text
-            : "",
+        value: prop.value,
+        expression: config.decoder()({
+          input: propInput,
+          target: prop.value,
+          explore: {
+            tracable: config.path || config.trace,
+            source: "function",
+            from: p.from ?? "object",
+            postfix: config.trace
+              ? sole !== null
+                ? IdentifierFactory.postfix(sole)
+                : ctx.importer.internal("$json_stringify_join").text
+              : "",
+          },
         }),
+        input: propInput,
       };
     });

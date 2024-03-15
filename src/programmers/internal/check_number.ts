@@ -4,46 +4,55 @@ import { ExpressionFactory } from "../../factories/ExpressionFactory";
 
 import { MetadataAtomic } from "../../schemas/metadata/MetadataAtomic";
 
-import { ITypiaProject } from "../../transformers/ITypiaProject";
-
 import { ICheckEntry } from "../helpers/ICheckEntry";
 import { OptionPredicator } from "../helpers/OptionPredicator";
+import { ITypiaContext } from "../../transformers/ITypiaContext";
+
+/**
+ * @internal
+ */
+interface IProps {
+  atomic: MetadataAtomic;
+  input: ts.Expression;
+}
 
 /**
  * @internal
  */
 export const check_number =
-  (project: ITypiaProject, numeric: boolean) =>
-  (atomic: MetadataAtomic) =>
-  (input: ts.Expression): ICheckEntry => {
+  (numeric: boolean) =>
+  (ctx: ITypiaContext) =>
+  (p: IProps): ICheckEntry => {
     const base = ts.factory.createStrictEquality(
       ts.factory.createStringLiteral("number"),
-      ts.factory.createTypeOfExpression(input),
+      ts.factory.createTypeOfExpression(p.input),
     );
     const addition: ts.Expression | null =
       numeric === true
-        ? OptionPredicator.finite(project.options)
+        ? OptionPredicator.finite(ctx.options)
           ? ts.factory.createCallExpression(
               ts.factory.createIdentifier("Number.isFinite"),
               undefined,
-              [input],
+              [p.input],
             )
-          : OptionPredicator.numeric(project.options)
+          : OptionPredicator.numeric(ctx.options)
           ? ts.factory.createLogicalNot(
               ts.factory.createCallExpression(
                 ts.factory.createIdentifier("Number.isNaN"),
                 undefined,
-                [input],
+                [p.input],
               ),
             )
           : null
         : null;
 
-    const conditions: ICheckEntry.ICondition[][] =
-      check_numeric_type_tags(project)(atomic)(addition)(input);
+    const conditions: ICheckEntry.ICondition[][] = check_numeric_type_tags(ctx)(
+      p,
+      addition,
+    );
 
     return {
-      expected: atomic.getName(),
+      expected: p.atomic.getName(),
       expression:
         addition !== null && conditions.length === 0
           ? ts.factory.createLogicalAnd(base, addition)
@@ -56,11 +65,9 @@ export const check_number =
  * @internal
  */
 const check_numeric_type_tags =
-  (project: ITypiaProject) =>
-  (atomic: MetadataAtomic) =>
-  (addition: ts.Expression | null) =>
-  (input: ts.Expression): ICheckEntry.ICondition[][] =>
-    atomic.tags
+  (ctx: ITypiaContext) =>
+  (p: IProps, addition: ts.Expression | null): ICheckEntry.ICondition[][] =>
+    p.atomic.tags
       .map((row) => row.filter((tag) => !!tag.validate))
       .filter((row) => !!row.length)
       .map((row) => [
@@ -99,8 +106,7 @@ const check_numeric_type_tags =
         ...row.map((tag) => ({
           expected: `number & ${tag.name}`,
           expression: (
-            tag.predicate ??
-            ExpressionFactory.transpile(project.context)(tag.validate!)
-          )(input),
+            tag.predicate ?? ExpressionFactory.transpile(ctx)(tag.validate!)
+          )(p.input),
         })),
       ]);

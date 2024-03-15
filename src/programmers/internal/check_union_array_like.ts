@@ -20,7 +20,7 @@ export const check_union_array_like =
   <Origin, Category extends MetadataArray | MetadataTuple, Element>(
     accessor: check_union_array_like.IAccessor<Origin, Category, Element>,
   ) =>
-  (props: check_union_array_like.IProps<Category, Element>) =>
+  (config: check_union_array_like.IConfig<Category, Element>) =>
   (parameters: ts.ParameterDeclaration[]) =>
   (
     input: ts.Expression,
@@ -36,7 +36,7 @@ export const check_union_array_like =
         parameters,
         undefined,
         undefined,
-        props.decoder(accessor.array(input), targets[0]!, explore),
+        config.decoder(accessor.array(input), targets[0]!, explore),
       );
 
     const array = ts.factory.createIdentifier("array");
@@ -67,7 +67,7 @@ export const check_union_array_like =
               ],
               TypeFactory.keyword("any"),
               undefined,
-              props.checker(
+              config.checker(
                 ts.factory.createIdentifier("top"),
                 accessor.element(meta),
                 {
@@ -89,7 +89,7 @@ export const check_union_array_like =
               ],
               TypeFactory.keyword("any"),
               undefined,
-              props.decoder(ts.factory.createIdentifier("entire"), meta, {
+              config.decoder(ts.factory.createIdentifier("entire"), meta, {
                 ...explore,
                 tracable: true,
               }),
@@ -152,9 +152,9 @@ export const check_union_array_like =
             ExpressionFactory.number(0),
             accessor.size(input),
           ),
-          ts.isReturnStatement(props.empty)
-            ? props.empty
-            : ts.factory.createReturnStatement(props.empty),
+          ts.isReturnStatement(config.empty)
+            ? config.empty
+            : ts.factory.createReturnStatement(config.empty),
         ),
         StatementFactory.constant(
           "arrayPredicators",
@@ -226,7 +226,7 @@ export const check_union_array_like =
                       undefined,
                       undefined,
                       ts.factory.createStrictEquality(
-                        props.success,
+                        config.success,
                         ts.factory.createCallExpression(
                           ts.factory.createIdentifier("pred[0]"),
                           undefined,
@@ -250,7 +250,7 @@ export const check_union_array_like =
       );
     }
     statements.push(
-      props.failure(
+      config.failure(
         input,
         `(${targets
           .map((t) => accessor.name(t, accessor.element(t)))
@@ -272,7 +272,7 @@ export const check_union_array_like =
  * @internal
  */
 export namespace check_union_array_like {
-  export interface IProps<
+  export interface IConfig<
     Category extends MetadataArray | MetadataTuple,
     Element,
   > {

@@ -112,7 +112,7 @@ export namespace UnionExplorer {
         ARRAY LIKE
     ----------------------------------------------------------- */
   export const tuple = (
-    props: check_union_array_like.IProps<MetadataTuple, MetadataTuple>,
+    props: check_union_array_like.IConfig<MetadataTuple, MetadataTuple>,
   ) =>
     check_union_array_like<MetadataTuple, MetadataTuple, MetadataTuple>({
       transform: (x) => x,
@@ -123,7 +123,7 @@ export namespace UnionExplorer {
       name: (t) => t.type.name,
     })(props);
   export namespace tuple {
-    export type IProps = check_union_array_like.IProps<
+    export type IProps = check_union_array_like.IConfig<
       MetadataTuple,
       MetadataTuple
     >;
@@ -139,7 +139,10 @@ export namespace UnionExplorer {
       name: (t) => t.type.name,
     })(props);
   export namespace array {
-    export type IProps = check_union_array_like.IProps<MetadataArray, Metadata>;
+    export type IProps = check_union_array_like.IConfig<
+      MetadataArray,
+      Metadata
+    >;
   }
 
   export const array_or_tuple = (props: array_or_tuple.IProps) =>
@@ -156,7 +159,7 @@ export namespace UnionExplorer {
       name: (m) => m.type.name,
     })(props);
   export namespace array_or_tuple {
-    export type IProps = check_union_array_like.IProps<
+    export type IProps = check_union_array_like.IConfig<
       MetadataArray | MetadataTuple,
       Metadata
     >;
@@ -199,7 +202,10 @@ export namespace UnionExplorer {
       name: (_m, e) => `Set<${e.getName()}>`,
     })(props);
   export namespace set {
-    export type IProps = check_union_array_like.IProps<MetadataArray, Metadata>;
+    export type IProps = check_union_array_like.IConfig<
+      MetadataArray,
+      Metadata
+    >;
   }
 
   export const map = (props: map.IProps) =>
@@ -261,7 +267,7 @@ export namespace UnionExplorer {
     )(props);
 
   export namespace map {
-    export type IProps = check_union_array_like.IProps<
+    export type IProps = check_union_array_like.IConfig<
       MetadataArray,
       [Metadata, Metadata]
     >;

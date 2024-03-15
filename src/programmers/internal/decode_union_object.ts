@@ -9,26 +9,26 @@ import { FeatureProgrammer } from "../FeatureProgrammer";
  */
 export const decode_union_object =
   (
-    checker: (
-      input: ts.Expression,
-      obj: MetadataObject,
-      explore: FeatureProgrammer.IExplore,
-    ) => ts.Expression,
+    checker: (p: {
+      input: ts.Expression;
+      object: MetadataObject;
+      explore: FeatureProgrammer.IExplore;
+    }) => ts.Expression,
   ) =>
   (
-    decoder: (
-      input: ts.Expression,
-      obj: MetadataObject,
-      explore: FeatureProgrammer.IExplore,
-    ) => ts.Expression,
+    decoder: (p: {
+      input: ts.Expression;
+      object: MetadataObject;
+      explore: FeatureProgrammer.IExplore;
+    }) => ts.Expression,
   ) =>
   (success: (exp: ts.Expression) => ts.Expression) =>
   (escaper: (value: ts.Expression, expected: string) => ts.Statement) =>
-  (
-    input: ts.Expression,
-    targets: MetadataObject[],
-    explore: FeatureProgrammer.IExplore,
-  ): ts.CallExpression =>
+  (p: {
+    input: ts.Expression;
+    targets: MetadataObject[];
+    explore: FeatureProgrammer.IExplore;
+  }): ts.CallExpression =>
     ts.factory.createCallExpression(
       ts.factory.createArrowFunction(
         undefined,
@@ -36,30 +36,45 @@ export const decode_union_object =
         [],
         undefined,
         undefined,
-        iterate(escaper)(
-          input,
-          targets.map((obj) => ({
+        iterate(escaper)({
+          input: p.input,
+          unions: p.targets.map((object) => ({
             type: "object",
-            is: () => success(checker(input, obj, explore)),
-            value: () => decoder(input, obj, explore),
+            is: () =>
+              success(
+                checker({
+                  input: p.input,
+                  object,
+                  explore: p.explore,
+                }),
+              ),
+            value: () =>
+              decoder({
+                input: p.input,
+                object,
+                explore: p.explore,
+              }),
           })),
-          `(${targets.map((t) => t.name).join(" | ")})`,
-        ),
+          expected: `(${p.targets.map((t) => t.name).join(" | ")})`,
+        }),
       ),
       undefined,
       undefined,
     );
 
+/**
+ * @internal
+ */
 const iterate =
   (escaper: (value: ts.Expression, expected: string) => ts.Statement) =>
-  (input: ts.Expression, unions: IUnion[], expected: string) => {
+  (p: { input: ts.Expression; unions: IUnion[]; expected: string }) => {
     interface IBranch {
       condition: null | ts.Expression;
       value: ts.Expression;
     }
     const branches: IBranch[] = [];
 
-    for (const u of unions) {
+    for (const u of p.unions) {
       const condition: ts.Expression = u.is();
       if (condition.kind === ts.SyntaxKind.TrueKeyword) {
         branches.push({
@@ -74,7 +89,7 @@ const iterate =
       });
     }
     if (branches.length === 0)
-      return ts.factory.createBlock([escaper(input, expected)], true);
+      return ts.factory.createBlock([escaper(p.input, p.expected)], true);
     else if (branches.length === 1 && branches[0]!.condition === null)
       return branches[0]!.value;
 
@@ -88,10 +103,13 @@ const iterate =
         : ts.factory.createReturnStatement(b.value),
     );
     if (branches.at(-1)!.condition !== null)
-      statements.push(escaper(input, expected));
+      statements.push(escaper(p.input, p.expected));
     return ts.factory.createBlock(statements, true);
   };
 
+/**
+ * @internal
+ */
 interface IUnion {
   type: string;
   is: () => ts.Expression;
