@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const CENTER = 100 / 2;
+
 // https://github.com/sinclairzx81/typebox-workbench/blob/main/src/layout/splitter.tsx
 const Splitter = (props: Splitter.IProps) => {
   const [hovering, setHovering] = useState<boolean>(false);
@@ -9,7 +11,7 @@ const Splitter = (props: Splitter.IProps) => {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (dragging === false) return;
 
-    const next: number = (e.clientX / window.innerWidth) * 100;
+    const next: number = ((e.clientX + CENTER) / window.innerWidth) * 100;
     const min: number = props.minWidth ?? 10;
     const max: number = 100 - min;
 
@@ -28,13 +30,13 @@ const Splitter = (props: Splitter.IProps) => {
     },
     left: {
       height: "100%",
-      width: `${width}%`,
+      width: `calc(${width}% - ${CENTER}px)`,
       position: "relative",
       zIndex: 1,
     },
     right: {
       height: "100%",
-      width: `${100 - width}%`,
+      width: `calc(${100 - width}% + ${CENTER}px)`,
       position: "relative",
       zIndex: 1,
     },
@@ -43,7 +45,7 @@ const Splitter = (props: Splitter.IProps) => {
       position: "absolute",
       top: 0,
       bottom: 0,
-      left: `${width}%`,
+      left: `calc(${width}% - ${CENTER}px)`,
       width: "10px",
       cursor: "col-resize",
       zIndex: 2,
