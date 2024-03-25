@@ -77,12 +77,9 @@ export const application_schema =
       else insert(application_constant(constant)(attribute));
     for (const a of meta.atomics)
       if (a.type === "bigint") throw new TypeError(NO_BIGINT);
-      else if (a.type === "boolean")
-        application_boolean(options)(a)(attribute).forEach(insert);
-      else if (a.type === "number")
-        application_number(options)(a)(attribute).forEach(insert);
-      else if (a.type === "string")
-        application_string(options)(meta)(a)(attribute).forEach(insert);
+      else if (a.type === "boolean") application_boolean(a).forEach(insert);
+      else if (a.type === "number") application_number(a).forEach(insert);
+      else if (a.type === "string") application_string(a).forEach(insert);
 
     // ARRAY
     for (const array of meta.arrays)
@@ -100,30 +97,30 @@ export const application_schema =
         else if (type === "bigint") throw new TypeError(NO_BIGINT);
         else if (type === "boolean")
           insert(
-            application_boolean(options)(
+            application_boolean(
               MetadataAtomic.create({
                 type: "boolean",
                 tags: [],
               }),
-            )(attribute)[0]!,
+            )[0]!,
           );
         else if (type === "number")
           insert(
-            application_number(options)(
+            application_number(
               MetadataAtomic.create({
                 type: "number",
                 tags: [],
               }),
-            )(attribute)[0]!,
+            )[0]!,
           );
         else if (type === "string")
           insert(
-            application_string(options)(meta)(
+            application_string(
               MetadataAtomic.create({
                 type: "string",
                 tags: [],
               }),
-            )(attribute)[0]!,
+            )[0]!,
           );
       } else
         insert(application_native(options)(components)(native)(meta.nullable));
