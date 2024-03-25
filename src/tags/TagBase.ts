@@ -19,7 +19,7 @@ export namespace TagBase {
           [key in Target]?: string;
         },
     Exclusive extends boolean | string[],
-    Schema extends object,
+    Schema extends object | undefined,
   > {
     /**
      * Target type.
@@ -69,12 +69,7 @@ export namespace TagBase {
     exclusive?: Exclusive | string[];
 
     /**
-     * JSON schema customizer.
-     *
-     * If this property is configured, it would be merged into the generated
-     * JSON schema. For example, if you connfigure this property type as
-     * `{ default: "hello" }`, then the generated JSON schema would be
-     * `{ default: "hello", ... }`.
+     * Additional schema info assigned to the {@link IJsonSchema} object.
      */
     schema?: Schema;
   }

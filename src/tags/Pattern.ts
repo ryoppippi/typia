@@ -7,4 +7,7 @@ export type Pattern<Value extends string> = TagBase<{
   validate: `/${Value}/.test($input)`;
   schema: { pattern: Value };
   exclusive: ["format", "pattern"];
+  schema: {
+    pattern: Value;
+  };
 }>;

@@ -7,4 +7,7 @@ export type MinItems<Value extends number> = TagBase<{
   validate: `${Value} <= $input.length`;
   schema: { minItems: Value };
   exclusive: true;
+  schema: {
+    minItems: Value;
+  };
 }>;

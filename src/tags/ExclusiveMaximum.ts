@@ -10,6 +10,12 @@ export type ExclusiveMaximum<Value extends number | bigint> = TagBase<{
     exclusiveMaximum: true;
   };
   exclusive: ["exclusiveMaximum", "maximum"];
+  schema: Value extends number
+    ? {
+        exclusiveMaximum: true;
+        maximum: Value;
+      }
+    : undefined;
 }>;
 
 type Numeric<Value extends number | bigint> = Value extends number

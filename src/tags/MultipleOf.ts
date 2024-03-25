@@ -9,6 +9,11 @@ export type MultipleOf<Value extends number | bigint> = TagBase<{
     : 0}`;
   schema: { multipleOf: Value };
   exclusive: true;
+  schema: Value extends number
+    ? {
+        multipleOf: Value;
+      }
+    : undefined;
 }>;
 
 type Numeric<Value extends number | bigint> = Value extends number
