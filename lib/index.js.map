@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/index.ts"],"names":["typia"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAEA,IAAA,cAAeA","sourcesContent":["import * as typia from \"./module\";\n\nexport default typia;\nexport * from \"./module\";\n"]}

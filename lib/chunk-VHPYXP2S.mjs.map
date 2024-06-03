@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/functional/$any.ts"],"sourcesContent":["import { $clone } from \"./$clone\";\n\nexport const $any = (val: any): any =>\n  val !== undefined ? $clone(val) : undefined;\n"],"mappings":";;;;;;;;AAEO,IAAMA,OAAO,wBAACC,QACnBA,QAAQC,SAAYC,OAAOF,GAAAA,IAAOC,QADhB;","names":["$any","val","undefined","$clone"]}

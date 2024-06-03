@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/functional/$clone.ts"],"sourcesContent":["import { Primitive } from \"../Primitive\";\n\nexport const $clone = <T>(value: T): Primitive<T> =>\n  JSON.parse(JSON.stringify(value));\n"],"mappings":";;;;;AAEO,IAAMA,SAAS,wBAAIC,UACxBC,KAAKC,MAAMD,KAAKE,UAAUH,KAAAA,CAAAA,GADN;","names":["$clone","value","JSON","parse","stringify"]}
