@@ -1,4 +1,4 @@
-import RandExp from "randexp";
+import * as RandExp from "randexp";
 
 const ALPHABETS = "abcdefghijklmnopqrstuvwxyz";
 
@@ -29,7 +29,7 @@ export const array = <T>(closure: (index: number) => T, count?: number): T[] =>
 export const pick = <T>(array: T[]): T => array[integer(0, array.length - 1)]!;
 export const length = () => integer(0, 3);
 export const pattern = (regex: RegExp): string => {
-  const r: RandExp = new RandExp(regex);
+  const r = new RandExp(regex);
   for (let i: number = 0; i < 10; ++i) {
     const str: string = r.gen();
     if (regex.test(str)) return str;
