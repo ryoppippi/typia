@@ -9,3 +9,5 @@ bun.lockb
 
 *.log
 *.tgz
+
+.turbo/
