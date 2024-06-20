@@ -3,7 +3,7 @@ packages:
   - 'test'
   - 'test-esm'
   - 'deploy'
-  - 'errors'
   - 'benchmark'
+  # - 'errors'
   # - 'website'
   # - 'packages/*'
