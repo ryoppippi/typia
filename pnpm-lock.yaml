@@ -44,7 +44,7 @@ importers:
         version: 0.31.28
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^3.3.0
-        version: 3.4.0(prettier@2.8.8)
+        version: 3.4.0(prettier@3.3.2)
       '@typegoose/typegoose':
         specifier: ^10.1.1
         version: 10.5.0(mongoose@6.12.9(@aws-sdk/client-sso-oidc@3.600.0))
@@ -123,9 +123,6 @@ importers:
       physical-cpu-count:
         specifier: ^2.0.0
         version: 2.0.0
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
@@ -4398,11 +4395,6 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@2.8.8:
-    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
-
   prettier@3.3.2:
     resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
     engines: {node: '>=14'}
@@ -7048,7 +7040,7 @@ snapshots:
 
   '@tootallnate/once@2.0.0': {}
 
-  '@trivago/prettier-plugin-sort-imports@3.4.0(prettier@2.8.8)':
+  '@trivago/prettier-plugin-sort-imports@3.4.0(prettier@3.3.2)':
     dependencies:
       '@babel/core': 7.17.8
       '@babel/generator': 7.17.7
@@ -7058,7 +7050,7 @@ snapshots:
       '@vue/compiler-sfc': 3.4.29
       javascript-natural-sort: 0.7.1
       lodash: 4.17.21
-      prettier: 2.8.8
+      prettier: 3.3.2
     transitivePeerDependencies:
       - supports-color
 
@@ -10784,8 +10776,6 @@ snapshots:
       source-map-js: 1.2.0
 
   prelude-ls@1.2.1: {}
-
-  prettier@2.8.8: {}
 
   prettier@3.3.2: {}
 

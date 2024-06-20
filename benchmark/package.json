@@ -7,7 +7,6 @@
   "scripts": {
     "build": "rimraf bin && tsc",
     "prepare": "ts-patch install",
-    "prettier": "prettier ./src/**/*.ts --write",
     "start": "node bin",
     "template": "ts-node src/template && npm run prettier && npm run build"
   },
@@ -56,7 +55,6 @@
     "io-ts": "^2.2.19",
     "jsdom": "^21.1.1",
     "physical-cpu-count": "^2.0.0",
-    "prettier": "^2.6.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.21",
