@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@typia/test",
+  "name": "@typia/test-cjs",
   "version": "0.1.0",
   "description": "Test program for typia",
   "main": "bin/index.js",

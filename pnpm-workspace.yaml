@@ -1,9 +1,8 @@
 packages:
   - 'typia'
-  - 'test'
-  - 'test-esm'
   - 'deploy'
   - 'benchmark'
   - 'website'
+  - 'test/**'
   # - 'errors'
   # - 'packages/*'
