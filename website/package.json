@@ -37,9 +37,10 @@
     "tgrid": "^1.0.1",
     "tstl": "^3.0.0",
     "typescript": "^5.5.2",
-    "typia": "^6.3.1"
+    "typia": "workspace:*"
   },
   "devDependencies": {
+    "@mui/system": "^5.15.20",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/node": "^18.11.10",
     "@types/prettier": "^3.0.0",

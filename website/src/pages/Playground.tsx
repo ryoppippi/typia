@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import ts from "typescript";
 import { Button } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { version } from "../../../package.json";
+import { version } from "typia/package.json";
 
 import LanguageButton from "../components/playground/LanguageButton";
 import OutputViewer from "../components/playground/OutputViewer";
