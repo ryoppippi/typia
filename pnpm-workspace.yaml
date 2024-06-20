@@ -6,4 +6,4 @@ packages:
   - 'errors'
   - 'benchmark'
   # - 'website'
-  - 'packages/*'
+  # - 'packages/*'
