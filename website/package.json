@@ -4,10 +4,13 @@
   "description": "Typia Guide Documents",
   "private": true,
   "scripts": {
-    "build": "rimraf .next && rimraf out && typedoc && next build && next-sitemap",
+    "build": "run-s build:*",
+    "build:raw": "rimraf out raw && node build/raw && webpack",
+    "build:typedoc": "rimraf public/api && typedoc",
+    "build:next": "rimraf .next out && next build && next-sitemap",
     "deploy": "node build/deploy",
-    "dev": "next dev",
-    "prepare": "node build/raw && webpack && typedoc"
+    "dev": "run-p dev:* build:raw build:typedoc",
+    "dev:next": "next dev"
   },
   "repository": {
     "type": "git",
@@ -48,6 +51,7 @@
     "gh-pages": "^5.0.0",
     "next-sitemap": "^4.0.7",
     "node-polyfill-webpack-plugin": "^4.0.0",
+    "npm-run-all2": "^6.2.0",
     "process": "^0.11.10",
     "rimraf": "^5.0.0",
     "ts-loader": "^9.5.1",
