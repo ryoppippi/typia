@@ -63,7 +63,7 @@
   },
   "homepage": "https://typia.io",
   "dependencies": {
-    "typia": "6.3.1"
+    "typia": "workspace:*"
   },
   "peerDependencies": {
     "typescript": ">=4.8.0 <5.6.0"
