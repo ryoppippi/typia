@@ -10,6 +10,11 @@
       "dependsOn": [
         "^prepare",
         "^build"
+      ],
+      "outputs": [
+        "bin/**",
+        "lib/**",
+        ".next/**"
       ]
     },
     "dev": {
