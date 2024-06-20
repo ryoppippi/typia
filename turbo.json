@@ -17,9 +17,33 @@
         ".next/**"
       ]
     },
-    "dev": {
-      "persistent": true,
-      "cache": false
+    "test": {
+      "dependsOn": [
+        "^prepare",
+        "^build",
+        "^test"
+      ]
+    },
+    "test:bun": {
+      "dependsOn": [
+        "^prepare",
+        "^build",
+        "^test:bun"
+      ]
+    },
+    "start": {
+      "dependsOn": [
+        "^prepare",
+        "^build",
+        "^start"
+      ]
+    },
+    "template": {
+      "dependsOn": [
+        "^prepare",
+        "^template",
+        "^build"
+      ]
     }
   }
 }

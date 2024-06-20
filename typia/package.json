@@ -14,10 +14,6 @@
     }
   },
   "scripts": {
-    "test": "npm run package:tgz",
-    "test:bun": "bun run deploy/bun.ts",
-    "test:template": "npm run --tag test --template",
-    "-------------------------------------------------": "",
     "build": "rimraf lib && tsc && rollup -c",
     "dev": "rimraf lib && tsc --watch",
     "eslint": "eslint ./**/*.ts",

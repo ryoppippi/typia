@@ -11,11 +11,10 @@
   },
   "scripts": {
     "build": "rimraf bin && tsc",
-    "build_run": "npm run build",
     "prepare": "ts-patch install",
     "prettier": "prettier ./src/**/*.ts --write",
-    "setup": "node build/setup.js",
-    "start": "node bin",
+    "test": "node bin/index.js",
+    "test:bun": "bun -b bin/index.js",
     "template": "ts-node --project build/tsconfig.json build/template.ts"
   },
   "repository": {

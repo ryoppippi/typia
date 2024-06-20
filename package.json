@@ -5,7 +5,10 @@
   "scripts": {
     "prepare": "turbo prepare",
     "build": "turbo build",
-    "test": "turbo test"
+    "test": "turbo test",
+    "test:bun": "turbo test:bun",
+    "start": "turbo start",
+    "template": "turbo template"
   },
   "devDependencies": {
     "turbo": "^2.0.4"
