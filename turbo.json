@@ -4,7 +4,8 @@
     "prepare": {
       "dependsOn": [
         "^prepare"
-      ]
+      ],
+      "cache": false
     },
     "build": {
       "dependsOn": [
@@ -14,6 +15,7 @@
       "outputs": [
         "bin/**",
         "lib/**",
+        "raw/**",
         ".next/**"
       ]
     },
