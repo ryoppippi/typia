@@ -32,7 +32,7 @@ const main = async (): Promise<void> => {
     testExecutors: [
       {
         name: "test",
-        commands: ["bun --bun run build_run", "bun --bun run start"],
+        commands: ["bun --bun run build", "bun --bun run start"],
       },
     ],
   });

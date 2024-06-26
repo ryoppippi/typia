@@ -15,7 +15,7 @@
     "build:esm": "rimraf bin-esm && tsc -p ./tsconfig.esm.json",
     "prepare": "ts-patch install",
     "prettier": "prettier ./src/**/*.ts --write",
-    "setup": "node build/setup.js",
+    "setup": "node script/setup.js",
     "start": "run-p start:*",
     "start:cjs": "node bin-cjs",
     "start:esm": "node bin-esm",
