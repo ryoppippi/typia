@@ -30,10 +30,6 @@ const main = async (): Promise<void> => {
             : ["npm run build", "npm start"],
       },
       {
-        name: "test-esm",
-        commands: ["npm run build", "npm start"],
-      },
-      {
         name: "errors",
         commands: ["npm start"],
       },

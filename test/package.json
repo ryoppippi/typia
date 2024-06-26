@@ -10,13 +10,16 @@
     }
   },
   "scripts": {
-    "build": "rimraf bin && tsc",
-    "build_run": "npm run build",
+    "build": "run-p build:*",
+    "build:cjs": "rimraf bin-cjs && tsc",
+    "build:esm": "rimraf bin-esm && tsc -p ./tsconfig.esm.json",
     "prepare": "ts-patch install",
     "prettier": "prettier ./src/**/*.ts --write",
     "setup": "node build/setup.js",
-    "start": "node bin",
-    "template": "ts-node --project build/tsconfig.json build/template.ts"
+    "start": "run-p start:*",
+    "start:cjs": "node bin-cjs",
+    "start:esm": "node bin-esm",
+    "template": "ts-node --project script/tsconfig.json script/template.ts"
   },
   "repository": {
     "type": "git",
@@ -37,6 +40,7 @@
     "@types/cli": "^0.11.25",
     "@types/node": "^20.9.4",
     "@types/uuid": "^9.0.7",
+    "npm-run-all2": "^6.2.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",

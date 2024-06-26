@@ -34,10 +34,6 @@ const main = async (): Promise<void> => {
         name: "test",
         commands: ["bun --bun run build_run", "bun --bun run start"],
       },
-      {
-        name: "test-esm",
-        commands: ["bun --bun run build", "bun --bun run start"],
-      },
     ],
   });
 };
