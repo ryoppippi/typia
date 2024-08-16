@@ -1,7 +1,5 @@
 packages:
 # - website
-- debug
 - packages/*
-- test
-- test-esm
+- misc/*
 
