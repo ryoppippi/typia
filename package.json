@@ -16,7 +16,7 @@
   "scripts": {
     "test": "turbo run test",
     "test:bun": "turbo run test:bun",
-    "test:template": "npm run --tag test --template",
+    "test:template": "turbo run template",
     "-------------------------------------------------": "",
     "build": "turbo run build",
     "build:root": "rimraf lib && tsc && rollup -c",

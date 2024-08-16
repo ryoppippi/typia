@@ -29,6 +29,11 @@
       "outputs": [
         "bin/**"
       ]
+    },
+    "template": {
+      "dependsOn": [
+        "^build"
+      ]
     }
   }
 }
