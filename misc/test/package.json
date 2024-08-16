@@ -15,7 +15,8 @@
     "generate": "rimraf generated && rimraf bin-generated && node --max-old-space-size=8000 node_modules/typia/lib/executable/typia generate --input src --output generated --project tsconfig.generated.json && rimraf generated/features/functional* && rimraf generated/features/issues && node --max-old-space-size=8000 node_modules/typescript/bin/tsc --project tsconfig.generated.json",
     "prepare": "ts-patch install",
     "prettier": "prettier ./src/**/*.ts --write",
-    "start": "node bin",
+    "test": "node ./bin",
+    "test:bun": "bun -b run test",
     "template": "ts-node --project build/tsconfig.json build/template.ts"
   },
   "repository": {

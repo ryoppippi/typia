@@ -14,12 +14,13 @@
     }
   },
   "scripts": {
-    "test": "npm run package:tgz",
-    "test:bun": "bun run deploy/bun.ts",
+    "test": "turbo run test",
+    "test:bun": "turbo run test:bun",
     "test:template": "npm run --tag test --template",
     "-------------------------------------------------": "",
-    "build": "rimraf lib && tsc && rollup -c",
-    "prepare": "npm run build",
+    "build": "turbo run build",
+    "build:root": "rimraf lib && tsc && rollup -c",
+    "prepare": "turbo run '//#build:root'",
     "dev": "rimraf lib && tsc --watch",
     "eslint": "eslint ./**/*.ts",
     "eslint:fix": "eslint ./**/*.ts --fix",
@@ -93,6 +94,7 @@
     "rollup": "^4.18.0",
     "suppress-warnings": "^1.0.2",
     "ts-node": "^10.9.2",
+    "turbo": "^2.0.14",
     "typescript": "^5.5.4"
   },
   "stackblitz": {
