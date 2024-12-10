@@ -5,12 +5,12 @@ export namespace IValidation {
   export interface ISuccess<T = unknown> {
     success: true;
     data: T;
-    errors: [];
   }
 
   export interface IFailure {
     success: false;
     errors: IError[];
+    data: unknown;
   }
 
   export interface IError {
