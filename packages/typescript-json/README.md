@@ -5,10 +5,12 @@
 ![Typia Logo](https://typia.io/logo.png)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/samchon/typia/blob/master/LICENSE)
-[![npm version](https://img.shields.io/npm/v/typia.svg)](https://www.npmjs.com/package/typia)
-[![Downloads](https://img.shields.io/npm/dm/typia.svg)](https://www.npmjs.com/package/typia)
+[![NPM Version](https://img.shields.io/npm/v/typia.svg)](https://www.npmjs.com/package/typia)
+[![NPM Downloads](https://img.shields.io/npm/dm/typia.svg)](https://www.npmjs.com/package/typia)
 [![Build Status](https://github.com/samchon/typia/workflows/build/badge.svg)](https://github.com/samchon/typia/actions?query=workflow%3Abuild)
 [![Guide Documents](https://img.shields.io/badge/guide-documents-forestgreen)](https://typia.io/docs/)
+[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20Typia%20Guru-006BFF)](https://gurubase.io/g/typia)
+[![Discord Badge](https://img.shields.io/badge/discord-samchon-d91965?style=flat&labelColor=5866f2&logo=discord&logoColor=white&link=https://discord.gg/E94XhzrUCZ)](https://discord.gg/E94XhzrUCZ)
 
 ```typescript
 // RUNTIME VALIDATORS
@@ -24,11 +26,13 @@ export namespace json {
   export function assertStringify<T>(input: T): string; // safe and faster
 }
 
-// LLM FUNCTION CALLING APPLICATION
+// LLM FUNCTION CALLING SCHEMA
 export namespace llm {
-  // LLM function calling application from a class or interface type
-  export function application<App>(): ILlmApplication;
-  export function schema<T>(): ILlmSchema; // LLM type schema
+  // application schema from a class or interface type
+  export function application<App, Model>(): ILlmApplication<Model>;
+  // structured output
+  export function parameters<P, Moodel>(): ILlmSchema.IParameters<Model>; 
+  export function schema<T, Model>(): ILlmSchema<Model>; // type schema
 }
 
 // PROTOCOL BUFFER
@@ -42,11 +46,11 @@ export namespace protobuf {
 export function random<T>(g?: Partial<IRandomGenerator>): T;
 ```
 
-Typia is a transformer library supporting below features:
+`typia` is a transformer library supporting below features:
 
   - Super-fast Runtime Validators
-  - Enhanced JSON functions
-  - LLM function calling application composer
+  - Enhanced JSON schema and serde functions
+  - LLM function calling schema and structured output
   - Protocol Buffer encoder and decoder
   - Random data generator
 
@@ -56,6 +60,31 @@ Typia is a transformer library supporting below features:
 > - Runtime validator is **20,000x faster** than `class-validator`
 > - JSON serialization is **200x faster** than `class-transformer`
 
+
+
+
+## Transformation
+If you call `typia` function, it would be compiled like below.
+
+This is the key concept of `typia`, transforming TypeScript type to a runtime function. The `typia.is<T>()` function is transformed to a dedicated type checker by analyzing the target type `T` in the compilation level.
+
+This feature enables developers to ensure type safety in their applications, leveraging TypeScript's static typing while also providing runtime validation. Instead of defining additional schemas, you can simply utilize the pure TypeScript type itself.
+
+```typescript
+//----
+// examples/checkString.ts
+//----
+import typia, { tags } from "typia";
+export const checkString = typia.createIs<string>();
+
+//----
+// examples/checkUUID.js
+//----
+import typia from "typia";
+export const checkString = (() => {
+  return (input) => "string" === typeof input;
+})();
+```
 
 
 
@@ -103,6 +132,7 @@ Check out the document in the [website](https://typia.io/docs/):
     - [`parse()` functions](https://typia.io/docs/json/parse/)
   - LLM Function Calling
     - [`application()` function](https://typia.io/docs/llm/application/)
+    - [`parameters()` function](https://typia.io/docs/llm/parameters/)
     - [`schema()` function](https://typia.io/docs/llm/schema/)
   - Protocol Buffer
     - [Message Schema](https://typia.io/docs/protobuf/message)

@@ -1,0 +1,114 @@
+{
+  "type": "object",
+  "properties": {
+    "regular": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "@default something",
+          "type": "string"
+        },
+        "age": {
+          "description": "@default 20",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "age"
+      ]
+    },
+    "nullable": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "description": "@default something",
+              "type": "string"
+            },
+            "age": {
+              "description": "@default 20",
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "age"
+          ]
+        }
+      ]
+    },
+    "optional": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "@default something",
+          "type": "string"
+        },
+        "age": {
+          "description": "@default 20",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "age"
+      ]
+    },
+    "faint": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "description": "@default something",
+              "type": "string"
+            },
+            "age": {
+              "description": "@default 20",
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "age"
+          ]
+        }
+      ]
+    },
+    "array": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "@default something",
+            "type": "string"
+          },
+          "age": {
+            "description": "@default 20",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "age"
+        ]
+      }
+    }
+  },
+  "required": [
+    "regular",
+    "nullable",
+    "array"
+  ],
+  "additionalProperties": false,
+  "$defs": {}
+}

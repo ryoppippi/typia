@@ -1,6 +1,8 @@
 export * from "./Constant";
 export * from "./ContentMediaType";
 export * from "./Default";
+export * from "./Example";
+export * from "./Examples";
 export * from "./ExclusiveMaximum";
 export * from "./ExclusiveMinimum";
 export * from "./Format";
@@ -13,6 +15,7 @@ export * from "./MinItems";
 export * from "./MinLength";
 export * from "./MultipleOf";
 export * from "./Pattern";
+export * from "./Sequence";
 export * from "./TagBase";
 export * from "./Type";
 export * from "./UniqueItems";

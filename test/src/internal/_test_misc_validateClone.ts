@@ -12,12 +12,13 @@ export const _test_misc_validateClone =
     const valid: typia.IValidation<typia.Resolved<T>> = clone(input);
     if (valid.success === false)
       throw new Error(
-        `Bug on typia.validateClone(): failed to understand the ${name} type.`,
+        `Bug on typia.misc.validateClone(): failed to understand the ${name} type.`,
       );
 
+    typia.assertEquals<typia.IValidation.ISuccess<unknown>>(valid);
     if (resolved_equal_to(name)(input, valid.data) === false) {
       throw new Error(
-        `Bug on typia.assertStringify(): failed to understand the ${name} type.`,
+        `Bug on typia.misc.validateClone(): failed to understand the ${name} type.`,
       );
     }
 
@@ -29,10 +30,10 @@ export const _test_misc_validateClone =
 
       if (valid.success === true)
         throw new Error(
-          `Bug on typia.validateClone(): failed to detect error on the ${name} type.`,
+          `Bug on typia.misc.validateClone(): failed to detect error on the ${name} type.`,
         );
 
-      typia.assert(valid);
+      typia.assertEquals(valid);
       expected.sort();
       valid.errors.sort((x, y) => (x.path < y.path ? -1 : 1));
 
@@ -47,7 +48,7 @@ export const _test_misc_validateClone =
     }
     if (wrong.length !== 0)
       throw new Error(
-        `Bug on typia.validateClone(): failed to detect error on the ${name} type.`,
+        `Bug on typia.misc.validateClone(): failed to detect error on the ${name} type.`,
       );
   };
 
