@@ -1,4 +1,4 @@
-import { Tabs, Tab } from 'nextra-theme-docs'
+import { Tabs } from 'nextra/components'
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
@@ -19,7 +19,7 @@ Therefore, don't be afraid `typia` uses only pure TypeScript types for type vali
     - A2: Comment Tag is designed for legacy JSDoc styled projects
 
 <Tabs items={['TypeScript Source Code', 'Compiled JavaScript File']}>
-  <Tab>
+  <Tabs.Tab>
 ```typescript copy filename="is.tag.ts" showLineNumbers {3}
 import typia, { tags } from "typia";
 
@@ -63,12 +63,16 @@ interface CustomTag {
   >;
 }
 ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```javascript filename="is.tag.js" showLineNumbers
+import * as __typia_transform__isFormatIpv4 from "typia/lib/internal/_isFormatIpv4.js";
+import * as __typia_transform__isFormatIpv6 from "typia/lib/internal/_isFormatIpv6.js";
+import * as __typia_transform__isFormatUuid from "typia/lib/internal/_isFormatUuid.js";
+import * as __typia_transform__isTypeUint32 from "typia/lib/internal/_isTypeUint32.js";
 import typia from "typia";
 export const checkCustomTag = (() => {
-  const $io0 = (input) =>
+  const _io0 = (input) =>
     "number" === typeof input.type &&
     Math.floor(input.type) === input.type &&
     0 <= input.type &&
@@ -80,24 +84,18 @@ export const checkCustomTag = (() => {
     "string" === typeof input.string &&
     3 <= input.string.length &&
     "string" === typeof input.pattern &&
-    /^[a-z]+$/.test(input.pattern) &&
+    RegExp("^[a-z]+$").test(input.pattern) &&
     (null === input.format ||
       ("string" === typeof input.format &&
-        (/^(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/.test(
-          input.format,
-        ) ||
-          /^((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:)))$/i.test(
-            input.format,
-          )))) &&
+        (__typia_transform__isFormatIpv4._isFormatIpv4(input.format) ||
+          __typia_transform__isFormatIpv6._isFormatIpv6(input.format)))) &&
     Array.isArray(input.array) &&
     3 <= input.array.length &&
     input.array.length <= 100 &&
     input.array.every(
       (elem) =>
         "string" === typeof elem &&
-        /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(
-          elem,
-        ),
+        __typia_transform__isFormatUuid._isFormatUuid(elem),
     ) &&
     input.map instanceof Map &&
     (() =>
@@ -106,23 +104,19 @@ export const checkCustomTag = (() => {
           Array.isArray(elem) &&
           elem.length === 2 &&
           "number" === typeof elem[0] &&
-          Math.floor(elem[0]) === elem[0] &&
-          0 <= elem[0] &&
-          elem[0] <= 4294967295 &&
+          __typia_transform__isTypeUint32._isTypeUint32(elem[0]) &&
           Array.isArray(elem[1]) &&
           1 <= elem[1].length &&
           elem[1].every(
             (elem) =>
               "string" === typeof elem &&
-              /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(
-                elem,
-              ),
+              __typia_transform__isFormatUuid._isFormatUuid(elem),
           ),
       ))();
-  return (input) => "object" === typeof input && null !== input && $io0(input);
+  return (input) => "object" === typeof input && null !== input && _io0(input);
 })();
 ```
-  </Tab>
+  </Tabs.Tab>
 </Tabs>
 
 
@@ -160,7 +154,7 @@ For reference, when you take a mistake that choosing different target type, Type
     - `number & ExclusiveMinimum<{number}>`
     - `number & MultipleOf<{number}>`
   - bigint
-   - `bigint & Type<{keyword}>`
+    - `bigint & Type<{keyword}>`
       - `int64`
       - `uint64`
     - `bigint & Minimum<{bigint}>`
@@ -195,11 +189,15 @@ For reference, when you take a mistake that choosing different target type, Type
       - `duration`
       - `json-pointer`
       - `relative-json-pointer`
+  - array
+    - `Array<T> & MinItems<{number}>`
+    - `Array<T> & MaxItems<{number}>`
+    - `Array<T> & UniqueItems`
 
 Also, if you need custom validation logic, just make it by yourself referencing [Customization](#customization) section. It is easy to define. For such type safety and generous use case reasons even customization supporting, I recommend you to use type tags instead of [comment tags](#comment-tags), unless you are maintaining a legacy JSDoc styled project.
 
 <Tabs items={['TypeScript Source Code', 'Compiled JavaScript File']}>
-  <Tab>
+  <Tabs.Tab>
 ```typescript copy filename="is.tag.ts" showLineNumbers {3}
 import typia, { tags } from "typia";
 
@@ -237,16 +235,18 @@ interface CustomTag {
   >;
 }
 ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```javascript filename="is.tag.js" showLineNumbers
+import * as __typia_transform__isTypeUint32 from "typia/lib/internal/_isTypeUint32.js";
+import * as __typia_transform__isFormatIpv4 from "typia/lib/internal/_isFormatIpv4.js";
+import * as __typia_transform__isFormatIpv6 from "typia/lib/internal/_isFormatIpv6.js";
+import * as __typia_transform__isFormatUuid from "typia/lib/internal/_isFormatUuid.js";
 import typia from "typia";
 export const checkCustomTag = (() => {
-  const $io0 = (input) =>
+  const _io0 = (input) =>
     "number" === typeof input.type &&
-    Math.floor(input.type) === input.type &&
-    0 <= input.type &&
-    input.type <= 4294967295 &&
+    __typia_transform__isTypeUint32._isTypeUint32(input.type) &&
     (undefined === input.number ||
       ("number" === typeof input.number &&
         19 < input.number &&
@@ -254,24 +254,18 @@ export const checkCustomTag = (() => {
     "string" === typeof input.string &&
     3 <= input.string.length &&
     "string" === typeof input.pattern &&
-    /^[a-z]+$/.test(input.pattern) &&
+    RegExp("^[a-z]+$").test(input.pattern) &&
     (null === input.format ||
       ("string" === typeof input.format &&
-        (/^(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/.test(
-          input.format,
-        ) ||
-          /^((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:)))$/i.test(
-            input.format,
-          )))) &&
+        (__typia_transform__isFormatIpv4._isFormatIpv4(input.format) ||
+          __typia_transform__isFormatIpv6._isFormatIpv6(input.format)))) &&
     Array.isArray(input.array) &&
     3 <= input.array.length &&
     input.array.length <= 100 &&
     input.array.every(
       (elem) =>
         "string" === typeof elem &&
-        /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(
-          elem,
-        ),
+        __typia_transform__isFormatUuid._isFormatUuid(elem),
     ) &&
     input.map instanceof Map &&
     (() =>
@@ -280,23 +274,19 @@ export const checkCustomTag = (() => {
           Array.isArray(elem) &&
           elem.length === 2 &&
           "number" === typeof elem[0] &&
-          Math.floor(elem[0]) === elem[0] &&
-          0 <= elem[0] &&
-          elem[0] <= 4294967295 &&
+          __typia_transform__isTypeUint32._isTypeUint32(elem[0]) &&
           Array.isArray(elem[1]) &&
           1 <= elem[1].length &&
           elem[1].every(
             (elem) =>
               "string" === typeof elem &&
-              /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(
-                elem,
-              ),
+              __typia_transform__isFormatUuid._isFormatUuid(elem),
           ),
       ))();
-  return (input) => "object" === typeof input && null !== input && $io0(input);
+  return (input) => "object" === typeof input && null !== input && _io0(input);
 })();
 ```
-  </Tab>
+  </Tabs.Tab>
 </Tabs>
 
 
@@ -355,6 +345,7 @@ Here is the entire list of comment tags that `typia` supports.
   - array
     - `@minItems {number}`
     - `@maxItems {number}`
+    - `@uniqueItems`
 
 By the way, I do not recommend this way, because it can't perform union numeric types, and can be used for only object property type. It can't be used standalone, and cannot be used for element type of `Array` and `Map` even when they're declared on object property. Also, When you declare `@type int32` statement, target `number` type be fixed as `int32` type, and never can have another numeric type by declaring union statements.
 
@@ -375,7 +366,7 @@ Second, to support [Prisma](../utilization/prisma). If a comment is created in t
 </Alert>
 
 <Tabs items={['TypeScript Source Code', 'Compiled JavaScript File']}>
-  <Tab>
+  <Tabs.Tab>
 ```typescript copy filename="is.tag.ts" showLineNumbers {3}
 import typia from "typia";
 
@@ -429,12 +420,12 @@ interface CustomTag {
   // >;
 }
 ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```javascript filename="is.tag.js" showLineNumbers
 import typia from "typia";
 export const checkCustomTag = (() => {
-  const $io0 = (input) =>
+  const _io0 = (input) =>
     "number" === typeof input.type &&
     Math.floor(input.type) === input.type &&
     0 <= input.type &&
@@ -446,10 +437,10 @@ export const checkCustomTag = (() => {
     "string" === typeof input.string &&
     3 <= input.string.length &&
     "string" === typeof input.pattern;
-  return (input) => "object" === typeof input && null !== input && $io0(input);
+  return (input) => "object" === typeof input && null !== input && _io0(input);
 })();
 ```
-  </Tab>
+  </Tabs.Tab>
 </Tabs>
 
 
@@ -462,7 +453,7 @@ export const checkCustomTag = (() => {
     <code>Type.ts</code>,
     <code>Pattern.ts</code>,
 ]}>
-  <Tab>
+  <Tabs.Tab>
 ```typescript filename="TagBase.ts" showLineNumbers copy
 export type TagBase<Props extends TagBase.IProps<any, any, any, any, any>> = {
   /**
@@ -533,8 +524,8 @@ export namespace TagBase {
   }
 }
 ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```typescript filename="Minimum.ts" showLineNumbers copy
 import { TagBase } from "./TagBase";
 
@@ -550,8 +541,8 @@ type Numeric<Value extends number | bigint> = Value extends number
   ? Value
   : `BigInt(${Value})`;
 ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```typescript filename="Type.ts" showLineNumbers copy
 import { TagBase } from "./TagBase";
 
@@ -581,8 +572,8 @@ export type Type<
   exclusive: true;
 }>;
 ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```typescript filename="Pattern.ts" showLineNumbers copy
 import { TagBase } from "./TagBase";
 
@@ -593,7 +584,7 @@ export type Pattern<Value extends string> = TagBase<{
   validate: `/${Value}/.test($input)`;
 }>;
 ```
-  </Tab>
+  </Tabs.Tab>
 </Tabs>
 
 Above types are supported by `typia` basically. 
@@ -607,7 +598,7 @@ In the Korean proverb, there's a word that, "it is much better to do it once tha
 Here is the example code, and I think that it may easy to understand.
 
 <Tabs items={['TypeScript Source Code', 'Compiled JavaScript File']}>
-  <Tab>
+  <Tabs.Tab>
 ```typescript showLineNumbers copy filename="is.tag.custom.ts"
 import typia from "typia";
 
@@ -645,26 +636,15 @@ type PowerOf<Value extends number> = typia.tags.TagBase<{
     })()`;
 }>;
 ```
-  </Tab>
-  <Tab>
+  </Tabs.Tab>
+  <Tabs.Tab>
 ```javascript showLineNumbers filename="is.tag.custom.js"
-"use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkTagCustom = void 0;
-const typia_1 = __importDefault(require("typia"));
-const checkTagCustom = (input) => {
-  return (
-    "object" === typeof input &&
-    null !== input &&
+import * as __typia_transform__isFormatUuid from "typia/lib/internal/_isFormatUuid.js";
+import typia from "typia";
+export const checkTagCustom = (() => {
+  const _io0 = (input) =>
     "string" === typeof input.id &&
-    /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(
-      input.id,
-    ) &&
+    __typia_transform__isFormatUuid._isFormatUuid(input.id) &&
     "string" === typeof input.dollar &&
     input.dollar[0] === "$" &&
     !isNaN(Number(input.dollar.substring(1).split(",").join(""))) &&
@@ -675,10 +655,9 @@ const checkTagCustom = (input) => {
       const denominator = Math.log(2);
       const value = Math.log(input.powerOf) / denominator;
       return Math.abs(value - Math.round(value)) < 1e-8;
-    })()
-  );
-};
-exports.checkTagCustom = checkTagCustom;
+    })();
+  return (input) => "object" === typeof input && null !== input && _io0(input);
+})();
 ```
-  </Tab>
+  </Tabs.Tab>
 </Tabs>

@@ -1,0 +1,194 @@
+{
+  "type": "object",
+  "properties": {
+    "regular": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string",
+          "enum": [
+            "assignment"
+          ]
+        },
+        "editable": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "incremental": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "note",
+        "editable",
+        "incremental"
+      ]
+    },
+    "nullable": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string",
+              "enum": [
+                "assignment"
+              ]
+            },
+            "editable": {
+              "type": "boolean",
+              "enum": [
+                false
+              ]
+            },
+            "incremental": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "note",
+            "editable",
+            "incremental"
+          ]
+        }
+      ]
+    },
+    "optional": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string",
+          "enum": [
+            "assignment"
+          ]
+        },
+        "editable": {
+          "type": "boolean",
+          "enum": [
+            false
+          ]
+        },
+        "incremental": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "note",
+        "editable",
+        "incremental"
+      ]
+    },
+    "faint": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string",
+              "enum": [
+                "assignment"
+              ]
+            },
+            "editable": {
+              "type": "boolean",
+              "enum": [
+                false
+              ]
+            },
+            "incremental": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "note",
+            "editable",
+            "incremental"
+          ]
+        }
+      ]
+    },
+    "array": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "enum": [
+              "assignment"
+            ]
+          },
+          "editable": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "incremental": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "note",
+          "editable",
+          "incremental"
+        ]
+      }
+    }
+  },
+  "required": [
+    "regular",
+    "nullable",
+    "array"
+  ],
+  "additionalProperties": false,
+  "$defs": {}
+}

@@ -1,0 +1,179 @@
+{
+  "type": "object",
+  "properties": {
+    "regular": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "@format uuid",
+          "type": "string",
+          "enum": [
+            "latest"
+          ]
+        },
+        "age": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "description": "@maximum 100"
+            },
+            {
+              "type": "number",
+              "enum": [
+                -1
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "age"
+      ]
+    },
+    "nullable": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "description": "@format uuid",
+              "type": "string",
+              "enum": [
+                "latest"
+              ]
+            },
+            "age": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "description": "@maximum 100"
+                },
+                {
+                  "type": "number",
+                  "enum": [
+                    -1
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "age"
+          ]
+        }
+      ]
+    },
+    "optional": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "@format uuid",
+          "type": "string",
+          "enum": [
+            "latest"
+          ]
+        },
+        "age": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "description": "@maximum 100"
+            },
+            {
+              "type": "number",
+              "enum": [
+                -1
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "age"
+      ]
+    },
+    "faint": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "description": "@format uuid",
+              "type": "string",
+              "enum": [
+                "latest"
+              ]
+            },
+            "age": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "description": "@maximum 100"
+                },
+                {
+                  "type": "number",
+                  "enum": [
+                    -1
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "age"
+          ]
+        }
+      ]
+    },
+    "array": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "@format uuid",
+            "type": "string",
+            "enum": [
+              "latest"
+            ]
+          },
+          "age": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "description": "@maximum 100"
+              },
+              {
+                "type": "number",
+                "enum": [
+                  -1
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "age"
+        ]
+      }
+    }
+  },
+  "required": [
+    "regular",
+    "nullable",
+    "array"
+  ],
+  "additionalProperties": false,
+  "$defs": {}
+}
