@@ -18,9 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - uses: pnpm/action-setup@v4
       - run: pnpm install --force
       - run: pnpm run build
       - name: remove `private=true` from package.json
@@ -45,9 +43,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - uses: pnpm/action-setup@v4
       - run: pnpm install --force
       - run: pnpm run eslint
       - run: pnpm run prettier
@@ -62,9 +58,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - uses: pnpm/action-setup@v4
       - run: pnpm install --force
       - run: pnpm run build
       - run: pnpm run test
